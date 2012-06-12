@@ -8,6 +8,7 @@ using Microsoft.Xna.Framework.GamerServices;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Media;
+using Slaysher.Game.Scenes;
 using Slaysher.Graphics.Camera;
 
 namespace Slaysher
@@ -28,10 +29,17 @@ namespace Slaysher
         private SpriteFont font;
         private bool cameraInfoActivated = false;
 
+        private Dictionary<String, IScene> _availableScenes;
+        private IScene _activeScene;
+        private bool _sceneLoaded;
+        private string _sceneSwitchName;
+
         public Engine()
         {
             graphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
+
+            _availableScenes = new Dictionary<string, IScene>();
         }
 
         /// <summary>
@@ -46,6 +54,15 @@ namespace Slaysher
             cubeWorld = Matrix.Identity;
 
             font = Content.Load<SpriteFont>("Fonts/Main");
+
+            //Load SplashScreen as Sample
+            IScene splashScreen = new SplashScreen(this);
+
+            //Add Scene to List
+            AddScene("splashScreen", splashScreen);
+
+            //Switch to chosen Scene
+            SwitchScene("splashScreen");
 
             base.Initialize();
         }
@@ -121,6 +138,11 @@ namespace Slaysher
                 }
             }
 
+            if (_activeScene != null)
+            {
+                _activeScene.Update(gameTime);
+            }
+
             // TODO: Add your update logic here
             camera.Update();
 
@@ -134,6 +156,17 @@ namespace Slaysher
         protected override void Draw(GameTime gameTime)
         {
             GraphicsDevice.Clear(Color.Gray);
+
+            //Scene Rendering
+            if (!_sceneLoaded)
+            {
+                loadScene();
+            }
+
+            if (_activeScene != null)
+            {
+                _activeScene.Render(gameTime);
+            }
 
             // TODO: Add your drawing code here
             DrawModel(cubeModel, cubeWorld);
@@ -164,6 +197,56 @@ namespace Slaysher
                 }
                 mesh.Draw();
             }
+        }
+
+        /// <summary>
+        /// Adds Scene to availbale Scene List
+        /// </summary>
+        /// <param name="sceneName">Name of the scene</param>
+        /// <param name="scene">IScene Implementation</param>
+        public void AddScene(String sceneName, IScene scene)
+        {
+            if (!_availableScenes.ContainsKey(sceneName))
+            {
+                _availableScenes.Add(sceneName, scene);
+            }
+            else
+            {
+                throw new SceneException("Scenename already exists");
+            }
+        }
+
+        /// <summary>
+        /// Switches to given IScene
+        /// </summary>
+        /// <param name="sceneName">Name of the scene to load.</param>
+        public void SwitchScene(String sceneName)
+        {
+            if (_activeScene == null && _availableScenes.ContainsKey(sceneName))
+            {
+                _sceneSwitchName = sceneName;
+                _sceneLoaded = false;
+            }
+            else
+            {
+                throw new SceneException("Scene were not found!");
+            }
+        }
+
+        private void loadScene()
+        {
+            //Unload old scene
+            if (_activeScene != null)
+            {
+                _activeScene.UnloadScene();
+            }
+
+            //Set new Scene
+            _activeScene = _availableScenes[_sceneSwitchName];
+
+            //Load new Scene
+            _activeScene.LoadScene();
+            _sceneLoaded = true;
         }
     }
 }

@@ -18,16 +18,8 @@ namespace Slaysher
     /// </summary>
     public class Engine : Microsoft.Xna.Framework.Game
     {
-        Camera camera = new Camera();
-
-        Matrix cubeWorld;
-        Model cubeModel;
-
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
-
-        private SpriteFont font;
-        private bool cameraInfoActivated = false;
 
         private Dictionary<String, IScene> _availableScenes;
         private IScene _activeScene;
@@ -50,19 +42,16 @@ namespace Slaysher
         /// </summary>
         protected override void Initialize()
         {
-            // TODO: Add your initialization logic here
-            cubeWorld = Matrix.Identity;
-
-            font = Content.Load<SpriteFont>("Fonts/Main");
-
             //Load SplashScreen as Sample
             IScene splashScreen = new SplashScreen(this);
+            IScene boxTest = new BoxSampleScene(this);
 
             //Add Scene to List
             AddScene("splashScreen", splashScreen);
+            AddScene("boxTest", boxTest);
 
             //Switch to chosen Scene
-            SwitchScene("splashScreen");
+            SwitchScene("boxTest");
 
             base.Initialize();
         }
@@ -75,9 +64,6 @@ namespace Slaysher
         {
             // Create a new SpriteBatch, which can be used to draw textures.
             spriteBatch = new SpriteBatch(GraphicsDevice);
-
-            // TODO: use this.Content to load your game content here
-            cubeModel = Content.Load<Model>("Cube");
         }
 
         /// <summary>
@@ -96,55 +82,10 @@ namespace Slaysher
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Update(GameTime gameTime)
         {
-            KeyboardState keyBoardState = Keyboard.GetState();
-
-            //Rotate Cube along its Up Vector
-            if (keyBoardState.IsKeyDown(Keys.X))
-            {
-                cubeWorld = Matrix.CreateFromAxisAngle(Vector3.Up, .02f) * cubeWorld;
-            }
-            if (keyBoardState.IsKeyDown(Keys.Z))
-            {
-                cubeWorld = Matrix.CreateFromAxisAngle(Vector3.Up, -.02f) * cubeWorld;
-            }
-
-            //Move Cube Forward, Back, Left, and Right
-            if (keyBoardState.IsKeyDown(Keys.Up))
-            {
-                cubeWorld *= Matrix.CreateTranslation(cubeWorld.Forward);
-            }
-            if (keyBoardState.IsKeyDown(Keys.Down))
-            {
-                cubeWorld *= Matrix.CreateTranslation(cubeWorld.Backward);
-            }
-            if (keyBoardState.IsKeyDown(Keys.Left))
-            {
-                cubeWorld *= Matrix.CreateTranslation(-cubeWorld.Right);
-            }
-            if (keyBoardState.IsKeyDown(Keys.Right))
-            {
-                cubeWorld *= Matrix.CreateTranslation(cubeWorld.Right);
-            }
-            if (keyBoardState.IsKeyDown(Keys.F5))
-            {
-                //Activate Camera Info
-                if (cameraInfoActivated)
-                {
-                    cameraInfoActivated = false;
-                }
-                else
-                {
-                    cameraInfoActivated = true;
-                }
-            }
-
             if (_activeScene != null)
             {
                 _activeScene.Update(gameTime);
             }
-
-            // TODO: Add your update logic here
-            camera.Update();
 
             base.Update(gameTime);
         }
@@ -168,35 +109,7 @@ namespace Slaysher
                 _activeScene.Render(gameTime);
             }
 
-            // TODO: Add your drawing code here
-            DrawModel(cubeModel, cubeWorld);
-
-            if (cameraInfoActivated)
-            {
-                spriteBatch.Begin();
-                spriteBatch.DrawString(font, "Yaw: " + camera.yaw + ", Pitch: " + camera.pitch, Vector2.Zero, Color.Red);
-                spriteBatch.End();
-            }
-
             base.Draw(gameTime);
-        }
-
-        private void DrawModel(Model model, Matrix worldMatrix)
-        {
-            Matrix[] modelTransforms = new Matrix[model.Bones.Count];
-            model.CopyAbsoluteBoneTransformsTo(modelTransforms);
-
-            foreach (ModelMesh mesh in model.Meshes)
-            {
-                foreach (BasicEffect effect in mesh.Effects)
-                {
-                    effect.EnableDefaultLighting();
-                    effect.World = modelTransforms[mesh.ParentBone.Index] * worldMatrix;
-                    effect.View = camera.viewMatrix;
-                    effect.Projection = camera.projectionMatrix;
-                }
-                mesh.Draw();
-            }
         }
 
         /// <summary>

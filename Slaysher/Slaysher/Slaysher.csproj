@@ -112,6 +112,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Game\Scenes\BoxSampleScene.cs" />
+    <Compile Include="Game\Scenes\GameSampleScene.cs" />
     <Compile Include="Game\Scenes\IScene.cs" />
     <Compile Include="Game\Scenes\SplashScreen.cs" />
     <Compile Include="Graphics\Camera\Camera.cs" />

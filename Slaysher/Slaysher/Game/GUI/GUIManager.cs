@@ -1,12 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-
-// For the NativeMethods helper class:
-using System.ComponentModel;
-using System.Linq;
 using System.Reflection;
 using System.Runtime.InteropServices;
-using System.Text;
 using System.Windows.Forms;
 using Slaysher.Game.IO;
 using Slaysher.Game.Scenes;

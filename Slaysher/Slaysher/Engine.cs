@@ -10,6 +10,7 @@ using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Media;
 using Slaysher.Game;
 using Slaysher.Game.GUI;
+using Slaysher.Game.IO;
 using Slaysher.Game.Scenes;
 using Slaysher.Graphics.Camera;
 
@@ -29,6 +30,10 @@ namespace Slaysher
 
         public GUIManager GUIManager { get; set; }
 
+        private KeyboardHandler _keyboardHandler;
+
+        public KeyboardHandler Keyboard { get { return _keyboardHandler; } }
+
         public Engine()
         {
             graphics = new GraphicsDeviceManager(this);
@@ -37,6 +42,8 @@ namespace Slaysher
             InitGraphicsMode(1024, 768, false);
 
             _availableScenes = new Dictionary<string, IScene>();
+            _keyboardHandler = new KeyboardHandler();
+
             GUIManager = new GUIManager(this);
         }
 
@@ -79,6 +86,7 @@ namespace Slaysher
                 _activeScene.Update(gameTime);
             }
 
+            Keyboard.Update(gameTime);
             GUIManager.Update(gameTime);
             base.Update(gameTime);
         }

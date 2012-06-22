@@ -8,6 +8,8 @@ using Microsoft.Xna.Framework.GamerServices;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Media;
+using Slaysher.Game;
+using Slaysher.Game.GUI;
 using Slaysher.Game.Scenes;
 using Slaysher.Graphics.Camera;
 
@@ -23,6 +25,10 @@ namespace Slaysher
         private bool _sceneLoaded;
         private string _sceneSwitchName;
 
+        public GameState GameState { get; set; }
+
+        public GUIManager GUIManager { get; set; }
+
         public Engine()
         {
             graphics = new GraphicsDeviceManager(this);
@@ -31,6 +37,7 @@ namespace Slaysher
             InitGraphicsMode(1024, 768, false);
 
             _availableScenes = new Dictionary<string, IScene>();
+            GUIManager = new GUIManager(this);
         }
 
         protected override void Initialize()
@@ -46,7 +53,10 @@ namespace Slaysher
             AddScene("gameScene", gameScene);
 
             //Switch to chosen Scene
-            SwitchScene("splashScreen");
+            SwitchScene("boxTest");
+
+            GameState = GameState.GAME;
+            GUIManager.LoadScene();
 
             base.Initialize();
         }
@@ -69,6 +79,7 @@ namespace Slaysher
                 _activeScene.Update(gameTime);
             }
 
+            GUIManager.Update(gameTime);
             base.Update(gameTime);
         }
 
@@ -87,6 +98,7 @@ namespace Slaysher
                 _activeScene.Render(gameTime);
             }
 
+            GUIManager.Render(gameTime);
             base.Draw(gameTime);
         }
 

@@ -97,6 +97,7 @@
     <Reference Include="System">
       <Private>False</Private>
     </Reference>
+    <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml">
       <Private>False</Private>
     </Reference>
@@ -111,6 +112,8 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Game\GameState.cs" />
+    <Compile Include="Game\GUI\GUIManager.cs" />
     <Compile Include="Game\Scenes\BoxSampleScene.cs" />
     <Compile Include="Game\Scenes\GameSampleScene.cs" />
     <Compile Include="Game\Scenes\IScene.cs" />

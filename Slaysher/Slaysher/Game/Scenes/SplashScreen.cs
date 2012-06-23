@@ -2,6 +2,7 @@
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using Microsoft.Xna.Framework.Media;
 using Slaysher.Game.IO;
 
 namespace Slaysher.Game.Scenes
@@ -15,6 +16,8 @@ namespace Slaysher.Game.Scenes
         private SpriteBatch _spriteBatch;
         private Texture2D _splashScreen;
 
+        private Song _splashSoundfile;
+
         private TimeSpan startTime;
 
         public SplashScreen(Engine engine)
@@ -26,6 +29,9 @@ namespace Slaysher.Game.Scenes
         {
             _spriteBatch = new SpriteBatch(Engine.GraphicsDevice);
             _splashScreen = Engine.Content.Load<Texture2D>("Images/Game/dyna_splash");
+            _splashSoundfile = Engine.Content.Load<Song>("Sounds/Splash/splashSound");
+
+            MediaPlayer.Play(_splashSoundfile);
 
             Engine.Keyboard.KeyUp += keyboard_KeyUp;
         }

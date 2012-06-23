@@ -1,8 +1,10 @@
 using System;
 using System.Collections.Generic;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using Microsoft.Xna.Framework.Media;
 using Slaysher.Game;
 using Slaysher.Game.GUI;
 using Slaysher.Game.IO;
@@ -39,6 +41,10 @@ namespace Slaysher
             _keyboardHandler = new KeyboardHandler();
 
             GUIManager = new GUIManager(this);
+
+            //Set Master Volumes. Replace later with user options
+            SoundEffect.MasterVolume = 0.3f;
+            MediaPlayer.Volume = 0.3f;
         }
 
         protected override void Initialize()

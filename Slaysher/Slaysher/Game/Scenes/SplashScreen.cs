@@ -9,7 +9,7 @@ namespace Slaysher.Game.Scenes
 {
     public class SplashScreen : IScene
     {
-        private static int SPLASH_TIME = 2;
+        private static int SPLASH_TIME = 4;
 
         public Engine Engine { get; set; }
 
@@ -72,6 +72,7 @@ namespace Slaysher.Game.Scenes
             _spriteBatch = null;
             _splashScreen = null;
 
+            MediaPlayer.Pause();
             Engine.Keyboard.KeyUp -= keyboard_KeyUp;
         }
     }

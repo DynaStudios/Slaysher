@@ -5,6 +5,7 @@ using System.Text;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using Microsoft.Xna.Framework.Media;
 using Slaysher.Game.GUI.Menu;
 using Slaysher.Game.IO;
 
@@ -47,6 +48,9 @@ namespace Slaysher.Game.Scenes
 
             menu.Enabled = true;
             menu.Visible = true;
+
+            Song mainMenuMusic = Engine.Content.Load<Song>("Sounds/Music/rainbow");
+            MediaPlayer.Play(mainMenuMusic);
         }
 
         public void mouse_MouseClick(object sender, EventArgs eventArgs)
@@ -82,6 +86,8 @@ namespace Slaysher.Game.Scenes
         {
             menu.MouseClick -= mouse_MouseClick;
             Engine.Components.Remove(menu);
+            MediaPlayer.IsRepeating = false;
+            MediaPlayer.Pause();
         }
     }
 }

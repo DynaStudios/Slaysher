@@ -47,14 +47,16 @@ namespace Slaysher
             IScene splashScreen = new SplashScreen(this);
             IScene boxTest = new BoxSampleScene(this);
             IScene gameScene = new GameSampleScene(this);
+            IScene mainMenu = new MainMenu(this);
 
             //Add Scene to List
             AddScene("splashScreen", splashScreen);
             AddScene("boxTest", boxTest);
             AddScene("gameScene", gameScene);
+            AddScene("mainMenu", mainMenu);
 
             //Switch to chosen Scene
-            SwitchScene("boxTest");
+            SwitchScene("mainMenu");
 
             GameState = GameState.GAME;
             GUIManager.LoadScene();
@@ -127,7 +129,7 @@ namespace Slaysher
         /// <param name="sceneName">Name of the scene to load.</param>
         public void SwitchScene(String sceneName)
         {
-            if (_activeScene == null && _availableScenes.ContainsKey(sceneName))
+            if (_availableScenes.ContainsKey(sceneName))
             {
                 _sceneSwitchName = sceneName;
                 _sceneLoaded = false;

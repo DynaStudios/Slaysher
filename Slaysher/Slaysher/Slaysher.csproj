@@ -114,11 +114,16 @@
   <ItemGroup>
     <Compile Include="Game\GameState.cs" />
     <Compile Include="Game\GUI\GUIManager.cs" />
+    <Compile Include="Game\GUI\Menu\MenuComponent.cs" />
+    <Compile Include="Game\GUI\Menu\MenuEntry.cs" />
     <Compile Include="Game\IO\KeyboardEventArgs.cs" />
     <Compile Include="Game\IO\KeyboardHandler.cs" />
+    <Compile Include="Game\Physics\Collisions\AABB.cs" />
+    <Compile Include="Game\Physics\Collisions\Box.cs" />
     <Compile Include="Game\Scenes\BoxSampleScene.cs" />
     <Compile Include="Game\Scenes\GameSampleScene.cs" />
     <Compile Include="Game\Scenes\IScene.cs" />
+    <Compile Include="Game\Scenes\MainMenu.cs" />
     <Compile Include="Game\Scenes\SplashScreen.cs" />
     <Compile Include="Graphics\Camera\Camera.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

@@ -111,7 +111,7 @@
             this.updateController1.releaseFilter.checkForBeta = true;
             this.updateController1.releaseFilter.checkForFinal = true;
             this.updateController1.releaseInfo.Type = updateSystemDotNet.releaseTypes.Beta;
-            this.updateController1.releaseInfo.Version = "0.1.5.0";
+            this.updateController1.releaseInfo.Version = "0.1.6.0";
             this.updateController1.requestElevation = true;
             this.updateController1.restartApplication = true;
             this.updateController1.updateLocation = "http://slaysher.dyna-studios.com/";

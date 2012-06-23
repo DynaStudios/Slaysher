@@ -26,7 +26,7 @@ namespace Slaysher.Game.GUI
             //Make Mouse visible
             Engine.IsMouseVisible = true;
 
-            Engine.Keyboard.KeyUp += keyboard_KeyboardKeyUp;
+            //Engine.Keyboard.KeyUp += keyboard_KeyboardKeyUp;
         }
 
         public void Render(Microsoft.Xna.Framework.GameTime time)
@@ -50,8 +50,6 @@ namespace Slaysher.Game.GUI
         public void keyboard_KeyboardKeyUp(object sender, EventArgs eventArgs)
         {
             KeyboardEventArgs eventA = (KeyboardEventArgs)eventArgs;
-            if (eventA.PressedKey == Microsoft.Xna.Framework.Input.Keys.Escape)
-                Engine.Exit();
         }
 
         //WinAPI Calls here

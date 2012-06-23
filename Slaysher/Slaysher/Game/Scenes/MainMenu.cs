@@ -27,9 +27,20 @@ namespace Slaysher.Game.Scenes
             _menuItems = new string[] { "New World", "Servers", "Options", "Exit Game" };
         }
 
+        private MenuComponent createMenuComponent()
+        {
+            SpriteBatch spriteBatch = new SpriteBatch(Engine.GraphicsDevice);
+            float backBufferWidth = Engine.GraphicsDevice.PresentationParameters.BackBufferWidth;
+            float x = backBufferWidth - 300;
+            float y = backBufferWidth - 550;
+            Vector2 vector = new Vector2(x, y);
+
+            return new MenuComponent(Engine, _menuItems, spriteBatch, vector);
+        }
+
         public void LoadScene()
         {
-            menu = new MenuComponent(Engine, _menuItems, new SpriteBatch(Engine.GraphicsDevice), new Vector2(Engine.GraphicsDevice.PresentationParameters.BackBufferWidth - 300, Engine.GraphicsDevice.PresentationParameters.BackBufferWidth - 550));
+            menu = createMenuComponent();
             Engine.Components.Add(menu);
 
             menu.MouseClick += mouse_MouseClick;

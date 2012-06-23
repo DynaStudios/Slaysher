@@ -13,6 +13,10 @@ namespace Slaysher.Game.Scenes
 {
     public class MainMenu : IScene
     {
+        public string Name
+        {
+            get { return "mainMenu"; }
+        }
         public Engine Engine { get; set; }
 
         private string[] _menuItems;
@@ -25,7 +29,7 @@ namespace Slaysher.Game.Scenes
             Engine = engine;
 
             _selectedItem = 0;
-            _menuItems = new string[] { "Box Test", "Servers", "Options", "Exit Game" };
+            _menuItems = new string[] { "Box Test", "Patern Test", "Servers", "Options", "Exit Game" };
         }
 
         private MenuComponent createMenuComponent()
@@ -57,19 +61,24 @@ namespace Slaysher.Game.Scenes
         {
             MenuSelectEvent eventA = (MenuSelectEvent)eventArgs;
 
-            switch (eventA.Selected)
+            string selected = _menuItems[eventA.Selected];
+
+            switch (selected)
             {
-                case 0:
+                case "Box Test":
                     Engine.SwitchScene("boxTest");
                     break;
-                case 1:
+                case "Servers":
                     //Servers
                     break;
-                case 2:
+                case "Options":
                     //Options
                     break;
-                case 3:
+                case "Exit Game":
                     Engine.Exit();
+                    break;
+                case "Patern Test":
+
                     break;
             }
         }

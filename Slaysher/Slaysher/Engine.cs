@@ -1,4 +1,5 @@
 using System;
+using System.Reflection;
 using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Audio;
@@ -47,19 +48,40 @@ namespace Slaysher
             MediaPlayer.Volume = 0.3f;
         }
 
+        private bool typeIsScene(Type type)
+        {
+            if (type.IsClass)
+            {
+                Type[] interfaces = type.GetInterfaces();
+                foreach (Type i in interfaces)
+                {
+                    if (i == typeof(IScene))
+                    {
+                        return true;
+                    }
+                }
+            }
+            return false;
+        }
+
+        private void loadScenes()
+        {
+            Assembly assembly = Assembly.GetAssembly(typeof(Engine));
+
+            Type[] types = assembly.GetTypes();
+            foreach (Type type in types)
+            {
+                if (typeIsScene(type))
+                {
+                    IScene scene = (IScene) Activator.CreateInstance(type, this);
+                    AddScene(scene);
+                }
+            }
+        }
+
         protected override void Initialize()
         {
-            //Load SplashScreen as Sample
-            IScene splashScreen = new SplashScreen(this);
-            IScene boxTest = new BoxSampleScene(this);
-            IScene gameScene = new GameSampleScene(this);
-            IScene mainMenu = new MainMenu(this);
-
-            //Add Scene to List
-            AddScene("splashScreen", splashScreen);
-            AddScene("boxTest", boxTest);
-            AddScene("gameScene", gameScene);
-            AddScene("mainMenu", mainMenu);
+            loadScenes();
 
             //Switch to chosen Scene
             SwitchScene("splashScreen");
@@ -117,11 +139,11 @@ namespace Slaysher
         /// </summary>
         /// <param name="sceneName">Name of the scene</param>
         /// <param name="scene">IScene Implementation</param>
-        public void AddScene(String sceneName, IScene scene)
+        public void AddScene(IScene scene)
         {
-            if (!_availableScenes.ContainsKey(sceneName))
+            if (!_availableScenes.ContainsKey(scene.Name))
             {
-                _availableScenes.Add(sceneName, scene);
+                _availableScenes.Add(scene.Name, scene);
             }
             else
             {

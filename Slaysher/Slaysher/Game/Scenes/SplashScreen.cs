@@ -9,6 +9,10 @@ namespace Slaysher.Game.Scenes
 {
     public class SplashScreen : IScene
     {
+        public string Name
+        {
+            get { return "splashScreen"; }
+        }
         private static int SPLASH_TIME = 4;
 
         public Engine Engine { get; set; }

@@ -2,6 +2,10 @@
 {
     public class GameSampleScene : IScene
     {
+        public string Name
+        {
+            get { return "gameScene"; }
+        }
         public Engine Engine { get; set; }
 
         public GameSampleScene(Engine engine)

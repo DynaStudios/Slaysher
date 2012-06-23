@@ -1,13 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
 
 namespace Slaysher.Game.Scenes
 {
     public interface IScene
     {
+        string Name { get; }
+
         void LoadScene();
 
         void Render(GameTime time);

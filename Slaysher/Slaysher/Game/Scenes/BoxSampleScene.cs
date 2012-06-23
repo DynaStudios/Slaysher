@@ -7,6 +7,10 @@ namespace Slaysher.Game.Scenes
 {
     public class BoxSampleScene : IScene
     {
+        public string Name
+        {
+            get { return "boxTest"; }
+        }
         public Engine Engine { get; set; }
 
         private Camera _camera = new Camera();

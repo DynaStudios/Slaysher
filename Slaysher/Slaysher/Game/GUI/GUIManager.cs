@@ -9,6 +9,10 @@ namespace Slaysher.Game.GUI
 {
     public class GUIManager : IScene
     {
+        public string Name
+        {
+            get { return "GUIManager"; }
+        }
         public Engine Engine { get; set; }
 
         public GUIManager(Engine engine)

@@ -29,13 +29,34 @@ namespace Slaysher.Game.Scenes
 
         public void LoadScene()
         {
-            Engine.Keyboard.KeyUp += keyboard_KeyUp;
-
             menu = new MenuComponent(Engine, _menuItems, new SpriteBatch(Engine.GraphicsDevice), new Vector2(Engine.GraphicsDevice.PresentationParameters.BackBufferWidth - 300, Engine.GraphicsDevice.PresentationParameters.BackBufferWidth - 550));
             Engine.Components.Add(menu);
 
+            menu.MouseClick += mouse_MouseClick;
+
             menu.Enabled = true;
             menu.Visible = true;
+        }
+
+        public void mouse_MouseClick(object sender, EventArgs eventArgs)
+        {
+            MenuSelectEvent eventA = (MenuSelectEvent)eventArgs;
+
+            switch (eventA.Selected)
+            {
+                case 0:
+                    //New Game
+                    break;
+                case 1:
+                    //Servers
+                    break;
+                case 2:
+                    //Options
+                    break;
+                case 3:
+                    Engine.Exit();
+                    break;
+            }
         }
 
         public void Render(Microsoft.Xna.Framework.GameTime time)
@@ -46,27 +67,10 @@ namespace Slaysher.Game.Scenes
         {
         }
 
-        private void keyboard_KeyUp(object sender, EventArgs eventArgs)
-        {
-            KeyboardEventArgs eventA = (KeyboardEventArgs)eventArgs;
-
-            switch (eventA.PressedKey)
-            {
-                case Keys.Up:
-                    //Handle KeyPress "UP"
-                    break;
-                case Keys.Down:
-                    //Handle KeyPress "DOWN"
-                    break;
-                case Keys.Enter:
-                    //Handle KeyPress "Enter"
-                    break;
-            }
-        }
-
         public void UnloadScene()
         {
-            Engine.Keyboard.KeyUp -= keyboard_KeyUp;
+            menu.MouseClick -= mouse_MouseClick;
+            Engine.Components.Remove(menu);
         }
     }
 }

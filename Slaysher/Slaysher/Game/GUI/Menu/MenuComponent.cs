@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Text;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -9,6 +10,8 @@ namespace Slaysher.Game.GUI.Menu
 {
     public class MenuComponent : DrawableGameComponent
     {
+        public event EventHandler MouseClick;
+
         public Engine Engine { get; set; }
 
         public static Color normal = Color.White;
@@ -89,7 +92,15 @@ namespace Slaysher.Game.GUI.Menu
 
             //Check Mouse Collisions
             MouseState mouse = Mouse.GetState();
-            _mouseBox = new Box(new Vector2(mouse.X, mouse.Y), new Vector2(125, 24));
+            _mouseBox = new Box(new Vector2(mouse.X, mouse.Y), new Vector2(125, 20));
+
+            if (mouse.LeftButton == ButtonState.Pressed)
+            {
+                if (_selectedMenuItem != -1 && MouseClick != null)
+                {
+                    MouseClick(this, new MenuSelectEvent(_selectedMenuItem));
+                }
+            }
         }
     }
 }

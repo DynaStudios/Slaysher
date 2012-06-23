@@ -12,7 +12,7 @@ namespace Slaysher.Game.GUI.Menu
         public Engine Engine { get; set; }
 
         public static Color normal = Color.White;
-        public static Color highlight = Color.Red;
+        public static Color highlight = Color.Orange;
 
         private string[] _menuItems;
         private SpriteBatch _spriteBatch;

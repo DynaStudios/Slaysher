@@ -31,7 +31,7 @@ namespace Slaysher.Game.Scenes
         {
             Engine.Keyboard.KeyUp += keyboard_KeyUp;
 
-            menu = new MenuComponent(Engine, _menuItems, new SpriteBatch(Engine.GraphicsDevice), new Vector2(400, 400));
+            menu = new MenuComponent(Engine, _menuItems, new SpriteBatch(Engine.GraphicsDevice), new Vector2(Engine.GraphicsDevice.PresentationParameters.BackBufferWidth - 300, Engine.GraphicsDevice.PresentationParameters.BackBufferWidth - 550));
             Engine.Components.Add(menu);
 
             menu.Enabled = true;

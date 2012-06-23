@@ -61,20 +61,22 @@ namespace Slaysher.Game.GUI.Menu
         public override void Draw(GameTime gameTime)
         {
             _spriteBatch.Begin();
+            bool foundMatch = false;
+            _selectedMenuItem = -1;
 
             for (int i = 0; i < _entries.Count; i++)
             {
                 Color color;
 
-                if (AABB.Intersect(_entries[i], _mouseBox))
+                if (!foundMatch && AABB.Intersect(_entries[i], _mouseBox))
                 {
                     //Highlight
                     _selectedMenuItem = i;
                     color = highlight;
+                    foundMatch = true;
                 }
                 else
                 {
-                    _selectedMenuItem = -1;
                     color = normal;
                 }
 

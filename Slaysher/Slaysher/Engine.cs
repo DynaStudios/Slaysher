@@ -56,7 +56,7 @@ namespace Slaysher
             AddScene("mainMenu", mainMenu);
 
             //Switch to chosen Scene
-            SwitchScene("mainMenu");
+            SwitchScene("splashScreen");
 
             GameState = GameState.GAME;
             GUIManager.LoadScene();

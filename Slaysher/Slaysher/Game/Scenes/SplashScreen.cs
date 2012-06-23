@@ -43,8 +43,8 @@ namespace Slaysher.Game.Scenes
 
             if (time.TotalGameTime.Seconds == SplashScreen.SPLASH_TIME)
             {
-                Engine.SwitchScene("boxTest");
-                //Engine.SwitchScene("mainMenu");
+                //Engine.SwitchScene("boxTest");
+                Engine.SwitchScene("mainMenu");
             }
         }
 
@@ -57,7 +57,7 @@ namespace Slaysher.Game.Scenes
             KeyboardEventArgs eventA = (KeyboardEventArgs)eventArgs;
             if (eventA.PressedKey == Keys.Escape)
             {
-                Engine.SwitchScene("boxTest");
+                Engine.SwitchScene("mainMenu");
             }
         }
 

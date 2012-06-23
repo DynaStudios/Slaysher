@@ -24,7 +24,7 @@ namespace Slaysher.Game.Scenes
             Engine = engine;
 
             _selectedItem = 0;
-            _menuItems = new string[] { "New World", "Servers", "Options", "Exit Game" };
+            _menuItems = new string[] { "Box Test", "Servers", "Options", "Exit Game" };
         }
 
         private MenuComponent createMenuComponent()
@@ -56,7 +56,7 @@ namespace Slaysher.Game.Scenes
             switch (eventA.Selected)
             {
                 case 0:
-                    //New Game
+                    Engine.SwitchScene("boxTest");
                     break;
                 case 1:
                     //Servers

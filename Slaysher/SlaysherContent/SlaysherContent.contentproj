@@ -67,6 +67,11 @@
       <Name>Arrow</Name>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Compile Include="Sounds\GUI\btnHover.mp3">
+      <Name>btnHover</Name>
+      <Importer>Mp3Importer</Importer>
+      <Processor>SoundEffectProcessor</Processor>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Fonts\menu.spritefont">

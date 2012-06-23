@@ -2,8 +2,10 @@
 using System.Collections.Generic;
 using System.Text;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using Microsoft.Xna.Framework.Media;
 using Slaysher.Game.Physics.Collisions;
 
 namespace Slaysher.Game.GUI.Menu
@@ -17,11 +19,14 @@ namespace Slaysher.Game.GUI.Menu
         public static Color normal = Color.White;
         public static Color highlight = Color.Orange;
 
+        private SoundEffect _hoverSong;
+
         private string[] _menuItems;
         private SpriteBatch _spriteBatch;
         private SpriteFont _spriteFont;
 
         private int _selectedMenuItem = -1;
+        private int _lastSelected = -1;
 
         private Vector2 _startLocation;
         private List<MenuEntry> _entries;
@@ -49,6 +54,7 @@ namespace Slaysher.Game.GUI.Menu
             base.LoadContent();
 
             _spriteFont = Engine.Content.Load<SpriteFont>("Fonts/menu");
+            _hoverSong = Engine.Content.Load<SoundEffect>("Sounds/GUI/btnHover");
 
             for (int i = 0; i < _menuItems.Length; i++)
             {
@@ -74,6 +80,11 @@ namespace Slaysher.Game.GUI.Menu
                     _selectedMenuItem = i;
                     color = highlight;
                     foundMatch = true;
+                    if (_lastSelected != _selectedMenuItem)
+                    {
+                        _lastSelected = _selectedMenuItem;
+                        _hoverSong.Play();
+                    }
                 }
                 else
                 {

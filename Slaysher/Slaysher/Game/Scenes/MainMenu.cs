@@ -17,6 +17,7 @@ namespace Slaysher.Game.Scenes
         {
             get { return "mainMenu"; }
         }
+
         public Engine Engine { get; set; }
 
         private string[] _menuItems;
@@ -29,7 +30,7 @@ namespace Slaysher.Game.Scenes
             Engine = engine;
 
             _selectedItem = 0;
-            _menuItems = new string[] { "Box Test", "Patern Test", "Servers", "Options", "Exit Game" };
+            _menuItems = new string[] { "Box Test", "Pattern Test", "Game Test", "Servers", "Options", "Exit Game" };
         }
 
         private MenuComponent createMenuComponent()
@@ -49,9 +50,6 @@ namespace Slaysher.Game.Scenes
             Engine.Components.Add(menu);
 
             menu.MouseClick += mouse_MouseClick;
-
-            menu.Enabled = true;
-            menu.Visible = true;
 
             Song mainMenuMusic = Engine.Content.Load<Song>("Sounds/Music/rainbow");
             MediaPlayer.Play(mainMenuMusic);
@@ -77,14 +75,26 @@ namespace Slaysher.Game.Scenes
                 case "Exit Game":
                     Engine.Exit();
                     break;
-                case "Patern Test":
-
+                case "Pattern Test":
+                    break;
+                case "Game Test":
+                    Engine.SwitchScene("gameScene");
                     break;
             }
         }
 
         public void Render(Microsoft.Xna.Framework.GameTime time)
         {
+            if (Engine.GameState == GameState.GAME)
+            {
+                menu.Enabled = true;
+                menu.Visible = true;
+            }
+            else
+            {
+                menu.Enabled = false;
+                menu.Visible = false;
+            }
         }
 
         public void Update(Microsoft.Xna.Framework.GameTime time)
@@ -97,6 +107,8 @@ namespace Slaysher.Game.Scenes
             Engine.Components.Remove(menu);
             MediaPlayer.IsRepeating = false;
             MediaPlayer.Pause();
+
+            Engine.Content.Unload();
         }
     }
 }

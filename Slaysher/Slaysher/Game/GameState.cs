@@ -2,6 +2,6 @@
 {
     public enum GameState
     {
-        GAME, MENU
+        GAME, MENU, LOGIN
     }
 }

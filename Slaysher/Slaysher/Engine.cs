@@ -1,6 +1,6 @@
 using System;
-using System.Reflection;
 using System.Collections.Generic;
+using System.Reflection;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Graphics;
@@ -22,6 +22,10 @@ namespace Slaysher
         private IScene _activeScene;
         private bool _sceneLoaded;
         private string _sceneSwitchName;
+
+        public string Username { get; set; }
+
+        public string Password { get; set; }
 
         public GameState GameState { get; set; }
 
@@ -73,7 +77,7 @@ namespace Slaysher
             {
                 if (typeIsScene(type))
                 {
-                    IScene scene = (IScene) Activator.CreateInstance(type, this);
+                    IScene scene = (IScene)Activator.CreateInstance(type, this);
                     AddScene(scene);
                 }
             }
@@ -84,7 +88,11 @@ namespace Slaysher
             loadScenes();
 
             //Switch to chosen Scene
+#if DEBUG
+            SwitchScene("mainMenu");
+#else
             SwitchScene("splashScreen");
+#endif
 
             GameState = GameState.GAME;
             GUIManager.LoadScene();
@@ -184,7 +192,7 @@ namespace Slaysher
             _sceneLoaded = true;
         }
 
-        private bool InitGraphicsMode(int iWidth, int iHeight, bool bFullScreen)
+        public bool InitGraphicsMode(int iWidth, int iHeight, bool bFullScreen)
         {
             // If we aren't using a full screen mode, the height and width of the window can
             // be set to anything equal to or smaller than the actual screen size.

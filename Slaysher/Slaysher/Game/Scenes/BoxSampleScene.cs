@@ -11,6 +11,7 @@ namespace Slaysher.Game.Scenes
         {
             get { return "boxTest"; }
         }
+
         public Engine Engine { get; set; }
 
         private Camera _camera = new Camera();

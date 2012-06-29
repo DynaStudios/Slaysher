@@ -4,4 +4,4 @@ obj
 
 # mstest test results
 TestResults
-Slaysher.suo
+*.suo

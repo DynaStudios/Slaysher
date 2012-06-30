@@ -20,13 +20,13 @@ namespace SlaysherServer.Network.Handler
         static PacketHandlers()
         {
             m_Handlers = new PacketHandler[0x100];
+
+            Register(PacketType.Handshake, 4, 0, ReadHandshake);
         }
 
         public static void Register(PacketType packetID, int length, int minimumLength, OnPacketReceive onReceive)
         {
             m_Handlers[(byte)packetID] = new PacketHandler(packetID, length, minimumLength, onReceive);
-
-            Register(PacketType.Handshake, 4, 0, ReadHandshake);
         }
 
         public static PacketHandler GetHandler(PacketType packetID)
@@ -41,6 +41,7 @@ namespace SlaysherServer.Network.Handler
 
             if (!reader.Failed)
             {
+                Client.HandleHandshake(client, hp);
             }
         }
     }

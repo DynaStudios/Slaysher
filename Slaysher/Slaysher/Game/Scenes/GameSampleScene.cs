@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Threading;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
@@ -16,6 +17,8 @@ namespace Slaysher.Game.Scenes
 
         public Engine Engine { get; set; }
 
+        private SpriteBatch _spriteBatch;
+
         private Dictionary<int, Pattern> _patterns;
         private Dictionary<int, GameObject> _gameObjects;
 
@@ -23,6 +26,9 @@ namespace Slaysher.Game.Scenes
 
         private Camera _tempCamera = new Camera();
         private Model _patternBaseModel;
+
+        private Texture2D _loadingScreen;
+        private volatile bool _contentLoaded;
 
         public GameSampleScene(Engine engine)
         {
@@ -32,7 +38,7 @@ namespace Slaysher.Game.Scenes
             _gameObjects = new Dictionary<int, GameObject>();
         }
 
-        public void LoadScene()
+        private void AsyncLoadScene()
         {
             _worldMatrix = Matrix.Identity;
             _patternBaseModel = Engine.Content.Load<Model>("Models/Pattern/Pattern");
@@ -41,13 +47,32 @@ namespace Slaysher.Game.Scenes
             Pattern testPattern2 = new Pattern(new Vector3(50, 0, 0));
             _patterns.Add(1, testPattern);
             _patterns.Add(2, testPattern2);
+
+            Thread.Sleep(2000);
+            _contentLoaded = true;
+        }
+
+        public void LoadScene()
+        {
+            _spriteBatch = new SpriteBatch(Engine.GraphicsDevice);
+            _loadingScreen = Engine.Content.Load<Texture2D>("Images/Game/loadingScreen");
+            ThreadPool.QueueUserWorkItem(delegate { AsyncLoadScene(); });
         }
 
         public void Render(GameTime time)
         {
-            foreach (KeyValuePair<int, Pattern> key in _patterns)
+            if (_contentLoaded)
             {
-                key.Value.Draw(_patternBaseModel, _worldMatrix, _tempCamera);
+                foreach (KeyValuePair<int, Pattern> key in _patterns)
+                {
+                    key.Value.Draw(_patternBaseModel, _worldMatrix, _tempCamera);
+                }
+            }
+            else
+            {
+                _spriteBatch.Begin();
+                _spriteBatch.Draw(_loadingScreen, new Vector2(0, 0), Color.White);
+                _spriteBatch.End();
             }
         }
 

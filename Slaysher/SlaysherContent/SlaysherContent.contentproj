@@ -92,6 +92,13 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Models\Pattern\BasePattern.FBX">
+      <Name>BasePattern</Name>
+      <Importer>FbxImporter</Importer>
+      <Processor>ModelProcessor</Processor>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
     <Compile Include="Models\Pattern\Pattern.FBX">
       <Name>Pattern</Name>
       <Importer>FbxImporter</Importer>

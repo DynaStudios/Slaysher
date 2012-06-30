@@ -68,7 +68,7 @@ namespace Slaysher.Game.Scenes
                 _cubeWorld *= Matrix.CreateTranslation(_cubeWorld.Right);
             }
 
-            _camera.Update();
+            //_camera.Update();
         }
 
         public void UnloadScene()

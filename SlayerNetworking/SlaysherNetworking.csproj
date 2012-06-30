@@ -32,6 +32,9 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="mysql.data">
+      <HintPath>..\SlaysherServer\libs\mysql.data.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
@@ -41,6 +44,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Game\World\Objects\GameObject.cs" />
     <Compile Include="Packets\HandshakePacket.cs" />
     <Compile Include="Packets\Packet.cs" />
     <Compile Include="Packets\PacketMap.cs" />

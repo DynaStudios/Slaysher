@@ -1,6 +1,6 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 11.00
-# Visual Studio 2010
+# Visual C# Express 2010
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Slaysher", "Slaysher\Slaysher\Slaysher.csproj", "{77B59488-A518-4F41-B292-400C8CFAC22D}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SlaysherContent", "Slaysher\SlaysherContent\SlaysherContent.contentproj", "{A9A12F35-A15C-4628-84AC-4554521D54A0}"

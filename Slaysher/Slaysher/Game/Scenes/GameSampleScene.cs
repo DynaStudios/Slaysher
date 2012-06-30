@@ -1,9 +1,13 @@
 ﻿using System.Collections.Generic;
+
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+
 using Slaysher.Game.World.Objects;
 using Slaysher.Graphics.Camera;
+
+using SlaysherNetworking.Game.World.Objects;
 
 namespace Slaysher.Game.Scenes
 {

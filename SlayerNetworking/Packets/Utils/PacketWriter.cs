@@ -74,6 +74,25 @@ namespace SlaysherNetworking.Packets.Utils
             return pw;
         }
 
+        public static void ReleaseInstance(PacketWriter pw)
+        {
+            if (!_Pool.TryPop(out pw))
+            {
+                try
+                {
+                    using (StreamWriter op = new StreamWriter("neterr.log", true))
+                    {
+                        op.WriteLine("{0}\tInstance pool contains writer", DateTime.Now);
+                        op.WriteLine();
+                    }
+                }
+                catch
+                {
+                    Console.WriteLine("net error");
+                }
+            }
+        }
+
         public void Write(byte data)
         {
             _Stream.WriteByte(data);

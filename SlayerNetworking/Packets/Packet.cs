@@ -67,6 +67,24 @@ namespace SlaysherNetworking.Packets
         }
 
         //Add Release Methods
+        public void Release()
+        {
+            if (!Shared)
+            {
+                PacketWriter.ReleaseInstance(Writer);
+                _buffer = null;
+            }
+            else
+            {
+                int shares = Interlocked.Decrement(ref _sharesNum);
+
+                if (shares == 0)
+                {
+                    PacketWriter.ReleaseInstance(Writer);
+                    _buffer = null;
+                }
+            }
+        }
 
         public byte[] GetBuffer()
         {

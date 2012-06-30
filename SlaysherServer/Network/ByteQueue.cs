@@ -1,123 +1,147 @@
 ﻿using System;
-using System.Text;
 
 namespace SlaysherServer.Network
 {
     public class ByteQueue
     {
-        private int _mHead;
-        private int _mTail;
-        private int _mSize;
+        private int m_Head;
+        private int m_Tail;
+        private int m_Size;
 
-        private byte[] _mBuffer;
+        private byte[] m_Buffer;
 
-        public int Length { get { return _mSize; } }
+        public int Length { get { return m_Size; } }
 
         public byte[] UnderlyingBuffer
         {
-            get { return _mBuffer; }
-            set { _mBuffer = value; }
+            get { return m_Buffer; }
+            set { m_Buffer = value; }
         }
 
         public int Head
         {
-            get { return _mHead; }
+            get { return m_Head; }
         }
 
         public int Tail
         {
-            get { return _mTail; }
+            get { return m_Tail; }
         }
 
         public int Size
         {
-            get { return _mSize; }
+            get { return m_Size; }
         }
 
         public ByteQueue()
         {
-            _mBuffer = new byte[2048];
+            m_Buffer = new byte[2048];
         }
 
         public void Clear()
         {
-            _mHead = 0;
-            _mTail = 0;
-            _mSize = 0;
+            m_Head = 0;
+            m_Tail = 0;
+            m_Size = 0;
         }
 
         public void SetCapacity(int capacity, bool alwaysNewBuffer)
         {
             if (!alwaysNewBuffer)
             {
-                if (_mBuffer == null || _mBuffer.Length < capacity)
-                    _mBuffer = new byte[capacity];
+                if (m_Buffer == null || m_Buffer.Length < capacity)
+                    m_Buffer = new byte[capacity];
             }
             else
             {
-                var newBuffer = new byte[capacity];
+                byte[] newBuffer = new byte[capacity];
 
-                if (_mSize > 0)
+                if (m_Size > 0)
                 {
-                    if (_mHead < _mTail)
+                    if (m_Head < m_Tail)
                     {
-                        Buffer.BlockCopy(_mBuffer, _mHead, newBuffer, 0, _mSize);
+                        Buffer.BlockCopy(m_Buffer, m_Head, newBuffer, 0, m_Size);
                     }
                     else
                     {
-                        Buffer.BlockCopy(_mBuffer, _mHead, newBuffer, 0, _mBuffer.Length - _mHead);
-                        Buffer.BlockCopy(_mBuffer, 0, newBuffer, _mBuffer.Length - _mHead, _mTail);
+                        Buffer.BlockCopy(m_Buffer, m_Head, newBuffer, 0, m_Buffer.Length - m_Head);
+                        Buffer.BlockCopy(m_Buffer, 0, newBuffer, m_Buffer.Length - m_Head, m_Tail);
                     }
                 }
 
-                _mBuffer = newBuffer;
+                m_Buffer = newBuffer;
             }
 
-            _mHead = 0;
-            _mTail = _mSize;
+            m_Head = 0;
+            m_Tail = m_Size;
         }
 
-        public string[] GetCommands()
+        public byte GetPacketID()
         {
-            string[] line = Encoding.UTF8.GetString(_mBuffer).Split('\n');
+            if (m_Size >= 1)
+                return m_Buffer[m_Head];
 
-            return line;
+            return 0xF0;
+        }
+
+        public int CopyAll(byte[] buffer)
+        {
+            if (m_Head < m_Tail)
+            {
+                Buffer.BlockCopy(m_Buffer, m_Head, buffer, 0, m_Size);
+            }
+            else
+            {
+                int rightLength = (m_Buffer.Length - m_Head);
+
+                if (rightLength >= m_Size)
+                {
+                    Buffer.BlockCopy(m_Buffer, m_Head, buffer, 0, m_Size);
+                }
+                else
+                {
+                    Buffer.BlockCopy(m_Buffer, m_Head, buffer, 0, rightLength);
+                    Buffer.BlockCopy(m_Buffer, 0, buffer, 0 + rightLength, m_Size - rightLength);
+                }
+            }
+
+            return m_Size;
         }
 
         public int Dequeue(byte[] buffer, int offset, int size)
         {
-            if (size > _mSize)
-                size = _mSize;
+            if (size > m_Size)
+                size = m_Size;
 
             if (size == 0)
                 return 0;
 
-            if (_mHead < _mTail)
+            if (m_Head < m_Tail)
             {
-                Buffer.BlockCopy(_mBuffer, _mHead, buffer, offset, size);
+                Buffer.BlockCopy(m_Buffer, m_Head, buffer, offset, size);
             }
             else
             {
-                int rightLength = (_mBuffer.Length - _mHead);
+                int rightLength = (m_Buffer.Length - m_Head);
 
                 if (rightLength >= size)
                 {
-                    Buffer.BlockCopy(_mBuffer, _mHead, buffer, offset, size);
+                    Buffer.BlockCopy(m_Buffer, m_Head, buffer, offset, size);
                 }
                 else
                 {
-                    Buffer.BlockCopy(_mBuffer, _mHead, buffer, offset, rightLength);
-                    Buffer.BlockCopy(_mBuffer, 0, buffer, offset + rightLength, size - rightLength);
+                    Buffer.BlockCopy(m_Buffer, m_Head, buffer, offset, rightLength);
+                    Buffer.BlockCopy(m_Buffer, 0, buffer, offset + rightLength, size - rightLength);
                 }
             }
 
-            _mHead = (_mHead + size) % _mBuffer.Length;
-            _mSize -= size;
+            m_Head = (m_Head + size) % m_Buffer.Length;
+            m_Size -= size;
 
-            if (_mSize == 0)
+            if (m_Size == 0)
             {
-                _mHead = 0;
-                _mTail = 0;
+                m_Head = 0;
+                m_Tail = 0;
             }
 
             return size;
@@ -125,30 +149,30 @@ namespace SlaysherServer.Network
 
         public void Enqueue(byte[] buffer, int offset, int size)
         {
-            if ((_mSize + size) > _mBuffer.Length)
-                SetCapacity((_mSize + size + 2047) & ~2047, true);
+            if ((m_Size + size) > m_Buffer.Length)
+                SetCapacity((m_Size + size + 2047) & ~2047, true);
 
-            if (_mHead < _mTail)
+            if (m_Head < m_Tail)
             {
-                int rightLength = (_mBuffer.Length - _mTail);
+                int rightLength = (m_Buffer.Length - m_Tail);
 
                 if (rightLength >= size)
                 {
-                    Buffer.BlockCopy(buffer, offset, _mBuffer, _mTail, size);
+                    Buffer.BlockCopy(buffer, offset, m_Buffer, m_Tail, size);
                 }
                 else
                 {
-                    Buffer.BlockCopy(buffer, offset, _mBuffer, _mTail, rightLength);
-                    Buffer.BlockCopy(buffer, offset + rightLength, _mBuffer, 0, size - rightLength);
+                    Buffer.BlockCopy(buffer, offset, m_Buffer, m_Tail, rightLength);
+                    Buffer.BlockCopy(buffer, offset + rightLength, m_Buffer, 0, size - rightLength);
                 }
             }
             else
             {
-                Buffer.BlockCopy(buffer, offset, _mBuffer, _mTail, size);
+                Buffer.BlockCopy(buffer, offset, m_Buffer, m_Tail, size);
             }
 
-            _mTail = (_mTail + size) % _mBuffer.Length;
-            _mSize += size;
+            m_Tail = (m_Tail + size) % m_Buffer.Length;
+            m_Size += size;
         }
     }
 }

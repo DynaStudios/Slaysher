@@ -1,5 +1,11 @@
-Content\Cube.xnb
 Content\Fonts\Main.xnb
 Content\Images\Game\dyna_splash.xnb
 Content\Fonts\menu.xnb
+Content\Sounds\GUI\btnHover.xnb
+Content\Sounds\Splash\splashSound.xnb
+Content\Sounds\Music\rainbow.xnb
+Content\Models\Pattern\BasePattern.xnb
+Content\Models\Pattern\Pattern.xnb
+Content\Sounds\Splash\splashSound.wma
+Content\Sounds\Music\rainbow.wma
 Content\Images\Game\Arrow.cur

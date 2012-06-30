@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Net.Sockets;
 using System.Threading;
-using SlaysherNetworking.Packets;
 using SlaysherServer.Network;
 
 namespace SlaysherServer.Game.Models
@@ -73,11 +72,6 @@ namespace SlaysherServer.Game.Models
             }
 
             return _processedBuffer;
-        }
-
-        public static void HandleHandshake(Client client, HandshakePacket packet)
-        {
-            //Hier können nun Sachen mit dem Paket Inhalt bearbeitet werden
         }
     }
 }

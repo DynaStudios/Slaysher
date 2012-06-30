@@ -140,8 +140,9 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\SlaysherContent\SlaysherContent.contentproj">
-      <Name>SlaysherContent</Name>
+      <Name>SlaysherContent %28Content%29</Name>
       <XnaReferenceType>Content</XnaReferenceType>
+      <Project>{A9A12F35-A15C-4628-84AC-4554521D54A0}</Project>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

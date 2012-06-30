@@ -68,10 +68,8 @@ namespace Slaysher
             return false;
         }
 
-        private void loadScenes()
+        public void LoadScenesFromAssembly(Assembly assembly)
         {
-            Assembly assembly = Assembly.GetAssembly(typeof(Engine));
-
             Type[] types = assembly.GetTypes();
             foreach (Type type in types)
             {
@@ -85,7 +83,7 @@ namespace Slaysher
 
         protected override void Initialize()
         {
-            loadScenes();
+            LoadScenesFromAssembly(Assembly.GetExecutingAssembly());
 
             //Switch to chosen Scene
 #if DEBUG

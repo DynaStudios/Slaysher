@@ -10,16 +10,17 @@ namespace SlaysherServer.Game.Models
     public partial class Client
     {
         public ConcurrentQueue<Packet> PacketsToBeSent = new ConcurrentQueue<Packet>();
-        private int _timesEnqueuedForSend;
+        private int _TimesEnqueuedForSend;
 
-        public void SendPacket(Packet packet)
+        internal void SendPacket(Packet iPacket)
         {
+            Packet packet = iPacket as Packet;
             if (!Running)
                 return;
 
             PacketsToBeSent.Enqueue(packet);
 
-            int newValue = Interlocked.Increment(ref _timesEnqueuedForSend);
+            int newValue = Interlocked.Increment(ref _TimesEnqueuedForSend);
 
             if (newValue == 1)
             {
@@ -27,6 +28,8 @@ namespace SlaysherServer.Game.Models
             }
 
             _server.NetworkSignal.Set();
+
+            //Logger.Log(Chraft.LogLevel.Info, "Sending packet: {0}", packet.GetPacketType().ToString());
         }
 
         private void Send_Completed(object sender, SocketAsyncEventArgs e)
@@ -51,6 +54,20 @@ namespace SlaysherServer.Game.Models
              */
         }
 
+        private void Send_Async(byte[] data)
+        {
+            if (!Running || !_socket.Connected)
+            {
+                //DisposeSendSystem();
+                return;
+            }
+
+            _sendSocketEvent.SetBuffer(data, 0, data.Length);
+            bool pending = _socket.SendAsync(_sendSocketEvent);
+            if (!pending)
+                Send_Completed(null, _sendSocketEvent);
+        }
+
         internal void SendStart()
         {
             if (!Running || !_socket.Connected)
@@ -60,39 +77,41 @@ namespace SlaysherServer.Game.Models
             }
 
             Packet packet = null;
-            /*try
+            try
             {
-                var byteQueue = new ByteQueue();
+                ByteQueue byteQueue = new ByteQueue();
                 int length = 0;
                 while (!PacketsToBeSent.IsEmpty && length <= 1024)
                 {
                     if (!PacketsToBeSent.TryDequeue(out packet))
                     {
-                        Interlocked.Exchange(ref _timesEnqueuedForSend, 0);
+                        Interlocked.Exchange(ref _TimesEnqueuedForSend, 0);
                         return;
                     }
 
-                    packet.Write();
+                    if (!packet.Shared)
+                        packet.Write();
 
-                    byte[] packetBuffer = packet.Stream.GetBuffer();
+                    byte[] packetBuffer = packet.GetBuffer();
                     length += packetBuffer.Length;
 
                     byteQueue.Enqueue(packetBuffer, 0, packetBuffer.Length);
+                    packet.Release();
                 }
 
                 if (byteQueue.Length > 0)
                 {
-                    var data = new byte[length];
+                    byte[] data = new byte[length];
                     byteQueue.Dequeue(data, 0, data.Length);
-                    SendAsync(data);
+                    Send_Async(data);
                 }
                 else
                 {
-                    Interlocked.Exchange(ref _timesEnqueuedForSend, 0);
+                    Interlocked.Exchange(ref _TimesEnqueuedForSend, 0);
 
                     if (!PacketsToBeSent.IsEmpty)
                     {
-                        int newValue = Interlocked.Increment(ref _timesEnqueuedForSend);
+                        int newValue = Interlocked.Increment(ref _TimesEnqueuedForSend);
 
                         if (newValue == 1)
                         {
@@ -104,11 +123,14 @@ namespace SlaysherServer.Game.Models
             }
             catch (Exception e)
             {
+                //MarkToDispose();
                 //DisposeSendSystem();
+                //if (packet != null)
+                //Logger.Log(LogLevel.Error, "Sending packet: {0}", packet.ToString());
+                //Logger.Log(LogLevel.Error, e.ToString());
 
                 // TODO: log something?
             }
-             */
         }
 
         private void SendAsync(byte[] data)

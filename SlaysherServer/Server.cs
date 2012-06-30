@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using SlaysherNetworking.Packets;
+using SlaysherNetworking.Packets.Utils;
 using SlaysherServer.Game.Models;
 using SlaysherServer.Network;
 using SlaysherServer.Network.Events;
@@ -38,6 +39,8 @@ namespace SlaysherServer
         public AutoResetEvent NetworkSignal = new AutoResetEvent(true);
         private int _asyncAccepts;
 
+        private Timer _globalTick;
+
         //Server own Eventhandler
         public event EventHandler<TcpEventArgs> BeforeAccept;
 
@@ -62,10 +65,17 @@ namespace SlaysherServer
                 Client.SendSocketEventPool.Push(new SocketAsyncEventArgs());
             }
 
+            _globalTick = new Timer(GlobalTickProc, null, 50, 50);
+
             while (_running)
             {
                 RunProc();
             }
+        }
+
+        private void GlobalTickProc(object state)
+        {
+            //Console.WriteLine("World Tick!");
         }
 
         //Eventhandler
@@ -82,6 +92,8 @@ namespace SlaysherServer
 
             _listener.Bind(endPoint);
             _listener.Listen(5);
+
+            Console.WriteLine("Started Server and Listening...");
 
             RunNetwork();
 
@@ -151,29 +163,119 @@ namespace SlaysherServer
 
                 Interlocked.Exchange(ref client.TimesEnqueuedForRecv, 0);
                 ByteQueue bufferToProcess = client.GetBufferToProcess();
-                //Do not touch :>
-                /*
-                string[] commands = bufferToProcess.GetCommands();
 
-                if (commands.Length > 1)
+                int length = client.FragPackets.Size + bufferToProcess.Size;
+                while (length > 0)
                 {
-                    for (int u = 0; u < commands.Length - 1; u++)
+                    byte packetType = 0;
+
+                    if (client.FragPackets.Size > 0)
+                        packetType = client.FragPackets.GetPacketID();
+                    else
+                        packetType = bufferToProcess.GetPacketID();
+
+                    //client.Logger.Log(Chraft.LogLevel.Info, "Reading packet {0}", ((PacketType)packetType).ToString());
+
+                    PacketHandler handler = PacketHandlers.GetHandler((PacketType)packetType);
+
+                    if (handler == null)
                     {
-                        int index = commands[u].IndexOf(' ');
-                        var myEnum = (PacketType)Enum.Parse(typeof(PacketType), commands[u].Substring(0, index));
+                        byte[] unhandledPacketData = GetBufferToBeRead(bufferToProcess, client, length);
 
-                        PacketHandler handler = PacketHandlers.GetHandler(myEnum);
+                        length = 0;
+                    }
+                    else if (handler.Length == 0)
+                    {
+                        byte[] data = GetBufferToBeRead(bufferToProcess, client, length);
 
-                        if (handler != null)
-                            handler.OnReceive(client, Encoding.UTF8.GetBytes(commands[u]));
+                        if (length >= handler.MinimumLength)
+                        {
+                            PacketReader reader = new PacketReader(data, length);
+
+                            handler.OnReceive(client, reader);
+
+                            // If we failed it's because the packet isn't complete
+                            if (reader.Failed)
+                            {
+                                EnqueueFragment(client, data);
+                                length = 0;
+                            }
+                            else
+                            {
+                                bufferToProcess.Enqueue(data, reader.Index, data.Length - reader.Index);
+                                length = bufferToProcess.Length;
+                            }
+                        }
                         else
                         {
-                            //Unknown Command
+                            EnqueueFragment(client, data);
+                            length = 0;
                         }
                     }
+                    else if (length >= handler.Length)
+                    {
+                        byte[] data = GetBufferToBeRead(bufferToProcess, client, handler.Length);
+
+                        PacketReader reader = new PacketReader(data, handler.Length);
+
+                        handler.OnReceive(client, reader);
+
+                        // If we failed it's because the packet is wrong
+                        if (reader.Failed)
+                        {
+                            //client.MarkToDispose();
+                            length = 0;
+                        }
+                        else
+                            length = bufferToProcess.Length;
+                    }
+                    else
+                    {
+                        byte[] data = GetBufferToBeRead(bufferToProcess, client, length);
+                        EnqueueFragment(client, data);
+                        length = 0;
+                    }
                 }
-                 */
             });
+        }
+
+        private static void EnqueueFragment(Client client, byte[] data)
+        {
+            int fragPacketWaiting = client.FragPackets.Length;
+            // We are waiting for more data than an uncompressed chunk, it's not possible
+            if (fragPacketWaiting > 81920)
+            {
+                //client.Kick("Too much pending data to be read");
+            }
+            else
+            {
+                client.FragPackets.Enqueue(data, 0, data.Length);
+            }
+        }
+
+        private static byte[] GetBufferToBeRead(ByteQueue processedBuffer, Client client, int length)
+        {
+            int availableData = client.FragPackets.Size + processedBuffer.Size;
+
+            if (length > availableData)
+                return null;
+
+            int fromFrag;
+
+            byte[] data = new byte[length];
+
+            if (length >= client.FragPackets.Size)
+                fromFrag = client.FragPackets.Size;
+            else
+                fromFrag = length;
+
+            client.FragPackets.Dequeue(data, 0, fromFrag);
+
+            int fromProcessed = length - fromFrag;
+
+            processedBuffer.Dequeue(data, fromFrag, fromProcessed);
+
+            return data;
         }
 
         public static void ProcessSendQueue()
@@ -200,6 +302,7 @@ namespace SlaysherServer
         {
             if (OnBeforeAccept(e.AcceptSocket))
             {
+                Console.WriteLine("Incoming Connection");
                 Interlocked.Increment(ref _nextClientId);
                 Client c = new Client(_nextClientId, this, e.AcceptSocket);
 

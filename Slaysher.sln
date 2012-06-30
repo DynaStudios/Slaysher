@@ -3,9 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 11.00
 # Visual Studio 2010
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Slaysher", "Slaysher\Slaysher\Slaysher.csproj", "{77B59488-A518-4F41-B292-400C8CFAC22D}"
 EndProject
-Project("{96E2B04D-8817-42C6-938A-82C39BA4D311}") = "SlaysherContent", "Slaysher\SlaysherContent\SlaysherContent.contentproj", "{A9A12F35-A15C-4628-84AC-4554521D54A0}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Launcher", "Launcher\Launcher.csproj", "{D0071B5F-31AA-429E-8040-48A0018695EA}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SlaysherContent", "Slaysher\SlaysherContent\SlaysherContent.contentproj", "{A9A12F35-A15C-4628-84AC-4554521D54A0}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -19,10 +17,6 @@ Global
 		{77B59488-A518-4F41-B292-400C8CFAC22D}.Release|x86.Build.0 = Release|x86
 		{A9A12F35-A15C-4628-84AC-4554521D54A0}.Debug|x86.ActiveCfg = Debug|x86
 		{A9A12F35-A15C-4628-84AC-4554521D54A0}.Release|x86.ActiveCfg = Release|x86
-		{D0071B5F-31AA-429E-8040-48A0018695EA}.Debug|x86.ActiveCfg = Debug|x86
-		{D0071B5F-31AA-429E-8040-48A0018695EA}.Debug|x86.Build.0 = Debug|x86
-		{D0071B5F-31AA-429E-8040-48A0018695EA}.Release|x86.ActiveCfg = Release|x86
-		{D0071B5F-31AA-429E-8040-48A0018695EA}.Release|x86.Build.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

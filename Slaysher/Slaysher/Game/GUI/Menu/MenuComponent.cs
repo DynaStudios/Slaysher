@@ -73,7 +73,7 @@ namespace Slaysher.Game.GUI.Menu
             {
                 Color color;
 
-                if (!foundMatch && AABB.Intersect(_entries[i], _mouseBox))
+                if (!foundMatch && Box.Intersect(_entries[i], _mouseBox))
                 {
                     //Highlight
                     _selectedMenuItem = i;

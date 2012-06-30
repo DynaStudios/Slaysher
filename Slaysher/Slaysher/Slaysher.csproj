@@ -125,7 +125,6 @@
     <Compile Include="Game\Scenes\IScene.cs" />
     <Compile Include="Game\Scenes\MainMenu.cs" />
     <Compile Include="Game\Scenes\SplashScreen.cs" />
-    <Compile Include="Game\World\Objects\GameObject.cs" />
     <Compile Include="Game\World\Objects\Pattern.cs" />
     <Compile Include="Graphics\Camera\Camera.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -139,9 +138,14 @@
     <Content Include="Libs\JigLibX.dll" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\SlayerNetworking\SlaysherNetworking.csproj">
+      <Project>{E9611687-61E6-4684-A05B-D9EDE1F9248F}</Project>
+      <Name>SlaysherNetworking</Name>
+    </ProjectReference>
     <ProjectReference Include="..\SlaysherContent\SlaysherContent.contentproj">
-      <Name>SlaysherContent</Name>
+      <Name>SlaysherContent %28Content%29</Name>
       <XnaReferenceType>Content</XnaReferenceType>
+      <Project>{A9A12F35-A15C-4628-84AC-4554521D54A0}</Project>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

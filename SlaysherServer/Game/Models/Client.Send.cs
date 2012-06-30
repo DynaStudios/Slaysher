@@ -60,7 +60,7 @@ namespace SlaysherServer.Game.Models
             }
 
             Packet packet = null;
-            try
+            /*try
             {
                 var byteQueue = new ByteQueue();
                 int length = 0;
@@ -108,6 +108,7 @@ namespace SlaysherServer.Game.Models
 
                 // TODO: log something?
             }
+             */
         }
 
         private void SendAsync(byte[] data)

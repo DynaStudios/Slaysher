@@ -41,7 +41,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Packets\HandshakePacket.cs" />
     <Compile Include="Packets\Packet.cs" />
+    <Compile Include="Packets\PacketMap.cs" />
     <Compile Include="Packets\PacketType.cs" />
     <Compile Include="Packets\Utils\PacketReader.cs" />
     <Compile Include="Packets\Utils\PacketWriter.cs" />

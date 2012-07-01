@@ -19,7 +19,10 @@ namespace SlaysherNetworking.Packets
 
         private static Dictionary<Type, PacketType> _map = new Dictionary<Type, PacketType>
         {
-            { typeof(HandshakePacket), PacketType.Handshake }
+            { typeof(HandshakePacket), PacketType.Handshake },
+            { typeof(KickPacket), PacketType.Kick },
+            { typeof(KeepAlivePacket), PacketType.KeepAlive },
+            { typeof(PlayerPositionPacket), PacketType.PlayerPosition }
         };
 
         private readonly static ConcurrentDictionary<Type, PacketType> _concurrentMap = new ConcurrentDictionary<Type, PacketType>();

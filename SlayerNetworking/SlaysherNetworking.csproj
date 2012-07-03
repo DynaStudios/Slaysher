@@ -46,10 +46,14 @@
   <ItemGroup>
     <Compile Include="Game\World\Objects\GameObject.cs" />
     <Compile Include="Packets\HandshakePacket.cs" />
+    <Compile Include="Packets\KeepAlivePacket.cs" />
+    <Compile Include="Packets\KickPacket.cs" />
     <Compile Include="Packets\Packet.cs" />
     <Compile Include="Packets\PacketMap.cs" />
     <Compile Include="Packets\PacketType.cs" />
     <Compile Include="Packets\Utils\ByteQueue.cs" />
+    <Compile Include="Packets\PatternPacket.cs" />
+    <Compile Include="Packets\PlayerPositionPacket.cs" />
     <Compile Include="Packets\Utils\PacketReader.cs" />
     <Compile Include="Packets\Utils\PacketWriter.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

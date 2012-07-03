@@ -3,10 +3,9 @@ using System.Threading;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
-
 using Slaysher.Game.World.Objects;
 using Slaysher.Graphics.Camera;
-
+using Slaysher.Network;
 using SlaysherNetworking.Game.World.Objects;
 
 namespace Slaysher.Game.Scenes
@@ -33,16 +32,22 @@ namespace Slaysher.Game.Scenes
         private Texture2D _loadingScreen;
         private volatile bool _contentLoaded;
 
+        //Network Stuff
+        NetworkHandler _network;
+
         public GameSampleScene(Engine engine)
         {
             Engine = engine;
 
             _patterns = new Dictionary<int, Pattern>();
             _gameObjects = new Dictionary<int, GameObject>();
+            _network = new NetworkHandler();
         }
 
         private void AsyncLoadScene()
         {
+            _network.ConnectToServer("127.0.0.1", 25104);
+
             _worldMatrix = Matrix.Identity;
             _patternBaseModel = Engine.Content.Load<Model>("Models/Pattern/Pattern");
 

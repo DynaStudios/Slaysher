@@ -50,7 +50,6 @@
     <Compile Include="Game\Models\Client.Recv.cs" />
     <Compile Include="Game\Models\Client.Send.cs" />
     <Compile Include="Network\BufferPool.cs" />
-    <Compile Include="Network\ByteQueue.cs" />
     <Compile Include="Network\Events\TcpEventArgs.cs" />
     <Compile Include="Network\Handler\PacketHandler.cs" />
     <Compile Include="Network\Handler\PacketHandlers.cs" />

@@ -49,6 +49,7 @@
     <Compile Include="Packets\Packet.cs" />
     <Compile Include="Packets\PacketMap.cs" />
     <Compile Include="Packets\PacketType.cs" />
+    <Compile Include="Packets\Utils\ByteQueue.cs" />
     <Compile Include="Packets\Utils\PacketReader.cs" />
     <Compile Include="Packets\Utils\PacketWriter.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

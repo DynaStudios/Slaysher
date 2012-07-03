@@ -127,6 +127,7 @@
     <Compile Include="Game\Scenes\SplashScreen.cs" />
     <Compile Include="Game\World\Objects\Pattern.cs" />
     <Compile Include="Graphics\Camera\Camera.cs" />
+    <Compile Include="Network\NetworkHandler.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Engine.cs" />

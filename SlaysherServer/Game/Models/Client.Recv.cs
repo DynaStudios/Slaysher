@@ -1,6 +1,8 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Net.Sockets;
 using System.Threading;
+
 using SlaysherNetworking.Packets;
 using SlaysherServer.Network;
 
@@ -10,6 +12,7 @@ namespace SlaysherServer.Game.Models
     {
         public int TimesEnqueuedForRecv;
         private readonly object _queueSwapLock = new object();
+        private static List<PatternPacket> _pattern = _generateTestPattern();
 
         private void RecvStart()
         {
@@ -34,6 +37,7 @@ namespace SlaysherServer.Game.Models
             }
             catch
             {
+                //TODO:
                 //Yo Patrick you should really catch this shit!
             }
         }
@@ -75,9 +79,28 @@ namespace SlaysherServer.Game.Models
             return _processedBuffer;
         }
 
+        private static List<PatternPacket> _generateTestPattern()
+        {
+            List<PatternPacket> list = new List<PatternPacket>();
+            return list;
+        }
+
         public static void HandleHandshake(Client client, HandshakePacket packet)
         {
-            //Hier können nun Sachen mit dem Paket Inhalt bearbeitet werden
+            // check for baned users
+            // if (banlist.Contains(client)) {
+            //    client.SendPacket(new KickPacket() { message = "You'r BANNED!!!! Get lost!" };
+            //    return;
+            // }
+
+            client.SendPacket(packet);
+            foreach (PatternPacket pattern in _pattern)
+            {
+                client.SendPacket(pattern);
+            }
+            KeepAlivePacket keepAlive = new KeepAlivePacket();
+            keepAlive.timeStamp = DateTime.Now.Ticks;
+            client.SendPacket(keepAlive);
         }
     }
 }

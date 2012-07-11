@@ -4,6 +4,7 @@ namespace Slaysher.Game.Scenes
 {
     public interface IScene
     {
+        // prefered interface attribute over reflection property because it is enforcable
         string Name { get; }
 
         void LoadScene();

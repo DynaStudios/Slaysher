@@ -56,10 +56,12 @@ namespace Slaysher
         {
             if (type.IsClass)
             {
+                Type sceneType = typeof(IScene);
                 Type[] interfaces = type.GetInterfaces();
+
                 foreach (Type i in interfaces)
                 {
-                    if (i == typeof(IScene))
+                    if (sceneType == i)
                     {
                         return true;
                     }

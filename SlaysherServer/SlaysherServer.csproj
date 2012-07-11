@@ -8,7 +8,7 @@
     <ProjectGuid>{C710E616-8F85-45B5-8302-A679E58D8546}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>SlaysherServer</RootNamespace>
+    <RootNamespace>SlaysherNetworking</RootNamespace>
     <AssemblyName>SlaysherServer</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>

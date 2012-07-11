@@ -5,9 +5,9 @@ using System.Net.Sockets;
 using System.Threading;
 using System.Threading.Tasks;
 using Slaysher.Game.Scenes;
+using SlaysherNetworking.Network;
 using SlaysherNetworking.Packets;
 using SlaysherNetworking.Packets.Utils;
-using SlaysherServer.Network;
 
 namespace Slaysher.Network
 {

@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace SlaysherServer.Network
+namespace SlaysherNetworking.Network
 {
     public class ByteQueue
     {

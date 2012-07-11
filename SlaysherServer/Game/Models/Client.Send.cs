@@ -2,6 +2,7 @@
 using System.Collections.Concurrent;
 using System.Net.Sockets;
 using System.Threading;
+using SlaysherNetworking.Network;
 using SlaysherNetworking.Packets;
 using SlaysherServer.Network;
 

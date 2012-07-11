@@ -2,7 +2,7 @@
 
 namespace SlaysherNetworking.Packets
 {
-    class KeepAlivePacket : Packet
+    public class KeepAlivePacket : Packet
     {
         public long timeStamp;
 
@@ -17,5 +17,4 @@ namespace SlaysherNetworking.Packets
             Writer.Write(timeStamp);
         }
     }
-
 }

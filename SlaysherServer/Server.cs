@@ -47,6 +47,8 @@ namespace SlaysherServer
         public Server()
         {
             //Network Setup
+            PacketMap.Initialize();
+
             _listener = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
 
             _acceptEventArgs = new SocketAsyncEventArgs();
@@ -176,6 +178,7 @@ namespace SlaysherServer
 
                     //client.Logger.Log(Chraft.LogLevel.Info, "Reading packet {0}", ((PacketType)packetType).ToString());
 
+                    Console.WriteLine("Try to resolve packet with id: " + packetType);
                     PacketHandler handler = PacketHandlers.GetHandler((PacketType)packetType);
 
                     if (handler == null)

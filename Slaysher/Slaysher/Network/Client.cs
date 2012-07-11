@@ -51,6 +51,7 @@ namespace Slaysher.Network
         public Client(GameSampleScene gameScene)
         {
             GameScene = gameScene;
+            PacketMap.Initialize();
 
             _userName = gameScene.Engine.Username;
             _socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
@@ -80,6 +81,8 @@ namespace Slaysher.Network
             Task.Factory.StartNew(RecvPacket);
 
             //TODO: Send Handshake Packet here
+            HandshakePacket handshake = new HandshakePacket(_userName);
+            SendPacket(handshake);
         }
 
         private void SendPacket(Packet packet)
@@ -350,6 +353,7 @@ namespace Slaysher.Network
         internal static void HandleHandshake(Client client, HandshakePacket hp)
         {
             //Handle Handshake
+            Console.WriteLine("Received Handshake Packet back from Server :))");
         }
     }
 }

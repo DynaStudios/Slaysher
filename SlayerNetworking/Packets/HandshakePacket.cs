@@ -8,17 +8,24 @@ namespace SlaysherNetworking.Packets
 {
     public class HandshakePacket : Packet
     {
-        public int UserId { get; set; }
+        public string Username { get; set; }
+
+        public HandshakePacket() { }
+
+        public HandshakePacket(string username)
+        {
+            Username = username;
+        }
 
         public override void Read(PacketReader reader)
         {
-            UserId = reader.ReadInt();
+            Username = reader.ReadString16(16);
         }
 
         public override void Write()
         {
             SetCapacity();
-            Writer.Write(UserId);
+            Writer.Write(Username);
         }
     }
 }

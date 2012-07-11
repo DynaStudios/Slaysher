@@ -36,11 +36,14 @@ namespace SlaysherServer.Network.Handler
 
         public static void ReadHandshake(Client client, PacketReader reader)
         {
+            Console.WriteLine("Received Handshake");
+
             HandshakePacket hp = new HandshakePacket();
             hp.Read(reader);
 
             if (!reader.Failed)
             {
+                Console.WriteLine("User is: " + hp.Username);
                 Client.HandleHandshake(client, hp);
             }
         }

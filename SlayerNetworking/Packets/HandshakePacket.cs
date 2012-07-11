@@ -24,7 +24,7 @@ namespace SlaysherNetworking.Packets
 
         public override void Write()
         {
-            SetCapacity();
+            SetCapacity(3, Username);
             Writer.Write(Username);
         }
     }

@@ -13,8 +13,13 @@ namespace SlaysherServer.Game.Models
         private ByteQueue _currentBuffer;
 
         private ByteQueue _processedBuffer;
+        private ByteQueue _fragPackets;
 
-        public ByteQueue FragPackets { get; set; }
+        internal ByteQueue FragPackets
+        {
+            get { return _fragPackets; }
+            set { _fragPackets = value; }
+        }
 
         public static SocketAsyncEventArgsPool SendSocketEventPool = new SocketAsyncEventArgsPool(10);
         public static SocketAsyncEventArgsPool RecvSocketEventPool = new SocketAsyncEventArgsPool(10);
@@ -42,6 +47,10 @@ namespace SlaysherServer.Game.Models
             ClientId = nextClientId;
             _server = server;
             _socket = socket;
+
+            _currentBuffer = new ByteQueue();
+            _processedBuffer = new ByteQueue();
+            _fragPackets = new ByteQueue();
 
             _nextActivityCheck = DateTime.Now + TimeSpan.FromSeconds(30);
         }

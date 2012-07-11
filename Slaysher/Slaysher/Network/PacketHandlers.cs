@@ -20,7 +20,7 @@ namespace Slaysher.Network
         {
             _handlers = new ClientPacketHandler[0x100];
 
-            Register(PacketType.Handshake, 4, 0, ReadHandshake);
+            Register(PacketType.Handshake, 0, 3, ReadHandshake);
         }
 
         public static void Register(PacketType packetID, int length, int minimumLength, OnPacketReceive onReceive)

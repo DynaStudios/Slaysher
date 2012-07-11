@@ -54,6 +54,7 @@
     <Compile Include="Packets\Utils\ByteQueue.cs" />
     <Compile Include="Packets\PatternPacket.cs" />
     <Compile Include="Packets\PlayerPositionPacket.cs" />
+    <Compile Include="Packets\Utils\NetworkUtils.cs" />
     <Compile Include="Packets\Utils\PacketReader.cs" />
     <Compile Include="Packets\Utils\PacketWriter.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

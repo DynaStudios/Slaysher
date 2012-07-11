@@ -109,6 +109,7 @@ namespace Slaysher
         protected override void UnloadContent()
         {
             // TODO: Unload any non ContentManager content here
+            _activeScene.UnloadScene();
         }
 
         protected override void Update(GameTime gameTime)

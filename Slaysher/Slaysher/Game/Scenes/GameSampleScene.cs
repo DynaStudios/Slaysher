@@ -1,5 +1,7 @@
 ﻿using System.Collections.Generic;
+using System.Net;
 using System.Threading;
+using System.Threading.Tasks;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
@@ -7,6 +9,7 @@ using Slaysher.Game.World.Objects;
 using Slaysher.Graphics.Camera;
 using Slaysher.Network;
 using SlaysherNetworking.Game.World.Objects;
+using SlaysherNetworking.Packets.Utils;
 
 namespace Slaysher.Game.Scenes
 {
@@ -33,7 +36,7 @@ namespace Slaysher.Game.Scenes
         private volatile bool _contentLoaded;
 
         //Network Stuff
-        NetworkHandler _network;
+        Client _client;
 
         public GameSampleScene(Engine engine)
         {
@@ -41,12 +44,21 @@ namespace Slaysher.Game.Scenes
 
             _patterns = new Dictionary<int, Pattern>();
             _gameObjects = new Dictionary<int, GameObject>();
-            _network = new NetworkHandler();
+            _client = new Client(this);
         }
 
         private void AsyncLoadScene()
         {
-            _network.ConnectToServer("127.0.0.1", 25104);
+            IPAddress address;
+
+#if DEBUG
+            NetworkUtils.Resolve("127.0.0.1", out address);
+#else
+            NetworkUtils.Resolve("slaysher.dyna-studios.com", out address);
+#endif
+            IPEndPoint ip = new IPEndPoint(address, 25104);
+            Task.Factory.StartNew(() => _client.Start(ip));
+            //_network.ConnectToServer("127.0.0.1", 25104);
 
             _worldMatrix = Matrix.Identity;
             _patternBaseModel = Engine.Content.Load<Model>("Models/Pattern/Pattern");
@@ -56,7 +68,6 @@ namespace Slaysher.Game.Scenes
             _patterns.Add(1, testPattern);
             _patterns.Add(2, testPattern2);
 
-            Thread.Sleep(2000);
             _contentLoaded = true;
         }
 
@@ -121,6 +132,7 @@ namespace Slaysher.Game.Scenes
 
         public void UnloadScene()
         {
+            _client.Dispose();
         }
     }
 }

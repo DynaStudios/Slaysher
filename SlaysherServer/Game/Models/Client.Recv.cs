@@ -87,22 +87,33 @@ namespace SlaysherServer.Game.Models
 
         public static void HandleHandshake(Client client, HandshakePacket packet)
         {
-            // check for baned users
-            // if (banlist.Contains(client)) {
-            //    client.SendPacket(new KickPacket() { message = "You'r BANNED!!!! Get lost!" };
-            //    return;
-            // }
-
-            client.SendPacket(packet);
-            foreach (PatternPacket pattern in _pattern)
+            if (packet.Username != null && packet.Password != null && !client.IsLoggingIn)
             {
-                client.SendPacket(pattern);
+                client.IsLoggingIn = true;
+                // check for baned users
+                // if (banlist.Contains(client)) {
+                //    client.SendPacket(new KickPacket() { message = "You'r BANNED!!!! Get lost!" };
+                //    return;
+                // }
+
+                //TODO: Debugging. Remove this if tested
+                Console.WriteLine("Received Login for User " + packet.Username + " with password " + packet.Password);
+
+                Console.WriteLine("Send Handshake back!");
+                //Remove the password from packet.
+                packet.Password = "blablabla";
+                client.SendPacket(packet);
+                foreach (PatternPacket pattern in _pattern)
+                {
+                    client.SendPacket(pattern);
+                }
+
+                client.LastSendKeepAliveStamp = DateTime.Now.Ticks;
+
+                Console.WriteLine("Finished Init. Send KeepAlive");
+                KeepAlivePacket keepAlive = new KeepAlivePacket { TimeStamp = client.LastSendKeepAliveStamp };
+                client.SendPacket(keepAlive);
             }
-
-            client.LastSendKeepAliveStamp = DateTime.Now.Ticks;
-
-            KeepAlivePacket keepAlive = new KeepAlivePacket { TimeStamp = client.LastSendKeepAliveStamp };
-            client.SendPacket(keepAlive);
         }
 
         public static void HandleKeepAlive(Client client, KeepAlivePacket ap)

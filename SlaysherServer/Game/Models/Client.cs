@@ -42,11 +42,15 @@ namespace SlaysherServer.Game.Models
 
         public long LastSendKeepAliveStamp { get; set; }
 
+        public bool IsLoggingIn { get; set; }
+
         private Server _server;
         private readonly Socket _socket;
 
         public Client(int nextClientId, Server server, Socket socket)
         {
+            IsLoggingIn = false;
+
             ClientId = nextClientId;
             _server = server;
             _socket = socket;

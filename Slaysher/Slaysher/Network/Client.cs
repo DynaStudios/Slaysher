@@ -81,7 +81,7 @@ namespace Slaysher.Network
             Task.Factory.StartNew(RecvPacket);
 
             //TODO: Send Handshake Packet here
-            HandshakePacket handshake = new HandshakePacket(_userName);
+            HandshakePacket handshake = new HandshakePacket { Username = _userName, Password = GameScene.Engine.Password };
             SendPacket(handshake);
         }
 
@@ -358,6 +358,7 @@ namespace Slaysher.Network
 
         public static void HandleKeepAlive(Client client, KeepAlivePacket ap)
         {
+            Console.WriteLine("Got Keep Alive");
             //Respond KeepAlive Packet to Server
             client.SendPacket(new KeepAlivePacket { TimeStamp = ap.TimeStamp });
 

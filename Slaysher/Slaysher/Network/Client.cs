@@ -360,6 +360,11 @@ namespace Slaysher.Network
         {
             //Respond KeepAlive Packet to Server
             client.SendPacket(new KeepAlivePacket { TimeStamp = ap.TimeStamp });
+
+            if (client.WaitInitialPositionRequest)
+            {
+                client.WaitInitialPositionRequest = false;
+            }
         }
     }
 }

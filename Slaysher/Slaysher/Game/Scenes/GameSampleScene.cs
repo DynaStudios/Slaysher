@@ -68,6 +68,11 @@ namespace Slaysher.Game.Scenes
             _patterns.Add(1, testPattern);
             _patterns.Add(2, testPattern2);
 
+            while (_client.WaitInitialPositionRequest)
+            {
+                //Wait until Server send us all necassery data.
+                Thread.Sleep(10);
+            }
             _contentLoaded = true;
         }
 

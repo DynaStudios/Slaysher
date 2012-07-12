@@ -21,6 +21,7 @@ namespace Slaysher.Network
             _handlers = new ClientPacketHandler[0x100];
 
             Register(PacketType.Handshake, 0, 3, ReadHandshake);
+            Register(PacketType.KeepAlive, 9, 0, ReadKeepAlive);
         }
 
         public static void Register(PacketType packetID, int length, int minimumLength, OnPacketReceive onReceive)
@@ -41,6 +42,17 @@ namespace Slaysher.Network
             if (!reader.Failed)
             {
                 Client.HandleHandshake(client, hp);
+            }
+        }
+
+        public static void ReadKeepAlive(Client client, PacketReader reader)
+        {
+            KeepAlivePacket ap = new KeepAlivePacket();
+            ap.Read(reader);
+
+            if (!reader.Failed)
+            {
+                Client.HandleKeepAlive(client, ap);
             }
         }
     }

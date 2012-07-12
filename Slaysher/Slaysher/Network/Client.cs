@@ -350,10 +350,16 @@ namespace Slaysher.Network
             return data;
         }
 
-        internal static void HandleHandshake(Client client, HandshakePacket hp)
+        public static void HandleHandshake(Client client, HandshakePacket hp)
         {
             //Handle Handshake
             Console.WriteLine("Received Handshake Packet back from Server :))");
+        }
+
+        public static void HandleKeepAlive(Client client, KeepAlivePacket ap)
+        {
+            //Respond KeepAlive Packet to Server
+            client.SendPacket(new KeepAlivePacket { TimeStamp = ap.TimeStamp });
         }
     }
 }

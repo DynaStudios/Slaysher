@@ -40,6 +40,8 @@ namespace SlaysherServer.Game.Models
 
         private DateTime _nextActivityCheck;
 
+        public long LastSendKeepAliveStamp { get; set; }
+
         private Server _server;
         private readonly Socket _socket;
 

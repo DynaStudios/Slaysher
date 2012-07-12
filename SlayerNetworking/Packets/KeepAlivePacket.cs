@@ -4,17 +4,25 @@ namespace SlaysherNetworking.Packets
 {
     public class KeepAlivePacket : Packet
     {
-        public long timeStamp;
+        public long TimeStamp { get; set; }
+
+        protected override int Length
+        {
+            get
+            {
+                return 9;
+            }
+        }
 
         public override void Read(PacketReader reader)
         {
-            timeStamp = reader.ReadLong();
+            TimeStamp = reader.ReadLong();
         }
 
         public override void Write()
         {
             SetCapacity();
-            Writer.Write(timeStamp);
+            Writer.Write(TimeStamp);
         }
     }
 }

@@ -98,9 +98,24 @@ namespace SlaysherServer.Game.Models
             {
                 client.SendPacket(pattern);
             }
-            KeepAlivePacket keepAlive = new KeepAlivePacket();
-            keepAlive.timeStamp = DateTime.Now.Ticks;
+
+            client.LastSendKeepAliveStamp = DateTime.Now.Ticks;
+
+            KeepAlivePacket keepAlive = new KeepAlivePacket { TimeStamp = client.LastSendKeepAliveStamp };
             client.SendPacket(keepAlive);
+        }
+
+        public static void HandleKeepAlive(Client client, KeepAlivePacket ap)
+        {
+            if (ap.TimeStamp + 3000 > DateTime.Now.Ticks)
+            {
+                //TODO: Client Timeout. Disconnect Player
+            }
+            else
+            {
+                //Keep Alive Response came within time
+                Console.WriteLine("Timeout Check is okey.");
+            }
         }
     }
 }

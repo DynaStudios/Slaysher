@@ -7,6 +7,7 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Media;
 using Slaysher.Game;
+using Slaysher.Game.Database;
 using Slaysher.Game.GUI;
 using Slaysher.Game.IO;
 using Slaysher.Game.Scenes;
@@ -35,6 +36,8 @@ namespace Slaysher
 
         public KeyboardHandler Keyboard { get { return _keyboardHandler; } }
 
+        public Database ClientDatabase { get; set; }
+
         public Engine()
         {
             graphics = new GraphicsDeviceManager(this);
@@ -46,6 +49,7 @@ namespace Slaysher
             _keyboardHandler = new KeyboardHandler();
 
             GUIManager = new GUIManager(this);
+            ClientDatabase = new Database();
 
             //Set Master Volumes. Replace later with user options
             SoundEffect.MasterVolume = 0.3f;

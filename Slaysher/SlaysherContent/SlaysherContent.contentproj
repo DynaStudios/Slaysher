@@ -56,6 +56,12 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <None Include="Data\patternTextures.xml">
+      <Name>patternTextures</Name>
+      <Importer>XmlImporter</Importer>
+      <Processor>PassThroughProcessor</Processor>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <Content Include="Images\Game\Arrow.cur">
       <Name>Arrow</Name>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>

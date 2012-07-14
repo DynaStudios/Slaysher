@@ -33,6 +33,7 @@ namespace Slaysher.Game.Scenes
         private Model _patternBaseModel;
 
         private Dictionary<int, Texture2D> _patternTextures;
+        private Dictionary<int, string> _availablePatternTextures;
 
         private Texture2D _loadingScreen;
         private volatile bool _contentLoaded;
@@ -53,6 +54,8 @@ namespace Slaysher.Game.Scenes
 
         private void AsyncLoadScene()
         {
+            _availablePatternTextures = Engine.ClientDatabase.ReadAvailablePatternTextures();
+
             IPAddress address;
 
 #if DEBUG
@@ -65,11 +68,6 @@ namespace Slaysher.Game.Scenes
 
             _worldMatrix = Matrix.Identity;
             _patternBaseModel = Engine.Content.Load<Model>("Models/Pattern/Pattern");
-
-            //Pattern testPattern = new Pattern(new Vector3(0, 0, 0), LoadPatternTexture(1));
-            //Pattern testPattern2 = new Pattern(new Vector3(50, 0, 50), LoadPatternTexture(2));
-            //Pattern.Add(1, testPattern);
-            //Pattern.Add(2, testPattern2);
 
             while (_client.WaitInitialPositionRequest)
             {
@@ -148,24 +146,13 @@ namespace Slaysher.Game.Scenes
             {
                 //Load Pattern Texture into Memory
                 //Dirty Translation Map here. Replace with local database
-                switch (textureId)
+                if (_availablePatternTextures.ContainsKey(textureId))
                 {
-                    case 1:
-                        //Dirt
-                        _patternTextures.Add(textureId, Engine.Content.Load<Texture2D>("Images/Game/Pattern/dirt"));
-                        break;
-                    case 2:
-                        //Grass
-                        _patternTextures.Add(textureId, Engine.Content.Load<Texture2D>("Images/Game/Pattern/grass"));
-                        break;
-                    case 3:
-                        //Sand
-                        _patternTextures.Add(textureId, Engine.Content.Load<Texture2D>("Images/Game/Pattern/sand"));
-                        break;
-                    case 4:
-                        //Water
-                        _patternTextures.Add(textureId, Engine.Content.Load<Texture2D>("Images/Game/Pattern/water"));
-                        break;
+                    _patternTextures.Add(textureId, Engine.Content.Load<Texture2D>(_availablePatternTextures[textureId]));
+                }
+                else
+                {
+                    _patternTextures.Add(textureId, Engine.Content.Load<Texture2D>(_availablePatternTextures[0]));
                 }
                 return _patternTextures[textureId];
             }

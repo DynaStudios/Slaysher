@@ -44,8 +44,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Database\DAO.cs" />
-    <Compile Include="Database\GameObjectDAO.cs" />
+    <Compile Include="Database\DAO.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Database\GameObjectDAO.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="Game\Models\Client.cs" />
     <Compile Include="Game\Models\Client.Recv.cs" />
     <Compile Include="Game\Models\Client.Send.cs" />

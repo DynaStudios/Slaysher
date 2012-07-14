@@ -1,0 +1,22 @@
+<PatternTextures>
+  <Pattern>
+    <ID>0</ID>
+    <Path>Images/Game/Pattern/missing</Path>
+  </Pattern>
+  <Pattern>
+    <ID>1</ID>
+    <Path>Images/Game/Pattern/dirt</Path>
+  </Pattern>
+  <Pattern>
+    <ID>2</ID>
+    <Path>Images/Game/Pattern/grass</Path>
+  </Pattern>
+  <Pattern>
+    <ID>3</ID>
+    <Path>Images/Game/Pattern/sand</Path>
+  </Pattern>
+  <Pattern>
+    <ID>4</ID>
+    <Path>Images/Game/Pattern/water</Path>
+  </Pattern>
+</PatternTextures>

@@ -44,7 +44,8 @@ namespace SlaysherServer.Game.Models
 
         public bool IsLoggingIn { get; set; }
 
-        private Server _server;
+        public Server Server { get; set; }
+
         private readonly Socket _socket;
 
         public Client(int nextClientId, Server server, Socket socket)
@@ -52,7 +53,7 @@ namespace SlaysherServer.Game.Models
             IsLoggingIn = false;
 
             ClientId = nextClientId;
-            _server = server;
+            Server = server;
             _socket = socket;
 
             _currentBuffer = new ByteQueue();

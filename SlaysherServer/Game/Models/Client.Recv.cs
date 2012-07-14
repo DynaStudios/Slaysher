@@ -62,7 +62,7 @@ namespace SlaysherServer.Game.Models
             if ((newValue - 1) == 0)
                 Server.RecvClientQueue.Enqueue(this);
 
-            _server.NetworkSignal.Set();
+            Server.NetworkSignal.Set();
 
             RecvStart();
         }

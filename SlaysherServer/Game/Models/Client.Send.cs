@@ -28,7 +28,7 @@ namespace SlaysherServer.Game.Models
                 Server.SendClientQueue.Enqueue(this);
             }
 
-            _server.NetworkSignal.Set();
+            Server.NetworkSignal.Set();
 
             //Logger.Log(Chraft.LogLevel.Info, "Sending packet: {0}", packet.GetPacketType().ToString());
         }
@@ -117,7 +117,7 @@ namespace SlaysherServer.Game.Models
                         if (newValue == 1)
                         {
                             Server.SendClientQueue.Enqueue(this);
-                            _server.NetworkSignal.Set();
+                            Server.NetworkSignal.Set();
                         }
                     }
                 }

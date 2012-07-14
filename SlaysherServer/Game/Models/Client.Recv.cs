@@ -12,7 +12,6 @@ namespace SlaysherServer.Game.Models
     {
         public int TimesEnqueuedForRecv;
         private readonly object _queueSwapLock = new object();
-        private static List<PatternPacket> _pattern = _generateTestPattern();
 
         private void RecvStart()
         {
@@ -79,10 +78,20 @@ namespace SlaysherServer.Game.Models
             return _processedBuffer;
         }
 
-        private static List<PatternPacket> _generateTestPattern()
+        private void _sendPattern()
         {
-            List<PatternPacket> list = new List<PatternPacket>();
-            return list;
+            foreach(Pattern pattern in Server.World.Patterns)
+            {
+                PatternPacket packet = new PatternPacket()
+                {
+                    PatternID = pattern.Id,
+                    TextureID = pattern.TextureId,
+                    X = pattern.X,
+                    Y = pattern.Y
+                };
+
+                SendPacket(packet);
+            }
         }
 
         public static void HandleHandshake(Client client, HandshakePacket packet)
@@ -103,16 +112,13 @@ namespace SlaysherServer.Game.Models
                 //Remove the password from packet.
                 packet.Password = "blablabla";
                 client.SendPacket(packet);
-                foreach (PatternPacket pattern in _pattern)
-                {
-                    client.SendPacket(pattern);
-                }
+                client._sendPattern();
 
                 //Send some sample Pattern to draw
-                client.SendPacket(new PatternPacket { PatternID = 1, TextureID = 1, X = 0, Y = 0 });
-                client.SendPacket(new PatternPacket { PatternID = 2, TextureID = 2, X = 50, Y = 0 });
-                client.SendPacket(new PatternPacket { PatternID = 3, TextureID = 3, X = 50, Y = 50 });
-                client.SendPacket(new PatternPacket { PatternID = 4, TextureID = 4, X = 0, Y = 50 });
+                // client.SendPacket(new PatternPacket { PatternID = 1, TextureID = 1, X = 0, Y = 0 });
+                // client.SendPacket(new PatternPacket { PatternID = 2, TextureID = 2, X = 50, Y = 0 });
+                // client.SendPacket(new PatternPacket { PatternID = 3, TextureID = 3, X = 50, Y = 50 });
+                // client.SendPacket(new PatternPacket { PatternID = 4, TextureID = 4, X = 0, Y = 50 });
 
                 client.LastSendKeepAliveStamp = DateTime.Now.Ticks;
 

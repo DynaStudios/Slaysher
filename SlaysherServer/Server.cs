@@ -4,13 +4,17 @@ using System.Net;
 using System.Net.Sockets;
 using System.Threading;
 using System.Threading.Tasks;
+
 using SlaysherNetworking.Network;
 using SlaysherNetworking.Packets;
 using SlaysherNetworking.Packets.Utils;
+
+using SlaysherServer.Database;
 using SlaysherServer.Game;
 using SlaysherServer.Game.Models;
 using SlaysherServer.Network.Events;
 using SlaysherServer.Network.Handler;
+
 
 namespace SlaysherServer
 {
@@ -44,6 +48,8 @@ namespace SlaysherServer
         //Server own Eventhandler
         public event EventHandler<TcpEventArgs> BeforeAccept;
 
+        public DAO DAO { get; private set; }
+
         public World World { get; set; }
 
         public Server()
@@ -61,6 +67,7 @@ namespace SlaysherServer
 
             //Vars Init
             Clients = new ConcurrentDictionary<int, Client>();
+            DAO = new DAO();
         }
 
         //Public Methods

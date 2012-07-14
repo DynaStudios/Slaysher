@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+
 using SlaysherServer;
 
 namespace SlaysherServer.Game
@@ -9,10 +8,13 @@ namespace SlaysherServer.Game
     public class World
     {
         public Server Server { get; set; }
+        public List<Pattern> Patterns { get; private set; }
 
         public World(Server server)
         {
             Server = server;
+            this.Patterns = new PatternGenerator(server.DAO).GetPatterns();
+
         }
 
         public void Start()

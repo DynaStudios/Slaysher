@@ -1,9 +1,7 @@
 ﻿using System.Collections.Generic;
 
 using MySql.Data.MySqlClient;
-
 using SlaysherNetworking.Game.World.Objects;
-
 
 namespace SlaysherServer.Database
 {

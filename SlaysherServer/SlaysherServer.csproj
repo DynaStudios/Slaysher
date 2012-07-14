@@ -8,7 +8,7 @@
     <ProjectGuid>{C710E616-8F85-45B5-8302-A679E58D8546}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>SlaysherNetworking</RootNamespace>
+    <RootNamespace>SlaysherServer</RootNamespace>
     <AssemblyName>SlaysherServer</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
@@ -49,6 +49,7 @@
     <Compile Include="Game\Models\Client.cs" />
     <Compile Include="Game\Models\Client.Recv.cs" />
     <Compile Include="Game\Models\Client.Send.cs" />
+    <Compile Include="Game\World.cs" />
     <Compile Include="Network\BufferPool.cs" />
     <Compile Include="Network\Events\TcpEventArgs.cs" />
     <Compile Include="Network\Handler\PacketHandler.cs" />

@@ -2,14 +2,13 @@
 using System.Collections.Concurrent;
 using System.Net;
 using System.Net.Sockets;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using SlaysherNetworking.Network;
 using SlaysherNetworking.Packets;
 using SlaysherNetworking.Packets.Utils;
+using SlaysherServer.Game;
 using SlaysherServer.Game.Models;
-using SlaysherServer.Network;
 using SlaysherServer.Network.Events;
 using SlaysherServer.Network.Handler;
 
@@ -45,6 +44,8 @@ namespace SlaysherServer
         //Server own Eventhandler
         public event EventHandler<TcpEventArgs> BeforeAccept;
 
+        public World World { get; set; }
+
         public Server()
         {
             //Network Setup
@@ -55,6 +56,9 @@ namespace SlaysherServer
             _acceptEventArgs = new SocketAsyncEventArgs();
             _acceptEventArgs.Completed += AcceptCompleted;
 
+            //Init World
+            World = new World(this);
+
             //Vars Init
             Clients = new ConcurrentDictionary<int, Client>();
         }
@@ -62,6 +66,10 @@ namespace SlaysherServer
         //Public Methods
         public void Run()
         {
+            //Start Game World
+            World.Start();
+
+            //Start Network Layer
             for (int i = 0; i < 10; ++i)
             {
                 Client.SendSocketEventPool.Push(new SocketAsyncEventArgs());
@@ -76,9 +84,13 @@ namespace SlaysherServer
             }
         }
 
+        /// <summary>
+        /// Gets called 20 times every second
+        /// </summary>
+        /// <param name="state"></param>
         private void GlobalTickProc(object state)
         {
-            //Console.WriteLine("World Tick!");
+            World.Tick();
         }
 
         //Eventhandler

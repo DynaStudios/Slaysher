@@ -374,7 +374,7 @@ namespace Slaysher.Network
             Console.WriteLine("Received Pattern Packet");
 
             //Retrieve Pattern Texture
-            Pattern newPattern = new Pattern(new Vector3(pp.X, pp.Y, 0), client.GameScene.LoadPatternTexture(pp.TextureID));
+            Pattern newPattern = new Pattern(new Vector3(pp.X, 0, pp.Y), client.GameScene.LoadPatternTexture(pp.TextureID));
             client.GameScene.Pattern.Add(pp.PatternID, newPattern);
         }
     }

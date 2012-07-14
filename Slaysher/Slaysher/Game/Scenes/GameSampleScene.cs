@@ -24,13 +24,15 @@ namespace Slaysher.Game.Scenes
 
         private SpriteBatch _spriteBatch;
 
-        private Dictionary<int, Pattern> _patterns;
-        private Dictionary<int, GameObject> _gameObjects;
+        public Dictionary<int, Pattern> Pattern;
+        public Dictionary<int, GameObject> GameObjects;
 
         private Matrix _worldMatrix;
 
         private Camera _tempCamera = new Camera();
         private Model _patternBaseModel;
+
+        private Dictionary<int, Texture2D> _patternTextures;
 
         private Texture2D _loadingScreen;
         private volatile bool _contentLoaded;
@@ -42,8 +44,10 @@ namespace Slaysher.Game.Scenes
         {
             Engine = engine;
 
-            _patterns = new Dictionary<int, Pattern>();
-            _gameObjects = new Dictionary<int, GameObject>();
+            Pattern = new Dictionary<int, Pattern>();
+            _patternTextures = new Dictionary<int, Texture2D>();
+            GameObjects = new Dictionary<int, GameObject>();
+
             _client = new Client(this);
         }
 
@@ -66,8 +70,8 @@ namespace Slaysher.Game.Scenes
 
             Pattern testPattern = new Pattern(new Vector3(0, 0, 0), testTexture);
             Pattern testPattern2 = new Pattern(new Vector3(50, 0, 0), testTexture);
-            _patterns.Add(1, testPattern);
-            _patterns.Add(2, testPattern2);
+            Pattern.Add(1, testPattern);
+            Pattern.Add(2, testPattern2);
 
             while (_client.WaitInitialPositionRequest)
             {
@@ -88,7 +92,7 @@ namespace Slaysher.Game.Scenes
         {
             if (_contentLoaded)
             {
-                foreach (KeyValuePair<int, Pattern> key in _patterns)
+                foreach (KeyValuePair<int, Pattern> key in Pattern)
                 {
                     key.Value.Draw(_patternBaseModel, _worldMatrix, _tempCamera);
                 }
@@ -134,6 +138,39 @@ namespace Slaysher.Game.Scenes
             }
 
             _tempCamera.Update(_worldMatrix);
+        }
+
+        public Texture2D LoadPatternTexture(int textureId)
+        {
+            if (_patternTextures.ContainsKey(textureId))
+            {
+                return _patternTextures[textureId];
+            }
+            else
+            {
+                //Load Pattern Texture into Memory
+                //Dirty Translation Map here. Replace with local database
+                switch (textureId)
+                {
+                    case 1:
+                        //Dirt
+                        _patternTextures.Add(textureId, Engine.Content.Load<Texture2D>("Images/Game/Pattern/dirt"));
+                        break;
+                    case 2:
+                        //Grass
+                        _patternTextures.Add(textureId, Engine.Content.Load<Texture2D>("Images/Game/Pattern/grass"));
+                        break;
+                    case 3:
+                        //Sand
+                        _patternTextures.Add(textureId, Engine.Content.Load<Texture2D>("Images/Game/Pattern/sand"));
+                        break;
+                    case 4:
+                        //Water
+                        _patternTextures.Add(textureId, Engine.Content.Load<Texture2D>("Images/Game/Pattern/water"));
+                        break;
+                }
+                return _patternTextures[textureId];
+            }
         }
 
         public void UnloadScene()

@@ -4,7 +4,9 @@ using System.Net;
 using System.Net.Sockets;
 using System.Threading;
 using System.Threading.Tasks;
+using Microsoft.Xna.Framework;
 using Slaysher.Game.Scenes;
+using Slaysher.Game.World.Objects;
 using SlaysherNetworking.Network;
 using SlaysherNetworking.Packets;
 using SlaysherNetworking.Packets.Utils;
@@ -370,6 +372,10 @@ namespace Slaysher.Network
         public static void HandlePatternPacket(Client client, PatternPacket pp)
         {
             Console.WriteLine("Received Pattern Packet");
+
+            //Retrieve Pattern Texture
+            Pattern newPattern = new Pattern(new Vector3(pp.X, pp.Y, 0), client.GameScene.LoadPatternTexture(pp.TextureID));
+            client.GameScene.Pattern.Add(pp.PatternID, newPattern);
         }
     }
 }

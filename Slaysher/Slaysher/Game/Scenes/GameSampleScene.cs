@@ -62,9 +62,10 @@ namespace Slaysher.Game.Scenes
 
             _worldMatrix = Matrix.Identity;
             _patternBaseModel = Engine.Content.Load<Model>("Models/Pattern/Pattern");
+            Texture2D testTexture = Engine.Content.Load<Texture2D>("Images/Game/Pattern/grass");
 
-            Pattern testPattern = new Pattern(new Vector3(0, 0, 0));
-            Pattern testPattern2 = new Pattern(new Vector3(50, 0, 0));
+            Pattern testPattern = new Pattern(new Vector3(0, 0, 0), testTexture);
+            Pattern testPattern2 = new Pattern(new Vector3(50, 0, 0), testTexture);
             _patterns.Add(1, testPattern);
             _patterns.Add(2, testPattern2);
 

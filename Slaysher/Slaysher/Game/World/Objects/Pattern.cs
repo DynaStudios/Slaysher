@@ -13,8 +13,9 @@ namespace Slaysher.Game.World.Objects
         private Texture2D _patternTexture;
         private Vector3 _position;
 
-        public Pattern(Vector3 position)
+        public Pattern(Vector3 position, Texture2D texture)
         {
+            _patternTexture = texture;
             _position = position;
         }
 
@@ -27,8 +28,11 @@ namespace Slaysher.Game.World.Objects
             {
                 foreach (BasicEffect effect in mesh.Effects)
                 {
-                    //effect.EnableDefaultLighting();
+                    effect.EnableDefaultLighting();
                     //effect.World = modelTransforms[mesh.ParentBone.Index] * worldMatrix * _position;
+                    effect.TextureEnabled = true;
+                    effect.Texture = _patternTexture;
+
                     effect.World = modelTransforms[mesh.ParentBone.Index] * Matrix.CreateTranslation(_position);
                     effect.View = camera.viewMatrix;
                     effect.Projection = camera.projectionMatrix;

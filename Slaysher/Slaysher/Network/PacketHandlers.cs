@@ -22,6 +22,7 @@ namespace Slaysher.Network
 
             Register(PacketType.Handshake, 0, 3, ReadHandshake);
             Register(PacketType.KeepAlive, 9, 0, ReadKeepAlive);
+            Register(PacketType.Pattern, 25, 0, ReadPattern);
         }
 
         public static void Register(PacketType packetID, int length, int minimumLength, OnPacketReceive onReceive)
@@ -53,6 +54,17 @@ namespace Slaysher.Network
             if (!reader.Failed)
             {
                 Client.HandleKeepAlive(client, ap);
+            }
+        }
+
+        public static void ReadPattern(Client client, PacketReader reader)
+        {
+            PatternPacket pp = new PatternPacket();
+            pp.Read(reader);
+
+            if (!reader.Failed)
+            {
+                Client.HandlePatternPacket(client, pp);
             }
         }
     }

@@ -358,7 +358,6 @@ namespace Slaysher.Network
 
         public static void HandleKeepAlive(Client client, KeepAlivePacket ap)
         {
-            Console.WriteLine("Got Keep Alive");
             //Respond KeepAlive Packet to Server
             client.SendPacket(new KeepAlivePacket { TimeStamp = ap.TimeStamp });
 
@@ -366,6 +365,11 @@ namespace Slaysher.Network
             {
                 client.WaitInitialPositionRequest = false;
             }
+        }
+
+        public static void HandlePatternPacket(Client client, PatternPacket pp)
+        {
+            Console.WriteLine("Received Pattern Packet");
         }
     }
 }

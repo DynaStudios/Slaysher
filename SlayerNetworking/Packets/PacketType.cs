@@ -11,6 +11,6 @@ namespace SlaysherNetworking.Packets
         Kick = 0x01,
         KeepAlive = 0x02,
         PlayerPosition = 0x03,
-        Patern = 0x04
+        Pattern = 0x04
     }
 }

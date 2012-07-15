@@ -62,12 +62,13 @@ namespace SlaysherServer
             _acceptEventArgs = new SocketAsyncEventArgs();
             _acceptEventArgs.Completed += AcceptCompleted;
 
+            DAO = new DAO();
+
             //Init World
             World = new World(this);
 
             //Vars Init
             Clients = new ConcurrentDictionary<int, Client>();
-            DAO = new DAO();
         }
 
         //Public Methods

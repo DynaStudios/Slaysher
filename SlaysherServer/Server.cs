@@ -15,7 +15,6 @@ using SlaysherServer.Game.Models;
 using SlaysherServer.Network.Events;
 using SlaysherServer.Network.Handler;
 
-
 namespace SlaysherServer
 {
     public class Server
@@ -44,6 +43,7 @@ namespace SlaysherServer
         private int _asyncAccepts;
 
         private Timer _globalTick;
+        private long _serverTick = 0;
 
         //Server own Eventhandler
         public event EventHandler<TcpEventArgs> BeforeAccept;
@@ -98,7 +98,8 @@ namespace SlaysherServer
         /// <param name="state"></param>
         private void GlobalTickProc(object state)
         {
-            World.Tick();
+            _serverTick++;
+            World.Tick(_serverTick);
         }
 
         //Eventhandler

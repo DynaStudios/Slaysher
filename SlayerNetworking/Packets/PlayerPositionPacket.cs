@@ -4,23 +4,37 @@ namespace SlaysherNetworking.Packets
 {
     public class PlayerPositionPacket : Packet
     {
-        public float x;
-        public float y;
-        public float z;
+        public int PlayerId { get; set; }
+
+        public float X { get; set; }
+
+        public float Y { get; set; }
+
+        public float Z { get; set; }
+
+        protected override int Length
+        {
+            get
+            {
+                return 29;
+            }
+        }
 
         public override void Read(PacketReader reader)
         {
-            x = reader.ReadFloat();
-            y = reader.ReadFloat();
-            z = reader.ReadFloat();
+            PlayerId = reader.ReadInt();
+            X = reader.ReadFloat();
+            Y = reader.ReadFloat();
+            Z = reader.ReadFloat();
         }
 
         public override void Write()
         {
             SetCapacity();
-            Writer.Write(x);
-            Writer.Write(y);
-            Writer.Write(z);
+            Writer.Write(PlayerId);
+            Writer.Write(X);
+            Writer.Write(Y);
+            Writer.Write(Z);
         }
     }
 }

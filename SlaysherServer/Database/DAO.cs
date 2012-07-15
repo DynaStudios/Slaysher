@@ -27,6 +27,8 @@ namespace SlaysherServer.Database
         public DAO()
         {
             _db = new MySqlConnection(_connectionString);
+            _db.Open();
+
             GameObjectDAO = new GameObjectDAO(_db);
             PatternTypeDAO = new PatternTypeDAO(_db);
         }

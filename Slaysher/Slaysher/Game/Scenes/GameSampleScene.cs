@@ -145,13 +145,13 @@ namespace Slaysher.Game.Scenes
             else
             {
                 //Load Pattern Texture into Memory
-                //Dirty Translation Map here. Replace with local database
                 if (_availablePatternTextures.ContainsKey(textureId))
                 {
                     _patternTextures.Add(textureId, Engine.Content.Load<Texture2D>(_availablePatternTextures[textureId]));
                 }
                 else
                 {
+                    //Texture is unknown. Load "Missing Texture" File
                     _patternTextures.Add(textureId, Engine.Content.Load<Texture2D>(_availablePatternTextures[0]));
                 }
                 return _patternTextures[textureId];

@@ -13,10 +13,42 @@
   </Pattern>
   <Pattern>
     <ID>3</ID>
-    <Path>Images/Game/Pattern/sand</Path>
+    <Path>Images/Game/Pattern/grass2</Path>
   </Pattern>
   <Pattern>
     <ID>4</ID>
+    <Path>Images/Game/Pattern/grass3</Path>
+  </Pattern>
+  <Pattern>
+    <ID>5</ID>
+    <Path>Images/Game/Pattern/grass4</Path>
+  </Pattern>
+  <Pattern>
+    <ID>6</ID>
+    <Path>Images/Game/Pattern/grass5</Path>
+  </Pattern>
+  <Pattern>
+    <ID>7</ID>
+    <Path>Images/Game/Pattern/sand</Path>
+  </Pattern>
+  <Pattern>
+    <ID>8</ID>
+    <Path>Images/Game/Pattern/sand2</Path>
+  </Pattern>
+  <Pattern>
+    <ID>9</ID>
+    <Path>Images/Game/Pattern/sand3</Path>
+  </Pattern>
+  <Pattern>
+    <ID>10</ID>
+    <Path>Images/Game/Pattern/sand4</Path>
+  </Pattern>
+  <Pattern>
+    <ID>11</ID>
+    <Path>Images/Game/Pattern/sand5</Path>
+  </Pattern>
+  <Pattern>
+    <ID>12</ID>
     <Path>Images/Game/Pattern/water</Path>
   </Pattern>
 </PatternTextures>

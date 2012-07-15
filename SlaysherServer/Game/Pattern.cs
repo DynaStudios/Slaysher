@@ -1,21 +1,32 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 
 using SlaysherServer.Database;
 
 namespace SlaysherServer.Game
 {
+    // geographical types are:
+    // invalied = 0
+    // dirt = 1
+    // grass = 2
+    // watter = 3
+    // sand (hot desert) = 4
+    // ice (cold desert) = 5
     public class PatternType
     {
         internal int _dbId;
-        public string _name;
+        public int North;
+        public int South;
+        public int West;
+        public int East;
+        public int TextureId;
     }
 
     public class Pattern
     {
         public PatternType Type  { get; set; }
         public int Id { get; set; }
-        public int TextureId { get; set; }
 
         public float X { get; set; }
         public float Y { get; set; }
@@ -23,35 +34,71 @@ namespace SlaysherServer.Game
 
     public class PatternGenerator {
         private DAO _dao;
+        private List<PatternType> _types;
 
         public PatternGenerator(DAO dao)
         {
             _dao = dao;
+            _types = _dao.PatternTypeDAO.GetAllPatternTypes();
         }
 
         public List<Pattern> GetPatterns()
         {
-            List <Pattern> ret = new List<Pattern>();
+            if (_types.Count <= 0)
+            {
+                return new List<Pattern>();
+            }
 
-            List<PatternType> types = _dao.PatternTypeDAO.GetAllPatternTypes();
+            var referencing = new List<List<Pattern>>();
+            var ret = new List<Pattern>();
             Random rnd = new Random();
             int xMax = rnd.Next(5) + 5;
             int yMax = rnd.Next(5) + 5;
 
-            for (int yi=0; yi < yMax; ++yi) {
+            for (int yi=0; yi < yMax; ++yi)
+            {
+                referencing.Add(new List<Pattern>());
+
                 for (int xi = 0; xi < xMax; ++xi)
                 {
-                    PatternType type = types[rnd.Next(types.Count)];
+                    List<PatternType> query = _types;
+                    if (xi > 0)
+                    {
+                        int typeWest = referencing[yi][xi - 1].Type.East;
+                        query = new List<PatternType>(
+                            from t
+                            in query
+                            where t.West == typeWest
+                            select t);
+                    }
+                    if (yi > 0)
+                    {
+                        int typeNort = referencing[yi - 1][xi].Type.South;
+                        query = new List<PatternType>(
+                            from t
+                            in query
+                            where t.North == typeNort
+                            select t);
+                    }
+                    //and t.South.Equals(2)
+
+                    PatternType type;
+                    if (query.Count == 0) {
+                        type = _types[rnd.Next(query.Count)];
+                    } else {
+                        type = query[rnd.Next(query.Count)];
+                    }
 
                     Pattern pattern = new Pattern()
                     {
-                        TextureId = rnd.Next(10),
+                        Id = yi * xMax + xi,
                         Type = type,
                         X = xi,
                         Y = yi
                     };
 
                     ret.Add(pattern);
+                    referencing[yi].Add(pattern);
                 }
             }
 

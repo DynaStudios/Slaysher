@@ -23,7 +23,7 @@ namespace SlaysherServer.Database
             if (_allPatternTypes == null)
             {
                 _allPatternTypes = new MySqlCommand(
-                        "SELECT id"
+                        "SELECT id, north, south, west, east, textureid"
                         + " FROM patterntype",
                         _db);
             }
@@ -33,8 +33,15 @@ namespace SlaysherServer.Database
 
             while (reader.Read())
             {
-                PatternType patternType = new PatternType();
-                patternType._dbId = (int)reader["id"];
+                PatternType patternType = new PatternType()
+                {
+                    _dbId = (int)reader["id"],
+                    North = (int)reader["north"],
+                    South = (int)reader["south"],
+                    West = (int)reader["west"],
+                    East = (int)reader["east"],
+                    TextureId = (int)reader["textureid"]
+                };
                 patternTypes.Add(patternType);
             }
 

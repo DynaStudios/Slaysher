@@ -61,6 +61,7 @@
       <Importer>XmlImporter</Importer>
       <Processor>PassThroughProcessor</Processor>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <SubType>Designer</SubType>
     </None>
     <Content Include="Images\Game\Arrow.cur">
       <Name>Arrow</Name>

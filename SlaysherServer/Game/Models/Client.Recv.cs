@@ -85,7 +85,7 @@ namespace SlaysherServer.Game.Models
                 PatternPacket packet = new PatternPacket()
                 {
                     PatternID = pattern.Id,
-                    TextureID = pattern.TextureId,
+                    TextureID = pattern.Type.TextureId,
                     X = pattern.X,
                     Y = pattern.Y
                 };

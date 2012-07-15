@@ -44,6 +44,9 @@ namespace SlaysherServer.Game
 
         public List<Pattern> GetPatterns()
         {
+#if DEBUG
+            Console.WriteLine("stating pattern generation");
+#endif
             if (_types.Count <= 0)
             {
                 return new List<Pattern>();
@@ -80,10 +83,11 @@ namespace SlaysherServer.Game
                             where t.North == typeNort
                             select t);
                     }
-                    //and t.South.Equals(2)
 
                     PatternType type;
                     if (query.Count == 0) {
+                        // FIXME: this is a fallback but should never be used as it generates
+                        // not releasable stuff
                         type = _types[rnd.Next(query.Count)];
                     } else {
                         type = query[rnd.Next(query.Count)];
@@ -93,8 +97,8 @@ namespace SlaysherServer.Game
                     {
                         Id = yi * xMax + xi,
                         Type = type,
-                        X = xi,
-                        Y = yi
+                        X = xi * 50,
+                        Y = yi * 50
                     };
 
                     ret.Add(pattern);
@@ -102,6 +106,9 @@ namespace SlaysherServer.Game
                 }
             }
 
+#if DEBUG
+            Console.WriteLine("pattern generation complet");
+#endif
             return ret;
         }
     }

@@ -13,9 +13,8 @@ namespace SlaysherServer.Game.Models
         public ConcurrentQueue<Packet> PacketsToBeSent = new ConcurrentQueue<Packet>();
         private int _TimesEnqueuedForSend;
 
-        internal void SendPacket(Packet iPacket)
+        internal void SendPacket(Packet packet)
         {
-            Packet packet = iPacket as Packet;
             if (!Running)
                 return;
 

@@ -175,92 +175,101 @@ namespace SlaysherServer
         {
             int count = RecvClientQueue.Count;
 
-            Parallel.For(0, count, i =>
+            Parallel.For(0, count, processSingelRead);
+        }
+
+        private static void processSingelRead(int i) {
+            Client client;
+            if (!RecvClientQueue.TryDequeue(out client))
             {
-                Client client;
-                if (!RecvClientQueue.TryDequeue(out client))
-                    return;
+                return;
+            }
 
-                if (!client.Running)
-                    return;
+            if (!client.Running)
+            {
+                return;
+            }
 
-                Interlocked.Exchange(ref client.TimesEnqueuedForRecv, 0);
-                ByteQueue bufferToProcess = client.GetBufferToProcess();
+            Interlocked.Exchange(ref client.TimesEnqueuedForRecv, 0);
+            ByteQueue bufferToProcess = client.GetBufferToProcess();
 
-                int length = client.FragPackets.Size + bufferToProcess.Size;
-                while (length > 0)
+            int length = client.FragPackets.Size + bufferToProcess.Size;
+            while (length > 0)
+            {
+                byte packetType = 0;
+
+                if (client.FragPackets.Size > 0)
                 {
-                    byte packetType = 0;
+                    packetType = client.FragPackets.GetPacketID();
+                }
+                else
+                {
+                    packetType = bufferToProcess.GetPacketID();
+                }
 
-                    if (client.FragPackets.Size > 0)
-                        packetType = client.FragPackets.GetPacketID();
-                    else
-                        packetType = bufferToProcess.GetPacketID();
+                //client.Logger.Log(Chraft.LogLevel.Info, "Reading packet {0}", ((PacketType)packetType).ToString());
 
-                    //client.Logger.Log(Chraft.LogLevel.Info, "Reading packet {0}", ((PacketType)packetType).ToString());
+                Console.WriteLine("Try to resolve packet with id: " + packetType);
+                PacketHandler handler = PacketHandlers.GetHandler((PacketType)packetType);
 
-                    Console.WriteLine("Try to resolve packet with id: " + packetType);
-                    PacketHandler handler = PacketHandlers.GetHandler((PacketType)packetType);
+                if (handler == null)
+                {
+                    byte[] unhandledPacketData = GetBufferToBeRead(bufferToProcess, client, length);
 
-                    if (handler == null)
+                    length = 0;
+                }
+                else if (handler.Length == 0)
+                {
+                    byte[] data = GetBufferToBeRead(bufferToProcess, client, length);
+
+                    if (length >= handler.MinimumLength)
                     {
-                        byte[] unhandledPacketData = GetBufferToBeRead(bufferToProcess, client, length);
+                        PacketReader reader = new PacketReader(data, length);
 
-                        length = 0;
-                    }
-                    else if (handler.Length == 0)
-                    {
-                        byte[] data = GetBufferToBeRead(bufferToProcess, client, length);
+                        handler.OnReceive(client, reader);
 
-                        if (length >= handler.MinimumLength)
-                        {
-                            PacketReader reader = new PacketReader(data, length);
-
-                            handler.OnReceive(client, reader);
-
-                            // If we failed it's because the packet isn't complete
-                            if (reader.Failed)
-                            {
-                                EnqueueFragment(client, data);
-                                length = 0;
-                            }
-                            else
-                            {
-                                bufferToProcess.Enqueue(data, reader.Index, data.Length - reader.Index);
-                                length = bufferToProcess.Length;
-                            }
-                        }
-                        else
+                        // If we failed it's because the packet isn't complete
+                        if (reader.Failed)
                         {
                             EnqueueFragment(client, data);
                             length = 0;
                         }
-                    }
-                    else if (length >= handler.Length)
-                    {
-                        byte[] data = GetBufferToBeRead(bufferToProcess, client, handler.Length);
-
-                        PacketReader reader = new PacketReader(data, handler.Length);
-
-                        handler.OnReceive(client, reader);
-
-                        // If we failed it's because the packet is wrong
-                        if (reader.Failed)
-                        {
-                            //client.MarkToDispose();
-                            length = 0;
-                        }
                         else
+                        {
+                            bufferToProcess.Enqueue(data, reader.Index, data.Length - reader.Index);
                             length = bufferToProcess.Length;
+                        }
                     }
                     else
                     {
-                        byte[] data = GetBufferToBeRead(bufferToProcess, client, length);
                         EnqueueFragment(client, data);
                         length = 0;
                     }
                 }
-            });
+                else if (length >= handler.Length)
+                {
+                    byte[] data = GetBufferToBeRead(bufferToProcess, client, handler.Length);
+
+                    PacketReader reader = new PacketReader(data, handler.Length);
+
+                    handler.OnReceive(client, reader);
+
+                    // If we failed it's because the packet is wrong
+                    if (reader.Failed)
+                    {
+                        //client.MarkToDispose();
+                        length = 0;
+                    }
+                    else
+                        length = bufferToProcess.Length;
+                }
+                else
+                {
+                    byte[] data = GetBufferToBeRead(bufferToProcess, client, length);
+                    EnqueueFragment(client, data);
+                    length = 0;
+                }
+            }
         }
 
         private static void EnqueueFragment(Client client, byte[] data)

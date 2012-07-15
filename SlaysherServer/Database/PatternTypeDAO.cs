@@ -7,7 +7,6 @@ using SlaysherServer.Game;
 
 namespace SlaysherServer.Database
 {
-    // TODO: blacklists are ignored atm
     public class PatternTypeDAO
     {
         private MySqlConnection _db;

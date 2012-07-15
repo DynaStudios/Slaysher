@@ -78,7 +78,7 @@ namespace SlaysherServer.Game.Models
             return _processedBuffer;
         }
 
-        private void _sendPattern()
+        private void sendPattern()
         {
             foreach(Pattern pattern in Server.World.Patterns)
             {
@@ -112,7 +112,7 @@ namespace SlaysherServer.Game.Models
                 //Remove the password from packet.
                 packet.Password = "blablabla";
                 client.SendPacket(packet);
-                client._sendPattern();
+                client.sendPattern();
 
                 //Send some sample Pattern to draw
                 // client.SendPacket(new PatternPacket { PatternID = 1, TextureID = 1, X = 0, Y = 0 });

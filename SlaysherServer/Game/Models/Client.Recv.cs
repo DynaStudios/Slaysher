@@ -80,7 +80,8 @@ namespace SlaysherServer.Game.Models
 
         private void sendPattern()
         {
-            foreach(Pattern pattern in Server.World.Patterns)
+            int sent = 0;
+            foreach (Pattern pattern in Server.World.Patterns)
             {
                 PatternPacket packet = new PatternPacket()
                 {
@@ -90,13 +91,14 @@ namespace SlaysherServer.Game.Models
                     Y = pattern.Y
                 };
 
+                Console.WriteLine("Send Pattern: " + sent++);
                 SendPacket(packet);
             }
         }
 
         public static void HandleHandshake(Client client, HandshakePacket packet)
         {
-            if (packet.Username != null && packet.Password != null && !client.IsLoggingIn)
+            if (packet.Username != null && !client.IsLoggingIn)
             {
                 client.IsLoggingIn = true;
                 // check for baned users
@@ -106,11 +108,9 @@ namespace SlaysherServer.Game.Models
                 // }
 
                 //TODO: Debugging. Remove this if tested
-                Console.WriteLine("Received Login for User " + packet.Username + " with password " + packet.Password);
+                Console.WriteLine("Received Login for User " + packet.Username);
 
                 Console.WriteLine("Send Handshake back!");
-                //Remove the password from packet.
-                packet.Password = "blablabla";
                 client.SendPacket(packet);
                 client.sendPattern();
 

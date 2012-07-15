@@ -50,6 +50,8 @@ namespace Slaysher.Network
         private int Sends;
         private int SendRunning;
 
+        public int debugReceivedPattern = 0;
+
         public Client(GameSampleScene gameScene)
         {
             GameScene = gameScene;
@@ -83,7 +85,7 @@ namespace Slaysher.Network
             Task.Factory.StartNew(RecvPacket);
 
             //TODO: Send Handshake Packet here
-            HandshakePacket handshake = new HandshakePacket { Username = _userName, Password = GameScene.Engine.Password };
+            HandshakePacket handshake = new HandshakePacket { Username = _userName };
             SendPacket(handshake);
         }
 
@@ -361,6 +363,7 @@ namespace Slaysher.Network
         public static void HandleKeepAlive(Client client, KeepAlivePacket ap)
         {
             //Respond KeepAlive Packet to Server
+            Console.WriteLine("Received Keep Alive");
             client.SendPacket(new KeepAlivePacket { TimeStamp = ap.TimeStamp });
 
             if (client.WaitInitialPositionRequest)
@@ -371,7 +374,7 @@ namespace Slaysher.Network
 
         public static void HandlePatternPacket(Client client, PatternPacket pp)
         {
-            Console.WriteLine("Received Pattern Packet");
+            Console.WriteLine("Received Pattern Packet: " + client.debugReceivedPattern++);
 
             //Retrieve Pattern Texture
             Pattern newPattern = new Pattern(new Vector3(pp.X, 0, pp.Y), client.GameScene.LoadPatternTexture(pp.TextureID));

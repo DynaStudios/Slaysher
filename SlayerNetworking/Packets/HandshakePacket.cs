@@ -10,8 +10,6 @@ namespace SlaysherNetworking.Packets
     {
         public string Username { get; set; }
 
-        public string Password { get; set; }
-
         public HandshakePacket() { }
 
         public HandshakePacket(string username)
@@ -21,15 +19,13 @@ namespace SlaysherNetworking.Packets
 
         public override void Read(PacketReader reader)
         {
-            Username = reader.ReadString16(16);
-            Password = reader.ReadString8(10);
+            Username = reader.ReadString16(8);
         }
 
         public override void Write()
         {
-            SetCapacity(6, Username, Password);
+            SetCapacity(3, Username);
             Writer.Write(Username);
-            Writer.Write8(Password);
         }
     }
 }

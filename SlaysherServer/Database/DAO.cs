@@ -16,6 +16,7 @@ namespace SlaysherServer.Database
         private MySqlConnection _db;
 
         public GameObjectDAO GameObjectDAO { get; private set; }
+
         public PatternTypeDAO PatternTypeDAO { get; private set; }
 
         public DAO()
@@ -24,6 +25,5 @@ namespace SlaysherServer.Database
             GameObjectDAO = new GameObjectDAO(_db);
             PatternTypeDAO = new PatternTypeDAO(_db);
         }
-
     }
 }

@@ -2,14 +2,17 @@
 using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
+
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+
+using SlaysherNetworking.Game.World.Objects;
+using SlaysherNetworking.Packets.Utils;
+
 using Slaysher.Game.World.Objects;
 using Slaysher.Graphics.Camera;
 using Slaysher.Network;
-using SlaysherNetworking.Game.World.Objects;
-using SlaysherNetworking.Packets.Utils;
 
 namespace Slaysher.Game.Scenes
 {
@@ -70,11 +73,16 @@ namespace Slaysher.Game.Scenes
             _patternBaseModel = Engine.Content.Load<Model>("Models/Pattern/Pattern");
 
             // TODO: using a monitor might be more what is realy wanted
-            while (_client.WaitInitialPositionRequest)
-            {
-                //Wait until Server send us all necassery data.
-                Thread.Sleep(10);
+            lock(_client.WaitInitialPositionRequestLook) {
+                if (_client.WaitInitialPositionRequest) {
+                    Monitor.Wait(_client.WaitInitialPositionRequestLook);
+                }
             }
+            //while ()
+            //{
+                //Wait until Server send us all necassery data.
+                //Thread.Sleep(10);
+            //}
             _contentLoaded = true;
         }
 

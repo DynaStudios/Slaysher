@@ -4,12 +4,15 @@ using System.Net;
 using System.Net.Sockets;
 using System.Threading;
 using System.Threading.Tasks;
+
 using Microsoft.Xna.Framework;
-using Slaysher.Game.Scenes;
-using Slaysher.Game.World.Objects;
+
 using SlaysherNetworking.Network;
 using SlaysherNetworking.Packets;
 using SlaysherNetworking.Packets.Utils;
+
+using Slaysher.Game.Scenes;
+using Slaysher.Game.World.Objects;
 
 namespace Slaysher.Network
 {
@@ -46,6 +49,7 @@ namespace Slaysher.Network
         private int _time;
 
         public bool WaitInitialPositionRequest = true;
+        public object WaitInitialPositionRequestLook = new object();
 
         private int Sends;
         private int SendRunning;
@@ -366,9 +370,13 @@ namespace Slaysher.Network
             Console.WriteLine("Received Keep Alive");
             client.SendPacket(new KeepAlivePacket { TimeStamp = ap.TimeStamp });
 
-            if (client.WaitInitialPositionRequest)
+            lock (client.WaitInitialPositionRequestLook)
             {
-                client.WaitInitialPositionRequest = false;
+                if (client.WaitInitialPositionRequest)
+                {
+                    client.WaitInitialPositionRequest = false;
+                    Monitor.PulseAll(client.WaitInitialPositionRequestLook);
+                }
             }
         }
 

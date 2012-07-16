@@ -55,8 +55,8 @@ namespace SlaysherServer.Game
             var referencing = new List<List<Pattern>>();
             var ret = new List<Pattern>();
             Random rnd = new Random();
-            int xMax = rnd.Next(5) + 5;
-            int yMax = rnd.Next(5) + 5;
+            int xMax = rnd.Next(4) + 3;
+            int yMax = rnd.Next(4) + 3;
 
             for (int yi=0; yi < yMax; ++yi)
             {

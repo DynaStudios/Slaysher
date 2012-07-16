@@ -25,14 +25,17 @@ namespace SlaysherServer.Game
 
     public class Pattern
     {
-        public PatternType Type  { get; set; }
+        public PatternType Type { get; set; }
+
         public int Id { get; set; }
 
         public float X { get; set; }
+
         public float Y { get; set; }
     }
 
-    public class PatternGenerator {
+    public class PatternGenerator
+    {
         private DAO _dao;
         private List<PatternType> _types;
 
@@ -58,7 +61,7 @@ namespace SlaysherServer.Game
             int xMax = rnd.Next(4) + 3;
             int yMax = rnd.Next(4) + 3;
 
-            for (int yi=0; yi < yMax; ++yi)
+            for (int yi = 0; yi < yMax; ++yi)
             {
                 referencing.Add(new List<Pattern>());
 
@@ -85,11 +88,14 @@ namespace SlaysherServer.Game
                     }
 
                     PatternType type;
-                    if (query.Count == 0) {
+                    if (query.Count == 0)
+                    {
                         // FIXME: this is a fallback but should never be used as it generates
                         // not releasable stuff
                         type = _types[rnd.Next(query.Count)];
-                    } else {
+                    }
+                    else
+                    {
                         type = query[rnd.Next(query.Count)];
                     }
 

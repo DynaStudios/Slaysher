@@ -89,6 +89,12 @@ namespace Slaysher
 
         protected override void Initialize()
         {
+            var state = new DepthStencilState();
+            state.DepthBufferEnable = true;
+            state.DepthBufferWriteEnable = true;
+            //graphics.GraphicsDevice.DepthStencilState = DepthStencilState.Default;
+            GraphicsDevice.DepthStencilState = state;
+            //graphics.GraphicsDevice.RasterizerState = RasterizerState.CullNone;
             LoadScenesFromAssembly(Assembly.GetExecutingAssembly());
 
             //Switch to chosen Scene

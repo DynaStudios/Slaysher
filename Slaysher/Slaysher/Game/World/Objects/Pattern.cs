@@ -28,7 +28,7 @@ namespace Slaysher.Game.World.Objects
             {
                 foreach (BasicEffect effect in mesh.Effects)
                 {
-                    effect.EnableDefaultLighting();
+                    //effect.EnableDefaultLighting();
                     //effect.World = modelTransforms[mesh.ParentBone.Index] * worldMatrix * _position;
                     effect.TextureEnabled = true;
                     effect.Texture = _patternTexture;

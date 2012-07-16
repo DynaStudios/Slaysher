@@ -1,8 +1,5 @@
+<?xml version="1.0"?>
 <PatternTextures>
-  <Pattern>
-    <ID>0</ID>
-    <Path>Images/Game/Pattern/missing</Path>
-  </Pattern>
   <Pattern>
     <ID>1</ID>
     <Path>Images/Game/Pattern/dirt</Path>
@@ -36,19 +33,19 @@
     <Path>Images/Game/Pattern/sand2</Path>
   </Pattern>
   <Pattern>
-    <ID>9</ID>
+    <ID>10</ID>
     <Path>Images/Game/Pattern/sand3</Path>
   </Pattern>
   <Pattern>
-    <ID>10</ID>
+    <ID>11</ID>
     <Path>Images/Game/Pattern/sand4</Path>
   </Pattern>
   <Pattern>
-    <ID>11</ID>
+    <ID>12</ID>
     <Path>Images/Game/Pattern/sand5</Path>
   </Pattern>
   <Pattern>
-    <ID>12</ID>
+    <ID>9</ID>
     <Path>Images/Game/Pattern/water</Path>
   </Pattern>
 </PatternTextures>

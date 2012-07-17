@@ -34,6 +34,7 @@ namespace Slaysher.Game.World.Objects
                     effect.Texture = _patternTexture;
 
                     effect.GraphicsDevice.DepthStencilState = DepthStencilState.Default;
+                    //effect.CurrentTechnique.Passes[0].Apply();
 
                     effect.World = modelTransforms[mesh.ParentBone.Index] * Matrix.CreateTranslation(_position);
                     effect.View = camera.viewMatrix;

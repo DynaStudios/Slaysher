@@ -56,6 +56,26 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Images\Game\Pattern\sand6.png">
+      <Name>sand6</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+    <Compile Include="Images\Game\Pattern\sand7.png">
+      <Name>sand7</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+    <Compile Include="Images\Game\Pattern\sand8.png">
+      <Name>sand8</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+    <Compile Include="Images\Game\Pattern\sand9.png">
+      <Name>sand9</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
     <None Include="Data\patternTextures.xml">
       <Name>patternTextures</Name>
       <Importer>XmlImporter</Importer>

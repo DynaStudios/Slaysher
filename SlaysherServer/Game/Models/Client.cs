@@ -1,7 +1,9 @@
 ﻿using System;
+using System.Linq;
 using System.Net.Sockets;
 using System.Threading.Tasks;
 using SlaysherNetworking.Network;
+using SlaysherNetworking.Packets;
 using SlaysherServer.Network;
 
 namespace SlaysherServer.Game.Models
@@ -76,6 +78,106 @@ namespace SlaysherServer.Game.Models
             _sendSocketEvent.Completed += Send_Completed;
 
             Task.Factory.StartNew(RecvStart);
+        }
+
+        internal void Stop()
+        {
+            MarkToDispose();
+            DisposeRecvSystem();
+            DisposeSendSystem();
+        }
+
+        public void MarkToDispose()
+        {
+            lock (_disposeLock)
+            {
+                if (Running)
+                {
+                    Running = false;
+                }
+            }
+        }
+
+        public void Dispose()
+        {
+            if (Player != null)
+            {
+                Save();
+
+                Server.RemoveClient(this);
+
+                Client[] nearbyClients = Server.GetNearbyPlayers(Player.Position).ToArray();
+
+                foreach (var client in nearbyClients)
+                {
+                    if (client != this)
+                    {
+                        EntityDespawnPacket dp = new EntityDespawnPacket { EntityId = client.ClientId };
+                        dp.Write();
+                        byte[] data = dp.GetBuffer();
+                        client.Send_Sync(data);
+                    }
+                }
+
+                Running = false;
+            }
+            else
+            {
+                Running = false;
+                Server.RemoveClient(this);
+                Server.FreeConnectionSlot();
+            }
+
+            RecvBufferPool.ReleaseBuffer(_recvBuffer);
+            SendSocketEventPool.Push(_sendSocketEvent);
+            RecvSocketEventPool.Push(_recvSocketEvent);
+
+            if (_socket.Connected)
+            {
+                try
+                {
+                    _socket.Shutdown(SocketShutdown.Both);
+                }
+                catch (SocketException)
+                {
+                    // Ignore errors in socket shutdown (e.g. if client crashes there is a no connection error when trying to shutdown)
+                }
+            }
+            _socket.Close();
+
+            //GC.Collect();
+        }
+
+        internal void DisposeSendSystem()
+        {
+            lock (_disposeLock)
+            {
+                if (!_sendSystemDisposed)
+                {
+                    _sendSystemDisposed = true;
+                    if (_recvSystemDisposed)
+                    {
+                        Server.ClientsToDispose.Enqueue(this);
+                        Server.NetworkSignal.Set();
+                    }
+                }
+            }
+        }
+
+        internal void DisposeRecvSystem()
+        {
+            lock (_disposeLock)
+            {
+                if (!_recvSystemDisposed)
+                {
+                    _recvSystemDisposed = true;
+                    if (_sendSystemDisposed)
+                    {
+                        Server.ClientsToDispose.Enqueue(this);
+                        Server.NetworkSignal.Set();
+                    }
+                }
+            }
         }
     }
 }

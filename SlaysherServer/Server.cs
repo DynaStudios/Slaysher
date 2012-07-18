@@ -390,6 +390,18 @@ namespace SlaysherServer
             Interlocked.Increment(ref _clientDictChanges);
         }
 
+        public void RemoveClient(Client c)
+        {
+            Clients.TryRemove(c.ClientId, out c);
+            Interlocked.Increment(ref _clientDictChanges);
+        }
+
+        internal void FreeConnectionSlot()
+        {
+            Interlocked.Increment(ref MaxClientConnections);
+            NetworkSignal.Set();
+        }
+
         internal void SendPacketBroadcast(Packet packet)
         {
             Client[] clients = GetClients();

@@ -45,6 +45,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Game\World\Objects\GameObject.cs" />
+    <Compile Include="Packets\EntityDespawnPacket.cs" />
+    <Compile Include="Packets\EntitySpawnPacket.cs" />
     <Compile Include="Packets\HandshakePacket.cs" />
     <Compile Include="Packets\KeepAlivePacket.cs" />
     <Compile Include="Packets\KickPacket.cs" />

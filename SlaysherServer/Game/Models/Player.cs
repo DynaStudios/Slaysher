@@ -5,12 +5,8 @@ using System.Text;
 
 namespace SlaysherServer.Game.Models
 {
-    public class Player
+    public class Player : Entity
     {
-        public int Health { get; set; }
-
-        public WorldPosition Position { get; set; }
-
         public string Nickname { get; set; }
 
         public Player() { }

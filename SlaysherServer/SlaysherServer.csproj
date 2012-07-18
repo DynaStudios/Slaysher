@@ -49,6 +49,7 @@
     <Compile Include="Database\PatternTypeDAO.cs" />
     <Compile Include="Game\Entity.cs" />
     <Compile Include="Game\Models\Client.cs" />
+    <Compile Include="Game\Models\Client.Persistence.cs" />
     <Compile Include="Game\Models\Client.Recv.cs" />
     <Compile Include="Game\Models\Client.Send.cs" />
     <Compile Include="Game\Models\Player.cs" />

@@ -34,9 +34,6 @@ namespace SlaysherServer.Game.Models
 
         private void Send_Completed(object sender, SocketAsyncEventArgs e)
         {
-            /*
-            if (e.Buffer[0] == (byte)PacketType.Disconnect)
-                e.Completed -= Disconnected;
             if (!Running)
                 DisposeSendSystem();
             else if (e.SocketError != SocketError.Success)
@@ -49,16 +46,15 @@ namespace SlaysherServer.Game.Models
             {
                 if (DateTime.Now + TimeSpan.FromSeconds(5) > _nextActivityCheck)
                     _nextActivityCheck = DateTime.Now + TimeSpan.FromSeconds(5);
-                Send_Start();
+                SendStart();
             }
-             */
         }
 
         private void Send_Async(byte[] data)
         {
             if (!Running || !_socket.Connected)
             {
-                //DisposeSendSystem();
+                DisposeSendSystem();
                 return;
             }
 
@@ -66,6 +62,23 @@ namespace SlaysherServer.Game.Models
             bool pending = _socket.SendAsync(_sendSocketEvent);
             if (!pending)
                 Send_Completed(null, _sendSocketEvent);
+        }
+
+        private void Send_Sync(byte[] data)
+        {
+            if (!Running || !_socket.Connected)
+            {
+                DisposeSendSystem();
+                return;
+            }
+            try
+            {
+                _socket.Send(data, 0, data.Length, 0);
+            }
+            catch (Exception)
+            {
+                Stop();
+            }
         }
 
         internal void SendStart()

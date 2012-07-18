@@ -23,7 +23,9 @@ namespace SlaysherNetworking.Packets
             { typeof(KickPacket), PacketType.Kick },
             { typeof(KeepAlivePacket), PacketType.KeepAlive },
             { typeof(PlayerPositionPacket), PacketType.PlayerPosition },
-            { typeof(PatternPacket), PacketType.Pattern}
+            { typeof(PatternPacket), PacketType.Pattern},
+            { typeof(EntitySpawnPacket), PacketType.EntitySpawn},
+            { typeof(EntityDespawnPacket), PacketType.EntityDespawn}
         };
 
         private readonly static ConcurrentDictionary<Type, PacketType> _concurrentMap = new ConcurrentDictionary<Type, PacketType>();

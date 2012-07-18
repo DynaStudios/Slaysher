@@ -11,6 +11,8 @@ namespace SlaysherNetworking.Packets
         Kick = 0x01,
         KeepAlive = 0x02,
         PlayerPosition = 0x03,
-        Pattern = 0x04
+        Pattern = 0x04,
+        EntitySpawn = 0x05,
+        EntityDespawn = 0x06
     }
 }

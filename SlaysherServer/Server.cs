@@ -390,6 +390,17 @@ namespace SlaysherServer
             Interlocked.Increment(ref _clientDictChanges);
         }
 
+        internal void SendPacketBroadcast(Packet packet)
+        {
+            Client[] clients = GetClients();
+            packet.SetShared(clients.Length);
+
+            Parallel.ForEach(clients, (client) =>
+                {
+                    client.SendPacket(packet);
+                });
+        }
+
         internal void SendPacketToNearbyPlayers(WorldPosition pos, Packet packet, Client excludedClient = null)
         {
             Client[] nearbyClients = GetNearbyPlayers(pos).ToArray();

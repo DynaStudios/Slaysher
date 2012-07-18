@@ -33,6 +33,7 @@ namespace SlaysherServer
 
         private Task _readClientsPackets;
         private Task _sendClientPackets;
+        private Task _disposeClients;
 
         //Server Properties
         private bool _running = true;
@@ -142,17 +143,28 @@ namespace SlaysherServer
                     _readClientsPackets = Task.Factory.StartNew(ProcessReadQueue);
                 }
 
-                /*
-
                 if (!ClientsToDispose.IsEmpty && (_disposeClients == null || _disposeClients.IsCompleted))
                 {
                     _disposeClients = Task.Factory.StartNew(DisposeClients);
                 }
-                 * */
+
                 if (!SendClientQueue.IsEmpty && (_sendClientPackets == null || _sendClientPackets.IsCompleted))
                 {
                     _sendClientPackets = Task.Factory.StartNew(ProcessSendQueue);
                 }
+            }
+        }
+
+        private void DisposeClients()
+        {
+            int count = ClientsToDispose.Count;
+            while (!ClientsToDispose.IsEmpty)
+            {
+                Client client;
+                if (!ClientsToDispose.TryDequeue(out client))
+                    continue;
+
+                client.Dispose();
             }
         }
 
@@ -261,7 +273,7 @@ namespace SlaysherServer
                     // If we failed it's because the packet is wrong
                     if (reader.Failed)
                     {
-                        //client.MarkToDispose();
+                        client.MarkToDispose();
                         length = 0;
                     }
                     else
@@ -327,7 +339,7 @@ namespace SlaysherServer
 
                 if (!client.Running)
                 {
-                    //client.DisposeSendSystem();
+                    client.DisposeSendSystem();
                     return;
                 }
 

@@ -386,12 +386,12 @@ namespace Slaysher.Network
             client.GameScene.Pattern.Add(pp.PatternID, newPattern);
         }
 
-        internal static void HandleEntitySpawn(Client client, EntitySpawnPacket esp)
+        public static void HandleEntitySpawn(Client client, EntitySpawnPacket esp)
         {
             throw new NotImplementedException();
         }
 
-        internal static void HandleEntityDespawn(Client client, EntityDespawnPacket edp)
+        public static void HandleEntityDespawn(Client client, EntityDespawnPacket edp)
         {
             throw new NotImplementedException();
         }

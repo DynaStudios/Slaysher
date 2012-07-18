@@ -17,13 +17,13 @@ namespace SlaysherServer.Game.Models
         {
             if (!Running)
             {
-                // DisposeRecvSystem();
+                DisposeRecvSystem();
                 return;
             }
 
             if (!_socket.Connected)
             {
-                //  Stop();
+                Stop();
                 return;
             }
 

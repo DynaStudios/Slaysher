@@ -85,7 +85,7 @@ namespace SlaysherServer.Game.Models
         {
             if (!Running || !_socket.Connected)
             {
-                //DisposeSendSystem();
+                DisposeSendSystem();
                 return;
             }
 
@@ -136,8 +136,8 @@ namespace SlaysherServer.Game.Models
             }
             catch (Exception e)
             {
-                //MarkToDispose();
-                //DisposeSendSystem();
+                MarkToDispose();
+                DisposeSendSystem();
                 //if (packet != null)
                 //Logger.Log(LogLevel.Error, "Sending packet: {0}", packet.ToString());
                 //Logger.Log(LogLevel.Error, e.ToString());
@@ -150,7 +150,7 @@ namespace SlaysherServer.Game.Models
         {
             if (!Running || !_socket.Connected)
             {
-                //DisposeSendSystem();
+                DisposeSendSystem();
                 return;
             }
 

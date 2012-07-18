@@ -1,14 +1,14 @@
 ﻿using System;
 using System.Collections.Concurrent;
+using System.Collections.Generic;
+using System.Linq;
 using System.Net;
 using System.Net.Sockets;
 using System.Threading;
 using System.Threading.Tasks;
-
 using SlaysherNetworking.Network;
 using SlaysherNetworking.Packets;
 using SlaysherNetworking.Packets.Utils;
-
 using SlaysherServer.Database;
 using SlaysherServer.Game;
 using SlaysherServer.Game.Models;
@@ -19,6 +19,8 @@ namespace SlaysherServer
 {
     public class Server
     {
+        public static int SightRadius = 10;
+
         private readonly Socket _listener;
         private readonly SocketAsyncEventArgs _acceptEventArgs;
 
@@ -179,7 +181,8 @@ namespace SlaysherServer
             Parallel.For(0, count, processSingelRead);
         }
 
-        private static void processSingelRead(int i) {
+        private static void processSingelRead(int i)
+        {
             Client client;
             if (!RecvClientQueue.TryDequeue(out client))
             {
@@ -369,9 +372,56 @@ namespace SlaysherServer
             return true;
         }
 
+        int _clientDictChanges;
+        Client[] _clientsCache;
+
+        public Client[] GetClients()
+        {
+            int changes = Interlocked.Exchange(ref _clientDictChanges, 0);
+            if (_clientsCache == null || changes > 0)
+                _clientsCache = Clients.Values.ToArray();
+
+            return _clientsCache;
+        }
+
         private void AddClient(Client c)
         {
             Clients.TryAdd(c.ClientId, c);
+            Interlocked.Increment(ref _clientDictChanges);
+        }
+
+        internal void SendPacketToNearbyPlayers(WorldPosition pos, Packet packet, Client excludedClient = null)
+        {
+            Client[] nearbyClients = GetNearbyPlayers(pos).ToArray();
+
+            if (nearbyClients.Length == 0)
+                return;
+
+            packet.SetShared(nearbyClients.Length);
+
+            Parallel.ForEach(nearbyClients, (client) =>
+                {
+                    if (excludedClient != client)
+                    {
+                        client.SendPacket(packet);
+                    }
+                    else
+                    {
+                        packet.Release();
+                    }
+                });
+        }
+
+        internal IEnumerable<Client> GetNearbyPlayers(WorldPosition pos)
+        {
+            int radius = Server.SightRadius;
+            foreach (Client c in GetClients())
+            {
+                int playerPatternX = (int)Math.Floor(c.Player.Position.X) >> 5;
+                int playerPatternY = (int)Math.Floor(c.Player.Position.Y) >> 5;
+                if (Math.Abs(pos.X - playerPatternX) <= radius && Math.Abs(pos.Y - playerPatternY) <= radius)
+                    yield return c;
+            }
         }
     }
 }

@@ -46,6 +46,8 @@ namespace SlaysherServer.Game.Models
 
         public Server Server { get; set; }
 
+        public Player Player { get; set; }
+
         private readonly Socket _socket;
 
         public Client(int nextClientId, Server server, Socket socket)

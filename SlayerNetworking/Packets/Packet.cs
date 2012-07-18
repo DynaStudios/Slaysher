@@ -66,6 +66,28 @@ namespace SlaysherNetworking.Packets
             Writer.Write((byte)GetPacketType());
         }
 
+        public void SetShared(int num)
+        {
+            if (num == 0)
+            {
+                _sharesNum = 1;
+            }
+            Shared = true;
+            _sharesNum = num;
+            Write();
+
+            _buffer = new byte[Length];
+            byte[] underlyingBuffer = Writer.UnderlyingStream.GetBuffer();
+            try
+            {
+                Buffer.BlockCopy(underlyingBuffer, 0, _buffer, 0, Length);
+            }
+            catch (Exception e)
+            {
+                throw new Exception(String.Format("Writer {0}, Request {1} \r\n{2}", underlyingBuffer.Length, Length, e));
+            }
+        }
+
         //Add Release Methods
         public void Release()
         {

@@ -103,8 +103,8 @@ namespace SlaysherServer.Game
                     {
                         Id = yi * xMax + xi,
                         Type = type,
-                        X = xi * 25f,
-                        Y = yi * 25f
+                        X = xi * 32f,
+                        Y = yi * 32f
                     };
 
                     ret.Add(pattern);

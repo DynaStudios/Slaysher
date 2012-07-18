@@ -20,9 +20,11 @@ namespace Slaysher.Network
         {
             _handlers = new ClientPacketHandler[0x100];
 
-            Register(PacketType.Handshake, 0, 3, ReadHandshake);
+            Register(PacketType.Handshake, 0, 1, ReadHandshake);
             Register(PacketType.KeepAlive, 9, 0, ReadKeepAlive);
             Register(PacketType.Pattern, 25, 0, ReadPattern);
+            Register(PacketType.EntitySpawn, 0, 17, ReadEntitySpawn);
+            Register(PacketType.EntityDespawn, 5, 0, ReadEntityDespawn);
         }
 
         public static void Register(PacketType packetID, int length, int minimumLength, OnPacketReceive onReceive)
@@ -65,6 +67,28 @@ namespace Slaysher.Network
             if (!reader.Failed)
             {
                 Client.HandlePatternPacket(client, pp);
+            }
+        }
+
+        public static void ReadEntitySpawn(Client client, PacketReader reader)
+        {
+            EntitySpawnPacket esp = new EntitySpawnPacket();
+            esp.Read(reader);
+
+            if (!reader.Failed)
+            {
+                Client.HandleEntitySpawn(client, esp);
+            }
+        }
+
+        public static void ReadEntityDespawn(Client client, PacketReader reader)
+        {
+            EntityDespawnPacket edp = new EntityDespawnPacket();
+            edp.Read(reader);
+
+            if (!reader.Failed)
+            {
+                Client.HandleEntityDespawn(client, edp);
             }
         }
     }

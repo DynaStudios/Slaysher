@@ -4,15 +4,12 @@ using System.Net;
 using System.Net.Sockets;
 using System.Threading;
 using System.Threading.Tasks;
-
 using Microsoft.Xna.Framework;
-
+using Slaysher.Game.Scenes;
+using Slaysher.Game.World.Objects;
 using SlaysherNetworking.Network;
 using SlaysherNetworking.Packets;
 using SlaysherNetworking.Packets.Utils;
-
-using Slaysher.Game.Scenes;
-using Slaysher.Game.World.Objects;
 
 namespace Slaysher.Network
 {
@@ -387,6 +384,16 @@ namespace Slaysher.Network
             //Retrieve Pattern Texture
             Pattern newPattern = new Pattern(new Vector3(pp.X, 0, pp.Y), client.GameScene.LoadPatternTexture(pp.TextureID));
             client.GameScene.Pattern.Add(pp.PatternID, newPattern);
+        }
+
+        internal static void HandleEntitySpawn(Client client, EntitySpawnPacket esp)
+        {
+            throw new NotImplementedException();
+        }
+
+        internal static void HandleEntityDespawn(Client client, EntityDespawnPacket edp)
+        {
+            throw new NotImplementedException();
         }
     }
 }

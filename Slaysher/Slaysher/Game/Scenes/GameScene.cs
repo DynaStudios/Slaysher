@@ -13,7 +13,7 @@ using SlaysherNetworking.Packets.Utils;
 
 namespace Slaysher.Game.Scenes
 {
-    public class GameScene : IScene
+    public partial class GameScene : IScene
     {
         public string Name
         {
@@ -96,6 +96,9 @@ namespace Slaysher.Game.Scenes
         {
             if (_contentLoaded)
             {
+                TickPlayer(time);
+                TickWorld(time);
+
                 foreach (KeyValuePair<int, Pattern> key in Pattern)
                 {
                     key.Value.Draw(_patternBaseModel, _worldMatrix, _tempCamera);

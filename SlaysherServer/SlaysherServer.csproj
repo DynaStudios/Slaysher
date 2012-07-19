@@ -47,14 +47,11 @@
     <Compile Include="Database\DAO.cs" />
     <Compile Include="Database\GameObjectDAO.cs" />
     <Compile Include="Database\PatternTypeDAO.cs" />
-    <Compile Include="Game\Entity.cs" />
     <Compile Include="Game\Models\Client.cs" />
     <Compile Include="Game\Models\Client.Persistence.cs" />
     <Compile Include="Game\Models\Client.Recv.cs" />
     <Compile Include="Game\Models\Client.Send.cs" />
-    <Compile Include="Game\Models\Player.cs" />
     <Compile Include="Game\World.cs" />
-    <Compile Include="Game\WorldPosition.cs" />
     <Compile Include="Network\BufferPool.cs" />
     <Compile Include="Network\Events\TcpEventArgs.cs" />
     <Compile Include="Network\Handler\PacketHandler.cs" />

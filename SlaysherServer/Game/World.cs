@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-
+using SlaysherNetworking.Game.Entities;
 using SlaysherServer;
 
 namespace SlaysherServer.Game

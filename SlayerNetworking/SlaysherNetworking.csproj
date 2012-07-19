@@ -44,7 +44,10 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Game\Entities\Entity.cs" />
+    <Compile Include="Game\Entities\Player.cs" />
     <Compile Include="Game\World\Objects\GameObject.cs" />
+    <Compile Include="Game\World\WorldPosition.cs" />
     <Compile Include="Packets\EntityDespawnPacket.cs" />
     <Compile Include="Packets\EntitySpawnPacket.cs" />
     <Compile Include="Packets\HandshakePacket.cs" />

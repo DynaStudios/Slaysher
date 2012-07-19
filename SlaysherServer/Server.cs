@@ -6,6 +6,7 @@ using System.Net;
 using System.Net.Sockets;
 using System.Threading;
 using System.Threading.Tasks;
+using SlaysherNetworking.Game.World;
 using SlaysherNetworking.Network;
 using SlaysherNetworking.Packets;
 using SlaysherNetworking.Packets.Utils;

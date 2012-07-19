@@ -1,4 +1,6 @@
-﻿namespace SlaysherServer.Game
+﻿using SlaysherNetworking.Game.World;
+
+namespace SlaysherNetworking.Game.Entities
 {
     public abstract class Entity
     {

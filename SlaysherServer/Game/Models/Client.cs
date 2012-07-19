@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Net.Sockets;
 using System.Threading.Tasks;
+using SlaysherNetworking.Game.Entities;
 using SlaysherNetworking.Network;
 using SlaysherNetworking.Packets;
 using SlaysherServer.Network;

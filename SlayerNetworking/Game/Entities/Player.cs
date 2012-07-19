@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace SlaysherServer.Game.Models
+namespace SlaysherNetworking.Game.Entities
 {
     public class Player : Entity
     {

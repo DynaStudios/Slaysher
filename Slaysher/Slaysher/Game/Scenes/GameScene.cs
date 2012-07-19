@@ -69,7 +69,6 @@ namespace Slaysher.Game.Scenes
             _worldMatrix = Matrix.Identity;
             _patternBaseModel = Engine.Content.Load<Model>("Models/Pattern/Pattern");
 
-            // TODO: using a monitor might be more what is realy wanted
             lock (_client.WaitInitialPositionRequestLook)
             {
                 if (_client.WaitInitialPositionRequest)
@@ -77,11 +76,7 @@ namespace Slaysher.Game.Scenes
                     Monitor.Wait(_client.WaitInitialPositionRequestLook);
                 }
             }
-            //while ()
-            //{
-            //Wait until Server send us all necassery data.
-            //Thread.Sleep(10);
-            //}
+
             _contentLoaded = true;
         }
 

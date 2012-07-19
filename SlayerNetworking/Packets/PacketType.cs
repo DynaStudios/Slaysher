@@ -13,6 +13,7 @@ namespace SlaysherNetworking.Packets
         PlayerPosition = 0x03,
         Pattern = 0x04,
         EntitySpawn = 0x05,
-        EntityDespawn = 0x06
+        EntityDespawn = 0x06,
+        PlayerInfo = 0x07
     }
 }

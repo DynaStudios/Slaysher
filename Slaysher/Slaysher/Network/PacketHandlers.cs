@@ -25,6 +25,7 @@ namespace Slaysher.Network
             Register(PacketType.Pattern, 25, 0, ReadPattern);
             Register(PacketType.EntitySpawn, 0, 17, ReadEntitySpawn);
             Register(PacketType.EntityDespawn, 5, 0, ReadEntityDespawn);
+            Register(PacketType.PlayerInfo, 0, 9, ReadPlayerInfo);
         }
 
         public static void Register(PacketType packetID, int length, int minimumLength, OnPacketReceive onReceive)
@@ -89,6 +90,17 @@ namespace Slaysher.Network
             if (!reader.Failed)
             {
                 Client.HandleEntityDespawn(client, edp);
+            }
+        }
+
+        public static void ReadPlayerInfo(Client client, PacketReader reader)
+        {
+            PlayerInfoPacket pip = new PlayerInfoPacket();
+            pip.Read(reader);
+
+            if (!reader.Failed)
+            {
+                Client.HandlePlayerInfo(client, pip);
             }
         }
     }

@@ -395,5 +395,10 @@ namespace Slaysher.Network
         {
             throw new NotImplementedException();
         }
+
+        internal static void HandlePlayerInfo(Client client, PlayerInfoPacket pip)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

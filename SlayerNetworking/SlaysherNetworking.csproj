@@ -56,6 +56,7 @@
     <Compile Include="Packets\Packet.cs" />
     <Compile Include="Packets\PacketMap.cs" />
     <Compile Include="Packets\PacketType.cs" />
+    <Compile Include="Packets\PlayerInfoPacket.cs" />
     <Compile Include="Packets\Utils\ByteQueue.cs" />
     <Compile Include="Packets\PatternPacket.cs" />
     <Compile Include="Packets\PlayerPositionPacket.cs" />

@@ -118,7 +118,7 @@
     <Compile Include="Game\IO\KeyboardHandler.cs" />
     <Compile Include="Game\Physics\Collisions\AABB.cs" />
     <Compile Include="Game\Physics\Collisions\Box.cs" />
-    <Compile Include="Game\Scenes\GameSampleScene.cs" />
+    <Compile Include="Game\Scenes\GameScene.cs" />
     <Compile Include="Game\Scenes\IScene.cs" />
     <Compile Include="Game\Scenes\MainMenu.cs" />
     <Compile Include="Game\Scenes\SplashScreen.cs" />

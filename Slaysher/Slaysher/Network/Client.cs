@@ -17,7 +17,7 @@ namespace Slaysher.Network
     {
         private ConcurrentQueue<Packet> _packetsToSend = new ConcurrentQueue<Packet>();
 
-        public GameSampleScene GameScene { get; set; }
+        public GameScene GameScene { get; set; }
 
         //private PacketWriter _packetWriter;
         private PacketReader _packetReader;
@@ -53,7 +53,7 @@ namespace Slaysher.Network
 
         public int debugReceivedPattern = 0;
 
-        public Client(GameSampleScene gameScene)
+        public Client(GameScene gameScene)
         {
             GameScene = gameScene;
             PacketMap.Initialize();

@@ -7,6 +7,8 @@ using System.Threading.Tasks;
 using Microsoft.Xna.Framework;
 using Slaysher.Game.Scenes;
 using Slaysher.Game.World.Objects;
+using SlaysherNetworking.Game.Entities;
+using SlaysherNetworking.Game.World;
 using SlaysherNetworking.Network;
 using SlaysherNetworking.Packets;
 using SlaysherNetworking.Packets.Utils;
@@ -396,9 +398,30 @@ namespace Slaysher.Network
             throw new NotImplementedException();
         }
 
-        internal static void HandlePlayerInfo(Client client, PlayerInfoPacket pip)
+        public static void HandlePlayerInfo(Client client, PlayerInfoPacket pip)
         {
-            throw new NotImplementedException();
+            Console.WriteLine("Received Player Info Packet");
+            if (client.GameScene.Player == null && pip.PlayerId == 0)
+            {
+                client.GameScene.Player = new Player { Nickname = pip.Nickname, Health = pip.Health };
+            }
+            else
+            {
+                Console.WriteLine("Error! There is no way a Player Object should already exist!");
+            }
+        }
+
+        public static void HandlePlayerPosition(Client client, PlayerPositionPacket ppp)
+        {
+            Console.WriteLine("Received Player Position Packet");
+            if (client.GameScene.Player != null)
+            {
+                client.GameScene.Player.Position = new WorldPosition(ppp.X, ppp.Y);
+            }
+            else
+            {
+                Console.WriteLine("Error. Player should exist");
+            }
         }
     }
 }

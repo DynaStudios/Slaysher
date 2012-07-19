@@ -19,7 +19,7 @@ namespace SlaysherNetworking.Packets
 
         public override void Read(PacketReader reader)
         {
-            Username = reader.ReadString16(8);
+            Username = reader.ReadString16(64);
         }
 
         public override void Write()

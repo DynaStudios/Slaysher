@@ -20,12 +20,13 @@ namespace Slaysher.Network
         {
             _handlers = new ClientPacketHandler[0x100];
 
-            Register(PacketType.Handshake, 0, 1, ReadHandshake);
+            Register(PacketType.Handshake, 0, 3, ReadHandshake);
             Register(PacketType.KeepAlive, 9, 0, ReadKeepAlive);
             Register(PacketType.Pattern, 25, 0, ReadPattern);
             Register(PacketType.EntitySpawn, 0, 17, ReadEntitySpawn);
             Register(PacketType.EntityDespawn, 5, 0, ReadEntityDespawn);
-            Register(PacketType.PlayerInfo, 0, 9, ReadPlayerInfo);
+            Register(PacketType.PlayerInfo, 0, 11, ReadPlayerInfo);
+            Register(PacketType.PlayerPosition, 29, 0, ReadPlayerPosition);
         }
 
         public static void Register(PacketType packetID, int length, int minimumLength, OnPacketReceive onReceive)
@@ -101,6 +102,17 @@ namespace Slaysher.Network
             if (!reader.Failed)
             {
                 Client.HandlePlayerInfo(client, pip);
+            }
+        }
+
+        public static void ReadPlayerPosition(Client client, PacketReader reader)
+        {
+            PlayerPositionPacket ppp = new PlayerPositionPacket();
+            ppp.Read(reader);
+
+            if (!reader.Failed)
+            {
+                Client.HandlePlayerPosition(client, ppp);
             }
         }
     }

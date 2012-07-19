@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Net.Sockets;
 using System.Threading;
+using SlaysherNetworking.Game.Entities;
 using SlaysherNetworking.Network;
 using SlaysherNetworking.Packets;
 using SlaysherServer.Network;
@@ -111,14 +112,14 @@ namespace SlaysherServer.Game.Models
                 Console.WriteLine("Received Login for User " + packet.Username);
 
                 Console.WriteLine("Send Handshake back!");
-                client.SendPacket(packet);
-                client.sendPattern();
+                client.SendPacket(new HandshakePacket(packet.Username));
 
-                //Send some sample Pattern to draw
-                // client.SendPacket(new PatternPacket { PatternID = 1, TextureID = 1, X = 0, Y = 0 });
-                // client.SendPacket(new PatternPacket { PatternID = 2, TextureID = 2, X = 50, Y = 0 });
-                // client.SendPacket(new PatternPacket { PatternID = 3, TextureID = 3, X = 50, Y = 50 });
-                // client.SendPacket(new PatternPacket { PatternID = 4, TextureID = 4, X = 0, Y = 50 });
+                Console.WriteLine("Send Player Information");
+                client.Player = client.Load();
+                client.SendPacket(new PlayerInfoPacket(client.Player));
+                client.SendPacket(new PlayerPositionPacket(client.Player));
+
+                client.sendPattern();
 
                 client.LastSendKeepAliveStamp = DateTime.Now.Ticks;
 

@@ -1,4 +1,5 @@
-﻿using SlaysherNetworking.Packets.Utils;
+﻿using SlaysherNetworking.Game.Entities;
+using SlaysherNetworking.Packets.Utils;
 
 namespace SlaysherNetworking.Packets
 {
@@ -18,6 +19,17 @@ namespace SlaysherNetworking.Packets
             {
                 return 29;
             }
+        }
+
+        public PlayerPositionPacket() : base() { }
+
+        public PlayerPositionPacket(Player player)
+            : base()
+        {
+            PlayerId = player.Id;
+            X = player.Position.X;
+            Y = player.Position.Y;
+            Z = 0f;
         }
 
         public override void Read(PacketReader reader)

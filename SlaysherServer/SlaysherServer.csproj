@@ -51,6 +51,7 @@
     <Compile Include="Game\Models\Client.Persistence.cs" />
     <Compile Include="Game\Models\Client.Recv.cs" />
     <Compile Include="Game\Models\Client.Send.cs" />
+    <Compile Include="Game\PatternGenerator.cs" />
     <Compile Include="Game\World.cs" />
     <Compile Include="Network\BufferPool.cs" />
     <Compile Include="Network\Events\TcpEventArgs.cs" />

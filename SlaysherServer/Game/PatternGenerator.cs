@@ -82,6 +82,15 @@ namespace SlaysherServer.Game
                     PatternType type;
                     if (query.Count == 0)
                     {
+                        if (xi > 0)
+                        {
+                            // this could squru the server
+                            ret.RemoveAt(ret.Count - 1);
+                            List<Pattern> tmp = referenc[yi];
+                            tmp.RemoveAt(tmp.Count - 1);
+                            xi -= 2;
+                            continue;
+                        }
                         // FIXME: this is a fallback but should never be used as it generates
                         // broken game maps
                         type = _types[rnd.Next(query.Count)];

@@ -9,7 +9,6 @@ namespace SlaysherServer.Game
     public class PatternGenerator
     {
         private DAO _dao;
-        private PatternTemplate[,] _tempates = null;
         private List<PatternType> _types;
         private Random _rnd = new Random();
 
@@ -17,17 +16,6 @@ namespace SlaysherServer.Game
         {
             _dao = dao;
             _types = _dao.PatternTypeDAO.GetAllPatternTypes();
-        }
-
-        private void generateTempatesArray()
-        {
-            if (_tempates == null)
-            {
-                int x = _rnd.Next(3, 7);
-                int y = _rnd.Next(3, 7);
-
-                _tempates = new PatternTemplate[y, x];
-            }
         }
 
         private IEnumerable<PatternType> filterForWestBorder(IEnumerable<PatternType> src, int borderType)
@@ -47,22 +35,22 @@ namespace SlaysherServer.Game
                 select t);
         }
 
-        private List<PatternType> getFilteredPatternType(int x, int y)
+        private List<PatternType> getFilteredPatternType(List<List<Pattern>> referenc, int x, int y)
         {
             IEnumerable<PatternType> filterQuery = _types;
             if (x > 0)
             {
-                filterQuery = filterForEastBorder(
+                filterQuery = filterForWestBorder(
                     filterQuery,
-                    referencing[y][x - 1].Type.East);  // the east border of the west pattern
+                    referenc[y][x - 1].Type.East);  // the east border of the west pattern
             }
-            if (yi > 0)
+            if (y > 0)
             {
                 filterQuery = filterForNordBorder(
                     filterQuery,
-                    referencing[y - 1][x].Type.South);
+                    referenc[y - 1][x].Type.South);
             }
-            return new List(filterQuery);
+            return new List<PatternType>(filterQuery);
         }
 
         // XXX: splitting method in smaller ones for futer maintain
@@ -76,7 +64,7 @@ namespace SlaysherServer.Game
                 return new List<Pattern>();
             }
 
-            var referencing = new List<List<Pattern>>();
+            var referenc = new List<List<Pattern>>();
             var ret = new List<Pattern>();
             Random rnd = new Random();
             int xMax = rnd.Next(4) + 3;
@@ -84,12 +72,12 @@ namespace SlaysherServer.Game
 
             for (int yi = 0; yi < yMax; ++yi)
             {
-                referencing.Add(new List<Pattern>());
+                referenc.Add(new List<Pattern>());
 
                 for (int xi = 0; xi < xMax; ++xi)
                 {
 
-                    List<PatternType> query = getFilteredPatternType(xi, yi);
+                    List<PatternType> query = getFilteredPatternType(referenc, xi, yi);
 
                     PatternType type;
                     if (query.Count == 0)
@@ -112,7 +100,7 @@ namespace SlaysherServer.Game
                     };
 
                     ret.Add(pattern);
-                    referencing[yi].Add(pattern);
+                    referenc[yi].Add(pattern);
                 }
             }
 

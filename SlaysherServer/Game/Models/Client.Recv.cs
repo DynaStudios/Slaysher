@@ -92,7 +92,6 @@ namespace SlaysherServer.Game.Models
                     Y = pattern.Y
                 };
 
-                Console.WriteLine("Send Pattern: " + sent++);
                 SendPacket(packet);
             }
         }

@@ -55,6 +55,7 @@ namespace Slaysher.Game.Scenes
         private void AsyncLoadScene()
         {
             _availablePatternTextures = Engine.ClientDatabase.ReadAvailablePatternTextures();
+            _availablePatternTextures.Add(0, "Images/Game/Pattern/missing");
 
             IPAddress address;
 

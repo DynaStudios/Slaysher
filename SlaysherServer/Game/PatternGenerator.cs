@@ -6,6 +6,15 @@ using SlaysherServer.Database;
 
 namespace SlaysherServer.Game
 {
+    public class PatternGeneratingException : Exception
+    {
+        public PatternGeneratingException(string message)
+            : base(message)
+        {
+        }
+    }
+
+
     public class PatternGenerator
     {
         private DAO _dao;
@@ -57,8 +66,9 @@ namespace SlaysherServer.Game
         public List<Pattern> GetPatterns()
         {
 #if DEBUG
-            Console.WriteLine("stating pattern generation");
+            Console.WriteLine("starting pattern generation");
 #endif
+            PatternType missingPattern = new PatternType();
             if (_types.Count <= 0)
             {
                 return new List<Pattern>();
@@ -67,8 +77,8 @@ namespace SlaysherServer.Game
             var referenc = new List<List<Pattern>>();
             var ret = new List<Pattern>();
             Random rnd = new Random();
-            int xMax = rnd.Next(4) + 3;
-            int yMax = rnd.Next(4) + 3;
+            int xMax = 20;
+            int yMax = 20;
 
             for (int yi = 0; yi < yMax; ++yi)
             {
@@ -82,18 +92,7 @@ namespace SlaysherServer.Game
                     PatternType type;
                     if (query.Count == 0)
                     {
-                        if (xi > 0)
-                        {
-                            // this could squru the server
-                            ret.RemoveAt(ret.Count - 1);
-                            List<Pattern> tmp = referenc[yi];
-                            tmp.RemoveAt(tmp.Count - 1);
-                            xi -= 2;
-                            continue;
-                        }
-                        // FIXME: this is a fallback but should never be used as it generates
-                        // broken game maps
-                        type = _types[rnd.Next(query.Count)];
+                        type = missingPattern;
                     }
                     else
                     {

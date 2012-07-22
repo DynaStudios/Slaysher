@@ -101,6 +101,46 @@
       <Importer>TextureImporter</Importer>
       <Processor>TextureProcessor</Processor>
     </Compile>
+    <Compile Include="Images\Game\Pattern\sandGrass1.png">
+      <Name>sandGrass1</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+    <Compile Include="Images\Game\Pattern\sandGrass2.png">
+      <Name>sandGrass2</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+    <Compile Include="Images\Game\Pattern\sandGrass3.png">
+      <Name>sandGrass3</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+    <Compile Include="Images\Game\Pattern\sandGrass4.png">
+      <Name>sandGrass4</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+    <Compile Include="Images\Game\Pattern\sandGrass5.png">
+      <Name>sandGrass5</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+    <Compile Include="Images\Game\Pattern\sandGrass6.png">
+      <Name>sandGrass6</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+    <Compile Include="Images\Game\Pattern\sandGrass7.png">
+      <Name>sandGrass7</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+    <Compile Include="Images\Game\Pattern\sandGrass8.png">
+      <Name>sandGrass8</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
     <None Include="Data\patternTextures.xml">
       <Name>patternTextures</Name>
       <Importer>XmlImporter</Importer>

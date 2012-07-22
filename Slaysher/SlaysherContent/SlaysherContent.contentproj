@@ -96,6 +96,11 @@
       <Importer>TextureImporter</Importer>
       <Processor>TextureProcessor</Processor>
     </Compile>
+    <Compile Include="Images\Game\Pattern\missing.png">
+      <Name>missing</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
     <None Include="Data\patternTextures.xml">
       <Name>patternTextures</Name>
       <Importer>XmlImporter</Importer>

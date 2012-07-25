@@ -11,6 +11,7 @@ namespace SlaysherServer.Database
             + "pwd=start123;"
             + "database=slaysher;"
             + "port=3306";
+
         private readonly MySqlConnection _db;
 
         public GameObjectDAO GameObjectDAO { get; private set; }

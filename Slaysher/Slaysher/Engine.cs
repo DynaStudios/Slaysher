@@ -34,7 +34,10 @@ namespace Slaysher
 
         private readonly KeyboardHandler _keyboardHandler;
 
-        public KeyboardHandler Keyboard { get { return _keyboardHandler; } }
+        public KeyboardHandler Keyboard
+        {
+            get { return _keyboardHandler; }
+        }
 
         public Database ClientDatabase { get; set; }
 
@@ -60,7 +63,7 @@ namespace Slaysher
         {
             if (type.IsClass)
             {
-                Type sceneType = typeof(IScene);
+                Type sceneType = typeof (IScene);
                 Type[] interfaces = type.GetInterfaces();
 
                 return interfaces.Any(i => sceneType == i);
@@ -75,7 +78,7 @@ namespace Slaysher
             {
                 if (TypeIsScene(type))
                 {
-                    IScene scene = (IScene)Activator.CreateInstance(type, this);
+                    IScene scene = (IScene) Activator.CreateInstance(type, this);
                     AddScene(scene);
                 }
             }
@@ -212,7 +215,9 @@ namespace Slaysher
                 // adapter can handle the video mode we are trying to set.  To do this, we will
                 // iterate thorugh the display modes supported by the adapter and check them against
                 // the mode we want to set.
-                if (GraphicsAdapter.DefaultAdapter.SupportedDisplayModes.Any(dm => (dm.Width == iWidth) && (dm.Height == iHeight)))
+                if (
+                    GraphicsAdapter.DefaultAdapter.SupportedDisplayModes.Any(
+                        dm => (dm.Width == iWidth) && (dm.Height == iHeight)))
                 {
                     _graphics.PreferredBackBufferWidth = iWidth;
                     _graphics.PreferredBackBufferHeight = iHeight;

@@ -101,49 +101,49 @@ namespace SlaysherNetworking.Packets.Utils
 
         public void Write(sbyte data)
         {
-            Write(unchecked((byte)data));
+            Write(unchecked((byte) data));
         }
 
         public void Write(short data)
         {
-            Write(unchecked((byte)(data >> 8)));
-            Write(unchecked((byte)data));
+            Write(unchecked((byte) (data >> 8)));
+            Write(unchecked((byte) data));
         }
 
         public void Write(ushort data)
         {
-            Write(unchecked((byte)(data >> 8)));
-            Write(unchecked((byte)data));
+            Write(unchecked((byte) (data >> 8)));
+            Write(unchecked((byte) data));
         }
 
         public void Write(int data)
         {
-            Write(unchecked((byte)(data >> 24)));
-            Write(unchecked((byte)(data >> 16)));
-            Write(unchecked((byte)(data >> 8)));
-            Write(unchecked((byte)data));
+            Write(unchecked((byte) (data >> 24)));
+            Write(unchecked((byte) (data >> 16)));
+            Write(unchecked((byte) (data >> 8)));
+            Write(unchecked((byte) data));
         }
 
         public void Write(long data)
         {
-            Write(unchecked((byte)(data >> 56)));
-            Write(unchecked((byte)(data >> 48)));
-            Write(unchecked((byte)(data >> 40)));
-            Write(unchecked((byte)(data >> 32)));
-            Write(unchecked((byte)(data >> 24)));
-            Write(unchecked((byte)(data >> 16)));
-            Write(unchecked((byte)(data >> 8)));
-            Write(unchecked((byte)data));
+            Write(unchecked((byte) (data >> 56)));
+            Write(unchecked((byte) (data >> 48)));
+            Write(unchecked((byte) (data >> 40)));
+            Write(unchecked((byte) (data >> 32)));
+            Write(unchecked((byte) (data >> 24)));
+            Write(unchecked((byte) (data >> 16)));
+            Write(unchecked((byte) (data >> 8)));
+            Write(unchecked((byte) data));
         }
 
         public unsafe void Write(float data)
         {
-            Write(*(int*)&data);
+            Write(*(int*) &data);
         }
 
         public unsafe void Write(double data)
         {
-            Write(*(long*)&data);
+            Write(*(long*) &data);
         }
 
         public void Write(string data)
@@ -153,30 +153,30 @@ namespace SlaysherNetworking.Packets.Utils
             if (_strings != null && _strings.Count > 0)
             {
                 b = _strings.Dequeue();
-                length = b.Length / 2;
+                length = b.Length/2;
             }
             else
                 b = Encoding.BigEndianUnicode.GetBytes(data);
 
-            Write((short)length);
+            Write((short) length);
             Write(b, 0, b.Length);
         }
 
         public void Write8(string data)
         {
             byte[] b = Encoding.UTF8.GetBytes(data);
-            Write((short)b.Length);
+            Write((short) b.Length);
             Write(b, 0, b.Length);
         }
 
         public void Write(bool data)
         {
-            Write((byte)(data ? 1 : 0));
+            Write((byte) (data ? 1 : 0));
         }
 
         public void WritePacket(Packet packet)
         {
-            Write((byte)packet.GetPacketType());
+            Write((byte) packet.GetPacketType());
             //packet.WriteFlush(this);
         }
 
@@ -187,7 +187,7 @@ namespace SlaysherNetworking.Packets.Utils
 
         public void WriteDoublePacked(double d)
         {
-            Write((int)(d * 32.0));
+            Write((int) (d*32.0));
         }
     }
 }

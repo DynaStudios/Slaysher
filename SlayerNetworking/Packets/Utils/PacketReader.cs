@@ -13,18 +13,12 @@ namespace SlaysherNetworking.Packets.Utils
 
         public int Index
         {
-            get
-            {
-                return _index;
-            }
+            get { return _index; }
         }
 
         public int Size
         {
-            get
-            {
-                return _size;
-            }
+            get { return _size; }
         }
 
         public bool Failed
@@ -56,7 +50,7 @@ namespace SlaysherNetworking.Packets.Utils
 
             int b = _data[_index++];
 
-            return (byte)b;
+            return (byte) b;
         }
 
         public byte[] ReadBytes(int count)
@@ -76,14 +70,14 @@ namespace SlaysherNetworking.Packets.Utils
 
         public sbyte ReadSByte()
         {
-            return unchecked((sbyte)ReadByte());
+            return unchecked((sbyte) ReadByte());
         }
 
         public short ReadShort()
         {
             if (!CheckBoundaries(2))
                 return 0;
-            return unchecked((short)((ReadByte() << 8) | ReadByte()));
+            return unchecked((short) ((ReadByte() << 8) | ReadByte()));
         }
 
         public int ReadInt()
@@ -98,7 +92,7 @@ namespace SlaysherNetworking.Packets.Utils
             if (!CheckBoundaries(8))
                 return 0;
             return unchecked((ReadByte() << 56) | (ReadByte() << 48) | (ReadByte() << 40) | (ReadByte() << 32)
-                | (ReadByte() << 24) | (ReadByte() << 16) | (ReadByte() << 8) | ReadByte());
+                             | (ReadByte() << 24) | (ReadByte() << 16) | (ReadByte() << 8) | ReadByte());
         }
 
         public unsafe float ReadFloat()
@@ -106,7 +100,7 @@ namespace SlaysherNetworking.Packets.Utils
             if (!CheckBoundaries(4))
                 return 0;
             int i = ReadInt();
-            return *(float*)&i;
+            return *(float*) &i;
         }
 
         public double ReadDouble()
@@ -127,11 +121,11 @@ namespace SlaysherNetworking.Packets.Utils
             if (len > maxLen)
                 throw new IOException("String field too long");
 
-            if (!CheckBoundaries(len * 2))
+            if (!CheckBoundaries(len*2))
                 return "";
 
-            byte[] b = new byte[len * 2];
-            for (int i = 0; i < len * 2; i++)
+            byte[] b = new byte[len*2];
+            for (int i = 0; i < len*2; i++)
                 b[i] = ReadByte();
             return Encoding.BigEndianUnicode.GetString(b);
         }
@@ -158,7 +152,7 @@ namespace SlaysherNetworking.Packets.Utils
 
         public double ReadDoublePacked()
         {
-            return ReadInt() / 32.0;
+            return ReadInt()/32.0;
         }
     }
 }

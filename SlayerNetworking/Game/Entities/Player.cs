@@ -4,6 +4,8 @@
     {
         public string Nickname { get; set; }
 
-        public Player() { }
+        public Player()
+        {
+        }
     }
 }

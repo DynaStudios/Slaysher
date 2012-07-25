@@ -65,7 +65,7 @@ namespace Slaysher.Game.Scenes
 
         private void KeyboardKeyUp(object sender, EventArgs eventArgs)
         {
-            KeyboardEventArgs eventA = (KeyboardEventArgs)eventArgs;
+            KeyboardEventArgs eventA = (KeyboardEventArgs) eventArgs;
             if (eventA.PressedKey == Keys.Escape)
             {
                 Engine.SwitchScene("mainMenu");

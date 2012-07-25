@@ -212,12 +212,14 @@ namespace SlaysherServer
             int length = client.FragPackets.Size + bufferToProcess.Size;
             while (length > 0)
             {
-                byte packetType = client.FragPackets.Size > 0 ? client.FragPackets.GetPacketId() : bufferToProcess.GetPacketId();
+                byte packetType = client.FragPackets.Size > 0
+                                      ? client.FragPackets.GetPacketId()
+                                      : bufferToProcess.GetPacketId();
 
                 //client.Logger.Log(Chraft.LogLevel.Info, "Reading packet {0}", ((PacketType)packetType).ToString());
 
                 Console.WriteLine("Try to resolve packet with id: " + packetType);
-                PacketHandler handler = PacketHandlers.GetHandler((PacketType)packetType);
+                PacketHandler handler = PacketHandlers.GetHandler((PacketType) packetType);
 
                 if (handler == null)
                 {
@@ -318,19 +320,19 @@ namespace SlaysherServer
             int count = SendClientQueue.Count;
 
             Parallel.For(0, count, i =>
-            {
-                Client client;
-                if (!SendClientQueue.TryDequeue(out client))
-                    return;
-
-                if (!client.Running)
                 {
-                    client.DisposeSendSystem();
-                    return;
-                }
+                    Client client;
+                    if (!SendClientQueue.TryDequeue(out client))
+                        return;
 
-                client.SendStart();
-            });
+                    if (!client.Running)
+                    {
+                        client.DisposeSendSystem();
+                        return;
+                    }
+
+                    client.SendStart();
+                });
         }
 
         private void AcceptProcess(SocketAsyncEventArgs e)
@@ -370,8 +372,8 @@ namespace SlaysherServer
             return true;
         }
 
-        int _clientDictChanges;
-        Client[] _clientsCache;
+        private int _clientDictChanges;
+        private Client[] _clientsCache;
 
         public Client[] GetClients()
         {
@@ -435,8 +437,8 @@ namespace SlaysherServer
             int radius = SightRadius;
             foreach (Client c in GetClients())
             {
-                int playerPatternX = (int)Math.Floor(c.Player.Position.X) >> 5;
-                int playerPatternY = (int)Math.Floor(c.Player.Position.Y) >> 5;
+                int playerPatternX = (int) Math.Floor(c.Player.Position.X) >> 5;
+                int playerPatternY = (int) Math.Floor(c.Player.Position.Y) >> 5;
                 if (Math.Abs(pos.X - playerPatternX) <= radius && Math.Abs(pos.Y - playerPatternY) <= radius)
                     yield return c;
             }

@@ -86,7 +86,7 @@ namespace Slaysher.Network
             _receiveQueueReader.Start();
             Task.Factory.StartNew(RecvPacket);
 
-            HandshakePacket handshake = new HandshakePacket { Username = _userName };
+            HandshakePacket handshake = new HandshakePacket {Username = _userName};
             SendPacket(handshake);
         }
 
@@ -231,9 +231,11 @@ namespace Slaysher.Network
 
                 while (length > 0)
                 {
-                    byte packetType = _fragPackets.Size > 0 ? _fragPackets.GetPacketId() : _readingBufferQueue.GetPacketId();
+                    byte packetType = _fragPackets.Size > 0
+                                          ? _fragPackets.GetPacketId()
+                                          : _readingBufferQueue.GetPacketId();
 
-                    ClientPacketHandler handler = PacketHandlers.GetHandler((PacketType)packetType);
+                    ClientPacketHandler handler = PacketHandlers.GetHandler((PacketType) packetType);
 
                     if (handler == null)
                     {
@@ -344,7 +346,7 @@ namespace Slaysher.Network
         {
             //Respond KeepAlive Packet to Server
             Console.WriteLine("Received Keep Alive");
-            client.SendPacket(new KeepAlivePacket { TimeStamp = ap.TimeStamp });
+            client.SendPacket(new KeepAlivePacket {TimeStamp = ap.TimeStamp});
 
             lock (client.WaitInitialPositionRequestLook)
             {
@@ -361,7 +363,8 @@ namespace Slaysher.Network
             Console.WriteLine("Received Pattern Packet: " + client.DebugReceivedPattern++);
 
             //Retrieve Pattern Texture
-            Pattern newPattern = new Pattern(new Vector3(pp.X, 0, pp.Y), client.GameScene.LoadPatternTexture(pp.TextureId));
+            Pattern newPattern = new Pattern(new Vector3(pp.X, 0, pp.Y),
+                                             client.GameScene.LoadPatternTexture(pp.TextureId));
             client.GameScene.Pattern.Add(pp.PatternId, newPattern);
         }
 
@@ -380,7 +383,7 @@ namespace Slaysher.Network
             Console.WriteLine("Received Player Info Packet");
             if (client.GameScene.Player == null && pip.PlayerId == 0)
             {
-                client.GameScene.Player = new Player { Nickname = pip.Nickname, Health = pip.Health };
+                client.GameScene.Player = new Player {Nickname = pip.Nickname, Health = pip.Health};
             }
             else
             {

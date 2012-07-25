@@ -6,7 +6,11 @@ namespace SlaysherServer.Network
     {
         private static List<BufferPool> _mPools = new List<BufferPool>();
 
-        public static List<BufferPool> Pools { get { return _mPools; } set { _mPools = value; } }
+        public static List<BufferPool> Pools
+        {
+            get { return _mPools; }
+            set { _mPools = value; }
+        }
 
         private readonly string _mName;
 
@@ -17,14 +21,15 @@ namespace SlaysherServer.Network
 
         private readonly Queue<byte[]> _mFreeBuffers;
 
-        public void GetInfo(out string name, out int freeCount, out int initialCapacity, out int currentCapacity, out int bufferSize, out int misses)
+        public void GetInfo(out string name, out int freeCount, out int initialCapacity, out int currentCapacity,
+                            out int bufferSize, out int misses)
         {
             lock (this)
             {
                 name = _mName;
                 freeCount = _mFreeBuffers.Count;
                 initialCapacity = _mInitialCapacity;
-                currentCapacity = _mInitialCapacity * (1 + _mMisses);
+                currentCapacity = _mInitialCapacity*(1 + _mMisses);
                 bufferSize = _mBufferSize;
                 misses = _mMisses;
             }

@@ -39,7 +39,7 @@ namespace Slaysher.Game.Scenes
         private volatile bool _contentLoaded;
 
         //Network Stuff
-        readonly Client _client;
+        private readonly Client _client;
 
         public GameScene(Engine engine)
         {
@@ -115,11 +115,11 @@ namespace Slaysher.Game.Scenes
             //Rotate Cube along its Up Vector
             if (keyBoardState.IsKeyDown(Keys.X))
             {
-                _worldMatrix = Matrix.CreateFromAxisAngle(Vector3.Up, .02f) * _worldMatrix;
+                _worldMatrix = Matrix.CreateFromAxisAngle(Vector3.Up, .02f)*_worldMatrix;
             }
             if (keyBoardState.IsKeyDown(Keys.Z))
             {
-                _worldMatrix = Matrix.CreateFromAxisAngle(Vector3.Up, -.02f) * _worldMatrix;
+                _worldMatrix = Matrix.CreateFromAxisAngle(Vector3.Up, -.02f)*_worldMatrix;
             }
 
             //Move Cube Forward, Back, Left, and Right

@@ -27,12 +27,12 @@ namespace Slaysher.Network
 
         public static void Register(PacketType packetId, int length, int minimumLength, OnPacketReceive onReceive)
         {
-            _handlers[(byte)packetId] = new ClientPacketHandler(packetId, length, minimumLength, onReceive);
+            _handlers[(byte) packetId] = new ClientPacketHandler(packetId, length, minimumLength, onReceive);
         }
 
         public static ClientPacketHandler GetHandler(PacketType packetId)
         {
-            return _handlers[(byte)packetId];
+            return _handlers[(byte) packetId];
         }
 
         public static void ReadHandshake(Client client, PacketReader reader)

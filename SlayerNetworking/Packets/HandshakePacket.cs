@@ -6,7 +6,9 @@ namespace SlaysherNetworking.Packets
     {
         public string Username { get; set; }
 
-        public HandshakePacket() { }
+        public HandshakePacket()
+        {
+        }
 
         public HandshakePacket(string username)
         {

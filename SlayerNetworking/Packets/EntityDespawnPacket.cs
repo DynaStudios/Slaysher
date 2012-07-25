@@ -8,10 +8,7 @@ namespace SlaysherNetworking.Packets
 
         protected override int Length
         {
-            get
-            {
-                return 5;
-            }
+            get { return 5; }
         }
 
         public override void Read(PacketReader reader)

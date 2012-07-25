@@ -16,20 +16,24 @@ namespace SlaysherNetworking.Packets
         }
 
         private static Dictionary<Type, PacketType> _map = new Dictionary<Type, PacketType>
+            {
+                {typeof (HandshakePacket), PacketType.Handshake},
+                {typeof (KickPacket), PacketType.Kick},
+                {typeof (KeepAlivePacket), PacketType.KeepAlive},
+                {typeof (PlayerPositionPacket), PacketType.PlayerPosition},
+                {typeof (PatternPacket), PacketType.Pattern},
+                {typeof (EntitySpawnPacket), PacketType.EntitySpawn},
+                {typeof (EntityDespawnPacket), PacketType.EntityDespawn},
+                {typeof (PlayerInfoPacket), PacketType.PlayerInfo}
+            };
+
+        private static readonly ConcurrentDictionary<Type, PacketType> ConcurrentMap =
+            new ConcurrentDictionary<Type, PacketType>();
+
+        public static ConcurrentDictionary<Type, PacketType> Map
         {
-            { typeof(HandshakePacket), PacketType.Handshake },
-            { typeof(KickPacket), PacketType.Kick },
-            { typeof(KeepAlivePacket), PacketType.KeepAlive },
-            { typeof(PlayerPositionPacket), PacketType.PlayerPosition },
-            { typeof(PatternPacket), PacketType.Pattern},
-            { typeof(EntitySpawnPacket), PacketType.EntitySpawn},
-            { typeof(EntityDespawnPacket), PacketType.EntityDespawn},
-            { typeof(PlayerInfoPacket), PacketType.PlayerInfo}
-        };
-
-        private readonly static ConcurrentDictionary<Type, PacketType> ConcurrentMap = new ConcurrentDictionary<Type, PacketType>();
-
-        public static ConcurrentDictionary<Type, PacketType> Map { get { return ConcurrentMap; } }
+            get { return ConcurrentMap; }
+        }
 
         public static PacketType GetPacketType(Type type)
         {

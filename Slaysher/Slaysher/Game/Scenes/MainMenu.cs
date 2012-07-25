@@ -23,7 +23,7 @@ namespace Slaysher.Game.Scenes
         {
             Engine = engine;
 
-            _menuItems = new[] { "Game Test", "Servers", "Options", "Exit Game" };
+            _menuItems = new[] {"Game Test", "Servers", "Options", "Exit Game"};
         }
 
         private MenuComponent CreateMenuComponent()
@@ -50,7 +50,7 @@ namespace Slaysher.Game.Scenes
 
         public void MouseMouseClick(object sender, EventArgs eventArgs)
         {
-            MenuSelectEvent eventA = (MenuSelectEvent)eventArgs;
+            MenuSelectEvent eventA = (MenuSelectEvent) eventArgs;
 
             string selected = _menuItems[eventA.Selected];
 

@@ -58,7 +58,7 @@ namespace Slaysher.Game.GUI.Menu
             for (int i = 0; i < _menuItems.Length; i++)
             {
                 Vector2 size = _spriteFont.MeasureString(_menuItems[i]);
-                Vector2 location = new Vector2(_startLocation.X, _startLocation.Y + i * 50);
+                Vector2 location = new Vector2(_startLocation.X, _startLocation.Y + i*50);
                 _entries.Add(new MenuEntry(_menuItems[i], location, size));
             }
         }

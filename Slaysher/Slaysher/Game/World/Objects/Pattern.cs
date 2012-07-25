@@ -32,7 +32,7 @@ namespace Slaysher.Game.World.Objects
                     effect.GraphicsDevice.DepthStencilState = DepthStencilState.Default;
                     //effect.CurrentTechnique.Passes[0].Apply();
 
-                    effect.World = modelTransforms[mesh.ParentBone.Index] * Matrix.CreateTranslation(_position);
+                    effect.World = modelTransforms[mesh.ParentBone.Index]*Matrix.CreateTranslation(_position);
                     effect.View = camera.ViewMatrix;
                     effect.Projection = camera.ProjectionMatrix;
                 }

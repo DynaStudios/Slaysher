@@ -24,7 +24,11 @@ namespace SlaysherNetworking.Packets
 
         private int _sharesNum;
 
-        protected virtual int Length { get { return _length; } set { _length = value; } }
+        protected virtual int Length
+        {
+            get { return _length; }
+            set { _length = value; }
+        }
 
         public PacketType GetPacketType()
         {
@@ -34,7 +38,7 @@ namespace SlaysherNetworking.Packets
         public void SetCapacity()
         {
             Writer = PacketWriter.CreateInstance(Length);
-            Writer.Write((byte)GetPacketType());
+            Writer.Write((byte) GetPacketType());
         }
 
         public void SetCapacity(int fixedLength)
@@ -56,7 +60,7 @@ namespace SlaysherNetworking.Packets
             }
 
             Writer = PacketWriter.CreateInstance(Length, strings);
-            Writer.Write((byte)GetPacketType());
+            Writer.Write((byte) GetPacketType());
         }
 
         public void SetShared(int num)
@@ -113,7 +117,8 @@ namespace SlaysherNetworking.Packets
                 }
                 catch (Exception e)
                 {
-                    throw new Exception(String.Format("Writer {0}, Request {1} \r\n{2}", underlyingBuffer.Length, Length, e));
+                    throw new Exception(String.Format("Writer {0}, Request {1} \r\n{2}", underlyingBuffer.Length, Length,
+                                                      e));
                 }
             }
 

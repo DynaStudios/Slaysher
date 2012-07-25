@@ -82,11 +82,11 @@ namespace SlaysherServer.Game.Models
             {
                 PatternPacket packet = new PatternPacket
                     {
-                    PatternId = pattern.Id,
-                    TextureId = pattern.Type.TextureId,
-                    X = pattern.X,
-                    Y = pattern.Y
-                };
+                        PatternId = pattern.Id,
+                        TextureId = pattern.Type.TextureId,
+                        X = pattern.X,
+                        Y = pattern.Y
+                    };
 
                 SendPacket(packet);
             }
@@ -118,7 +118,7 @@ namespace SlaysherServer.Game.Models
                 client.LastSendKeepAliveStamp = DateTime.Now.Ticks;
 
                 Console.WriteLine("Finished Init. Send KeepAlive");
-                KeepAlivePacket keepAlive = new KeepAlivePacket { TimeStamp = client.LastSendKeepAliveStamp };
+                KeepAlivePacket keepAlive = new KeepAlivePacket {TimeStamp = client.LastSendKeepAliveStamp};
                 client.SendPacket(keepAlive);
             }
         }

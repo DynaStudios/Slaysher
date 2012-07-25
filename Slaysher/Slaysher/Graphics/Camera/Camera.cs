@@ -28,7 +28,7 @@ namespace Slaysher.Graphics.Camera
             _target = new Vector3();
 
             ViewMatrix = Matrix.Identity;
-            ProjectionMatrix = Matrix.CreatePerspectiveFieldOfView(MathHelper.ToRadians(45.0f), 16 / 9, .5f, 500f);
+            ProjectionMatrix = Matrix.CreatePerspectiveFieldOfView(MathHelper.ToRadians(45.0f), 16/9, .5f, 500f);
 
             _desiredTarget = _target;
             _desiredPosition = _position;
@@ -130,7 +130,7 @@ namespace Slaysher.Graphics.Camera
 
         private void MoveCamera(Vector3 addedVector)
         {
-            _position += Speed * addedVector;
+            _position += Speed*addedVector;
         }
     }
 }

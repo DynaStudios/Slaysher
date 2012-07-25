@@ -9,7 +9,6 @@ Content\Images\Game\Pattern\grass6.xnb
 Content\Images\Game\Pattern\grass7.xnb
 Content\Images\Game\Pattern\grass8.xnb
 Content\Images\Game\Pattern\grass9.xnb
-Content\Images\Game\Pattern\missing.xnb
 Content\Images\Game\loadingScreen.xnb
 Content\Images\Game\Pattern\dirt.xnb
 Content\Images\Game\Pattern\grass.xnb
@@ -26,9 +25,10 @@ Content\Images\Game\Pattern\water.xnb
 Content\Sounds\GUI\btnHover.xnb
 Content\Sounds\Splash\splashSound.xnb
 Content\Sounds\Music\rainbow.xnb
-Content\Models\Pattern\Player\goblin_fbx.xnb
 Content\Models\Pattern\BasePattern.xnb
 Content\Models\Pattern\Pattern.xnb
+Content\Models\Pattern\Player\goblin_fbx.xnb
+Content\Images\Game\Pattern\missing.xnb
 Content\Images\Game\Pattern\sandGrass1.xnb
 Content\Images\Game\Pattern\sandGrass2.xnb
 Content\Images\Game\Pattern\sandGrass3.xnb

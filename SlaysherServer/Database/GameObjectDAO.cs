@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-
 using MySql.Data.MySqlClient;
 using SlaysherNetworking.Game.World.Objects;
 
@@ -20,9 +19,9 @@ namespace SlaysherServer.Database
             if (_allGameObjectsCommand == null)
             {
                 _allGameObjectsCommand = new MySqlCommand(
-                        "SELECT id, posx, posy, posz, direction, model"
-                        + " FROM gameobjects",
-                        _db);
+                    "SELECT id, posx, posy, posz, direction, model"
+                    + " FROM gameobjects",
+                    _db);
             }
 
             MySqlDataReader reader = _allGameObjectsCommand.ExecuteReader();

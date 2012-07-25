@@ -20,7 +20,9 @@ namespace SlaysherNetworking.Packets.Utils
 
                     if (iphe.AddressList.Length > 0)
                     {
-                        outValue = string.IsNullOrEmpty(addr) ? iphe.AddressList[iphe.AddressList.Length - 2] : iphe.AddressList[iphe.AddressList.Length - 1];
+                        outValue = string.IsNullOrEmpty(addr)
+                                       ? iphe.AddressList[iphe.AddressList.Length - 2]
+                                       : iphe.AddressList[iphe.AddressList.Length - 1];
                         return true;
                     }
                 }

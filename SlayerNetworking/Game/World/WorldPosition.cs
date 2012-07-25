@@ -6,7 +6,9 @@
 
         public float Y { get; set; }
 
-        public WorldPosition() { }
+        public WorldPosition()
+        {
+        }
 
         public WorldPosition(float x, float y)
         {

@@ -12,7 +12,8 @@ namespace SlaysherNetworking.Packets
         public int Health { get; set; }
 
         public PlayerInfoPacket()
-        { }
+        {
+        }
 
         public PlayerInfoPacket(Player player)
         {

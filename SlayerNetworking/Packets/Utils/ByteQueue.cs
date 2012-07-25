@@ -10,7 +10,10 @@ namespace SlaysherNetworking.Packets.Utils
 
         private byte[] _mBuffer;
 
-        public int Length { get { return _mSize; } }
+        public int Length
+        {
+            get { return _mSize; }
+        }
 
         public byte[] UnderlyingBuffer
         {
@@ -135,7 +138,7 @@ namespace SlaysherNetworking.Packets.Utils
                 }
             }
 
-            _mHead = (_mHead + size) % _mBuffer.Length;
+            _mHead = (_mHead + size)%_mBuffer.Length;
             _mSize -= size;
 
             if (_mSize == 0)
@@ -171,7 +174,7 @@ namespace SlaysherNetworking.Packets.Utils
                 Buffer.BlockCopy(buffer, offset, _mBuffer, _mTail, size);
             }
 
-            _mTail = (_mTail + size) % _mBuffer.Length;
+            _mTail = (_mTail + size)%_mBuffer.Length;
             _mSize += size;
         }
     }

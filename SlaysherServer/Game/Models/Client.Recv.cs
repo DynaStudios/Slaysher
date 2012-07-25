@@ -103,7 +103,6 @@ namespace SlaysherServer.Game.Models
                 //    return;
                 // }
 
-                //TODO: Debugging. Remove this if tested
                 Console.WriteLine("Received Login for User " + packet.Username);
 
                 Console.WriteLine("Send Handshake back!");

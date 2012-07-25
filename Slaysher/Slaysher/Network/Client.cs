@@ -86,7 +86,6 @@ namespace Slaysher.Network
             _receiveQueueReader.Start();
             Task.Factory.StartNew(RecvPacket);
 
-            //TODO: Send Handshake Packet here
             HandshakePacket handshake = new HandshakePacket { Username = _userName };
             SendPacket(handshake);
         }

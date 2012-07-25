@@ -2,16 +2,15 @@
 using System.Collections.Concurrent;
 using System.Net.Sockets;
 using System.Threading;
-using SlaysherNetworking.Network;
 using SlaysherNetworking.Packets;
-using SlaysherServer.Network;
+using SlaysherNetworking.Packets.Utils;
 
 namespace SlaysherServer.Game.Models
 {
     public partial class Client
     {
         public ConcurrentQueue<Packet> PacketsToBeSent = new ConcurrentQueue<Packet>();
-        private int _TimesEnqueuedForSend;
+        private int _timesEnqueuedForSend;
 
         internal void SendPacket(Packet packet)
         {
@@ -20,7 +19,7 @@ namespace SlaysherServer.Game.Models
 
             PacketsToBeSent.Enqueue(packet);
 
-            int newValue = Interlocked.Increment(ref _TimesEnqueuedForSend);
+            int newValue = Interlocked.Increment(ref _timesEnqueuedForSend);
 
             if (newValue == 1)
             {
@@ -32,7 +31,7 @@ namespace SlaysherServer.Game.Models
             //Logger.Log(Chraft.LogLevel.Info, "Sending packet: {0}", packet.GetPacketType().ToString());
         }
 
-        private void Send_Completed(object sender, SocketAsyncEventArgs e)
+        private void SendCompleted(object sender, SocketAsyncEventArgs e)
         {
             if (!Running)
                 DisposeSendSystem();
@@ -61,10 +60,10 @@ namespace SlaysherServer.Game.Models
             _sendSocketEvent.SetBuffer(data, 0, data.Length);
             bool pending = _socket.SendAsync(_sendSocketEvent);
             if (!pending)
-                Send_Completed(null, _sendSocketEvent);
+                SendCompleted(null, _sendSocketEvent);
         }
 
-        private void Send_Sync(byte[] data)
+        private void SendSync(byte[] data)
         {
             if (!Running || !_socket.Connected)
             {
@@ -89,16 +88,16 @@ namespace SlaysherServer.Game.Models
                 return;
             }
 
-            Packet packet = null;
             try
             {
                 ByteQueue byteQueue = new ByteQueue();
                 int length = 0;
                 while (!PacketsToBeSent.IsEmpty && length <= 1024)
                 {
+                    Packet packet;
                     if (!PacketsToBeSent.TryDequeue(out packet))
                     {
-                        Interlocked.Exchange(ref _TimesEnqueuedForSend, 0);
+                        Interlocked.Exchange(ref _timesEnqueuedForSend, 0);
                         return;
                     }
 
@@ -120,11 +119,11 @@ namespace SlaysherServer.Game.Models
                 }
                 else
                 {
-                    Interlocked.Exchange(ref _TimesEnqueuedForSend, 0);
+                    Interlocked.Exchange(ref _timesEnqueuedForSend, 0);
 
                     if (!PacketsToBeSent.IsEmpty)
                     {
-                        int newValue = Interlocked.Increment(ref _TimesEnqueuedForSend);
+                        int newValue = Interlocked.Increment(ref _timesEnqueuedForSend);
 
                         if (newValue == 1)
                         {
@@ -134,7 +133,7 @@ namespace SlaysherServer.Game.Models
                     }
                 }
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 MarkToDispose();
                 DisposeSendSystem();
@@ -157,7 +156,7 @@ namespace SlaysherServer.Game.Models
             _sendSocketEvent.SetBuffer(data, 0, data.Length);
             bool pending = _socket.SendAsync(_sendSocketEvent);
             if (!pending)
-                Send_Completed(null, _sendSocketEvent);
+                SendCompleted(null, _sendSocketEvent);
         }
     }
 }

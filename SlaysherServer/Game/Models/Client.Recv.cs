@@ -1,11 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Net.Sockets;
 using System.Threading;
-using SlaysherNetworking.Game.Entities;
-using SlaysherNetworking.Network;
 using SlaysherNetworking.Packets;
-using SlaysherServer.Network;
+using SlaysherNetworking.Packets.Utils;
 
 namespace SlaysherServer.Game.Models
 {
@@ -35,7 +32,7 @@ namespace SlaysherServer.Game.Models
                 if (!pending)
                     RecvCompleted(null, _recvSocketEvent);
             }
-            catch
+            catch (Exception)
             {
                 //TODO:
                 //Yo Patrick you should really catch this shit!
@@ -79,15 +76,14 @@ namespace SlaysherServer.Game.Models
             return _processedBuffer;
         }
 
-        private void sendPattern()
+        private void SendPattern()
         {
-            int sent = 0;
             foreach (Pattern pattern in Server.World.Patterns)
             {
-                PatternPacket packet = new PatternPacket()
-                {
-                    PatternID = pattern.Id,
-                    TextureID = pattern.Type.TextureId,
+                PatternPacket packet = new PatternPacket
+                    {
+                    PatternId = pattern.Id,
+                    TextureId = pattern.Type.TextureId,
                     X = pattern.X,
                     Y = pattern.Y
                 };
@@ -118,7 +114,7 @@ namespace SlaysherServer.Game.Models
                 client.SendPacket(new PlayerInfoPacket(client.Player));
                 client.SendPacket(new PlayerPositionPacket(client.Player));
 
-                client.sendPattern();
+                client.SendPattern();
 
                 client.LastSendKeepAliveStamp = DateTime.Now.Ticks;
 

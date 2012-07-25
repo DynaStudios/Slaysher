@@ -9,7 +9,6 @@ using Slaysher.Game.Scenes;
 using Slaysher.Game.World.Objects;
 using SlaysherNetworking.Game.Entities;
 using SlaysherNetworking.Game.World;
-using SlaysherNetworking.Network;
 using SlaysherNetworking.Packets;
 using SlaysherNetworking.Packets.Utils;
 
@@ -17,7 +16,7 @@ namespace Slaysher.Network
 {
     public class Client
     {
-        private ConcurrentQueue<Packet> _packetsToSend = new ConcurrentQueue<Packet>();
+        private readonly ConcurrentQueue<Packet> _packetsToSend = new ConcurrentQueue<Packet>();
 
         public GameScene GameScene { get; set; }
 
@@ -25,35 +24,35 @@ namespace Slaysher.Network
         private PacketReader _packetReader;
 
         private bool _running;
-        private string _userName;
+        private readonly string _userName;
 
-        private Socket _socket;
+        private readonly Socket _socket;
 
         private Task _sendTask;
 
         private ByteQueue _receiveBufferQueue;
         private ByteQueue _readingBufferQueue;
-        private ByteQueue _fragPackets;
+        private readonly ByteQueue _fragPackets;
 
-        private byte[] _recvBuffer = new byte[2048];
+        private readonly byte[] _recvBuffer = new byte[2048];
 
-        private SocketAsyncEventArgs _socketAsyncArgs;
+        private readonly SocketAsyncEventArgs _socketAsyncArgs;
 
-        private object _queueLock = new object();
-        private Thread _receiveQueueReader;
+        private readonly object _queueLock = new object();
+        private readonly Thread _receiveQueueReader;
         private Timer _globalTimer;
 
-        private AutoResetEvent _recv = new AutoResetEvent(true);
+        private readonly AutoResetEvent _recv = new AutoResetEvent(true);
 
         private int _time;
 
         public bool WaitInitialPositionRequest = true;
         public object WaitInitialPositionRequestLook = new object();
 
-        private int Sends;
-        private int SendRunning;
+        private int _sends;
+        private int _sendRunning;
 
-        public int debugReceivedPattern = 0;
+        public int DebugReceivedPattern = 0;
 
         public Client(GameScene gameScene)
         {
@@ -77,7 +76,7 @@ namespace Slaysher.Network
             {
                 _socket.Connect(ipEndpoint);
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 Console.WriteLine("Error while connecting to Slaysher Server");
             }
@@ -96,7 +95,7 @@ namespace Slaysher.Network
         {
             _packetsToSend.Enqueue(packet);
 
-            int sendRunning = Interlocked.CompareExchange(ref SendRunning, 1, 0);
+            int sendRunning = Interlocked.CompareExchange(ref _sendRunning, 1, 0);
             if (sendRunning == 0)
             {
                 _sendTask = Task.Factory.StartNew(Send);
@@ -120,7 +119,7 @@ namespace Slaysher.Network
 
         private void Send()
         {
-            int sends = Interlocked.Increment(ref Sends);
+            int sends = Interlocked.Increment(ref _sends);
 
             if (sends > 1)
             {
@@ -155,7 +154,7 @@ namespace Slaysher.Network
                 {
                     _socket.Send(data);
                 }
-                catch (Exception e)
+                catch (Exception)
                 {
                     if (_running)
                     {
@@ -164,11 +163,11 @@ namespace Slaysher.Network
                 }
             }
 
-            Interlocked.Exchange(ref SendRunning, 0);
-            Interlocked.Decrement(ref Sends);
+            Interlocked.Exchange(ref _sendRunning, 0);
+            Interlocked.Decrement(ref _sends);
             if (_running && !_packetsToSend.IsEmpty)
             {
-                int running = Interlocked.Exchange(ref SendRunning, 1);
+                int running = Interlocked.Exchange(ref _sendRunning, 1);
                 if (running == 0)
                 {
                     _sendTask = Task.Factory.StartNew(Send);
@@ -178,27 +177,20 @@ namespace Slaysher.Network
 
         public void Dispose()
         {
-            try
-            {
-                _running = false;
-                _recv.Set();
-                _receiveQueueReader.Abort();
+            _running = false;
+            _recv.Set();
+            _receiveQueueReader.Abort();
 
-                //if (_globalTimer != null)
-                //{
-                //    _globalTimer.Change(Timeout.Infinite, Timeout.Infinite);
-                //    _globalTimer = null;
-                //}
+            //if (_globalTimer != null)
+            //{
+            //    _globalTimer.Change(Timeout.Infinite, Timeout.Infinite);
+            //    _globalTimer = null;
+            //}
 
-                if (_socket.Connected)
-                    _socket.Shutdown(SocketShutdown.Both);
+            if (_socket.Connected)
+                _socket.Shutdown(SocketShutdown.Both);
 
-                _socket.Close();
-            }
-            catch (Exception e)
-            {
-                throw e;
-            }
+            _socket.Close();
         }
 
         private void RecvCompleted(object sender, SocketAsyncEventArgs e)
@@ -240,16 +232,7 @@ namespace Slaysher.Network
 
                 while (length > 0)
                 {
-                    byte packetType;
-
-                    if (_fragPackets.Size > 0)
-                    {
-                        packetType = _fragPackets.GetPacketID();
-                    }
-                    else
-                    {
-                        packetType = _readingBufferQueue.GetPacketID();
-                    }
+                    byte packetType = _fragPackets.Size > 0 ? _fragPackets.GetPacketId() : _readingBufferQueue.GetPacketId();
 
                     ClientPacketHandler handler = PacketHandlers.GetHandler((PacketType)packetType);
 
@@ -339,14 +322,9 @@ namespace Slaysher.Network
             if (length > availableData)
                 return null;
 
-            int fromFrag;
-
             byte[] data = new byte[length];
 
-            if (length >= _fragPackets.Size)
-                fromFrag = _fragPackets.Size;
-            else
-                fromFrag = length;
+            int fromFrag = length >= _fragPackets.Size ? _fragPackets.Size : length;
 
             _fragPackets.Dequeue(data, 0, fromFrag);
 
@@ -381,11 +359,11 @@ namespace Slaysher.Network
 
         public static void HandlePatternPacket(Client client, PatternPacket pp)
         {
-            Console.WriteLine("Received Pattern Packet: " + client.debugReceivedPattern++);
+            Console.WriteLine("Received Pattern Packet: " + client.DebugReceivedPattern++);
 
             //Retrieve Pattern Texture
-            Pattern newPattern = new Pattern(new Vector3(pp.X, 0, pp.Y), client.GameScene.LoadPatternTexture(pp.TextureID));
-            client.GameScene.Pattern.Add(pp.PatternID, newPattern);
+            Pattern newPattern = new Pattern(new Vector3(pp.X, 0, pp.Y), client.GameScene.LoadPatternTexture(pp.TextureId));
+            client.GameScene.Pattern.Add(pp.PatternId, newPattern);
         }
 
         public static void HandleEntitySpawn(Client client, EntitySpawnPacket esp)

@@ -15,20 +15,20 @@ namespace Slaysher.Game.GUI.Menu
 
         public Engine Engine { get; set; }
 
-        public static Color normal = Color.White;
-        public static Color highlight = Color.Orange;
+        public static Color Normal = Color.White;
+        public static Color Highlight = Color.Orange;
 
         private SoundEffect _hoverSong;
 
-        private string[] _menuItems;
-        private SpriteBatch _spriteBatch;
+        private readonly string[] _menuItems;
+        private readonly SpriteBatch _spriteBatch;
         private SpriteFont _spriteFont;
 
         private int _selectedMenuItem = -1;
         private int _lastSelected = -1;
 
         private Vector2 _startLocation;
-        private List<MenuEntry> _entries;
+        private readonly List<MenuEntry> _entries;
         private Box _mouseBox;
 
         public MenuComponent(Engine engine, string[] menuItems, SpriteBatch spriteBatch, Vector2 location)
@@ -77,7 +77,7 @@ namespace Slaysher.Game.GUI.Menu
                 {
                     //Highlight
                     _selectedMenuItem = i;
-                    color = highlight;
+                    color = Highlight;
                     foundMatch = true;
                     if (_lastSelected != _selectedMenuItem)
                     {
@@ -87,7 +87,7 @@ namespace Slaysher.Game.GUI.Menu
                 }
                 else
                 {
-                    color = normal;
+                    color = Normal;
                 }
 
                 _spriteBatch.DrawString(_spriteFont, new StringBuilder(_entries[i].Text), _entries[i].Location, color);

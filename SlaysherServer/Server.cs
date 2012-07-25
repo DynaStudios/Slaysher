@@ -7,7 +7,6 @@ using System.Net.Sockets;
 using System.Threading;
 using System.Threading.Tasks;
 using SlaysherNetworking.Game.World;
-using SlaysherNetworking.Network;
 using SlaysherNetworking.Packets;
 using SlaysherNetworking.Packets.Utils;
 using SlaysherServer.Database;
@@ -191,10 +190,10 @@ namespace SlaysherServer
         {
             int count = RecvClientQueue.Count;
 
-            Parallel.For(0, count, processSingelRead);
+            Parallel.For(0, count, ProcessSingelRead);
         }
 
-        private static void processSingelRead(int i)
+        private static void ProcessSingelRead(int i)
         {
             Client client;
             if (!RecvClientQueue.TryDequeue(out client))
@@ -213,16 +212,7 @@ namespace SlaysherServer
             int length = client.FragPackets.Size + bufferToProcess.Size;
             while (length > 0)
             {
-                byte packetType = 0;
-
-                if (client.FragPackets.Size > 0)
-                {
-                    packetType = client.FragPackets.GetPacketID();
-                }
-                else
-                {
-                    packetType = bufferToProcess.GetPacketID();
-                }
+                byte packetType = client.FragPackets.Size > 0 ? client.FragPackets.GetPacketId() : bufferToProcess.GetPacketId();
 
                 //client.Logger.Log(Chraft.LogLevel.Info, "Reading packet {0}", ((PacketType)packetType).ToString());
 
@@ -310,14 +300,9 @@ namespace SlaysherServer
             if (length > availableData)
                 return null;
 
-            int fromFrag;
-
             byte[] data = new byte[length];
 
-            if (length >= client.FragPackets.Size)
-                fromFrag = client.FragPackets.Size;
-            else
-                fromFrag = length;
+            int fromFrag = length >= client.FragPackets.Size ? client.FragPackets.Size : length;
 
             client.FragPackets.Dequeue(data, 0, fromFrag);
 
@@ -420,10 +405,7 @@ namespace SlaysherServer
             Client[] clients = GetClients();
             packet.SetShared(clients.Length);
 
-            Parallel.ForEach(clients, (client) =>
-                {
-                    client.SendPacket(packet);
-                });
+            Parallel.ForEach(clients, client => client.SendPacket(packet));
         }
 
         internal void SendPacketToNearbyPlayers(WorldPosition pos, Packet packet, Client excludedClient = null)
@@ -435,7 +417,7 @@ namespace SlaysherServer
 
             packet.SetShared(nearbyClients.Length);
 
-            Parallel.ForEach(nearbyClients, (client) =>
+            Parallel.ForEach(nearbyClients, client =>
                 {
                     if (excludedClient != client)
                     {
@@ -450,7 +432,7 @@ namespace SlaysherServer
 
         internal IEnumerable<Client> GetNearbyPlayers(WorldPosition pos)
         {
-            int radius = Server.SightRadius;
+            int radius = SightRadius;
             foreach (Client c in GetClients())
             {
                 int playerPatternX = (int)Math.Floor(c.Player.Position.X) >> 5;

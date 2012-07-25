@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
 namespace SlaysherNetworking.Packets
 {
@@ -11,7 +9,7 @@ namespace SlaysherNetworking.Packets
         public static void Initialize()
         {
             foreach (KeyValuePair<Type, PacketType> kvp in _map)
-                _concurrentMap.TryAdd(kvp.Key, kvp.Value);
+                ConcurrentMap.TryAdd(kvp.Key, kvp.Value);
 
             // Lets free some memory
             _map = null;
@@ -29,14 +27,14 @@ namespace SlaysherNetworking.Packets
             { typeof(PlayerInfoPacket), PacketType.PlayerInfo}
         };
 
-        private readonly static ConcurrentDictionary<Type, PacketType> _concurrentMap = new ConcurrentDictionary<Type, PacketType>();
+        private readonly static ConcurrentDictionary<Type, PacketType> ConcurrentMap = new ConcurrentDictionary<Type, PacketType>();
 
-        public static ConcurrentDictionary<Type, PacketType> Map { get { return _concurrentMap; } }
+        public static ConcurrentDictionary<Type, PacketType> Map { get { return ConcurrentMap; } }
 
         public static PacketType GetPacketType(Type type)
         {
             PacketType packetType;
-            if (_concurrentMap.TryGetValue(type, out packetType))
+            if (ConcurrentMap.TryGetValue(type, out packetType))
                 return packetType;
 
             throw new KeyNotFoundException();

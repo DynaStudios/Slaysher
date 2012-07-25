@@ -29,17 +29,17 @@ namespace Slaysher.Game.Scenes
 
         private Matrix _worldMatrix;
 
-        private Camera _tempCamera = new Camera();
+        private readonly Camera _tempCamera = new Camera();
         private Model _patternBaseModel;
 
-        private Dictionary<int, Texture2D> _patternTextures;
+        private readonly Dictionary<int, Texture2D> _patternTextures;
         private Dictionary<int, string> _availablePatternTextures;
 
         private Texture2D _loadingScreen;
         private volatile bool _contentLoaded;
 
         //Network Stuff
-        Client _client;
+        readonly Client _client;
 
         public GameScene(Engine engine)
         {
@@ -149,20 +149,12 @@ namespace Slaysher.Game.Scenes
             {
                 return _patternTextures[textureId];
             }
-            else
-            {
-                //Load Pattern Texture into Memory
-                if (_availablePatternTextures.ContainsKey(textureId))
-                {
-                    _patternTextures.Add(textureId, Engine.Content.Load<Texture2D>(_availablePatternTextures[textureId]));
-                }
-                else
-                {
-                    //Texture is unknown. Load "Missing Texture" File
-                    _patternTextures.Add(textureId, Engine.Content.Load<Texture2D>(_availablePatternTextures[0]));
-                }
-                return _patternTextures[textureId];
-            }
+            //Load Pattern Texture into Memory
+            _patternTextures.Add(textureId,
+                                 _availablePatternTextures.ContainsKey(textureId)
+                                     ? Engine.Content.Load<Texture2D>(_availablePatternTextures[textureId])
+                                     : Engine.Content.Load<Texture2D>(_availablePatternTextures[0]));
+            return _patternTextures[textureId];
         }
 
         public void UnloadScene()

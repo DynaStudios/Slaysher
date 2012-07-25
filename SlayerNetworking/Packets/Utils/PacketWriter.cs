@@ -8,36 +8,36 @@ namespace SlaysherNetworking.Packets.Utils
 {
     public class PacketWriter
     {
-        private static ConcurrentStack<PacketWriter> _Pool = new ConcurrentStack<PacketWriter>();
+        private static readonly ConcurrentStack<PacketWriter> Pool = new ConcurrentStack<PacketWriter>();
 
-        private int _Capacity;
+        private int _capacity;
 
         public int Capacity
         {
-            get { return _Capacity; }
-            set { _Capacity = value; }
+            get { return _capacity; }
+            set { _capacity = value; }
         }
 
-        private MemoryStream _Stream;
+        private MemoryStream _stream;
 
         public MemoryStream UnderlyingStream
         {
-            get { return _Stream; }
-            set { _Stream = value; }
+            get { return _stream; }
+            set { _stream = value; }
         }
 
-        private Queue<byte[]> _Strings;
+        private Queue<byte[]> _strings;
 
         public Queue<byte[]> Strings
         {
-            get { return _Strings; }
-            set { _Strings = value; }
+            get { return _strings; }
+            set { _strings = value; }
         }
 
         public PacketWriter(int capacity)
         {
-            _Stream = new MemoryStream(capacity);
-            _Capacity = capacity;
+            _stream = new MemoryStream(capacity);
+            _capacity = capacity;
         }
 
         public static PacketWriter CreateInstance(int capacity, Queue<byte[]> strings)
@@ -56,51 +56,47 @@ namespace SlaysherNetworking.Packets.Utils
         {
             PacketWriter pw = null;
 
-            if (_Pool.Count > 0)
+            if (Pool.Count > 0)
             {
-                _Pool.TryPop(out pw);
+                Pool.TryPop(out pw);
 
                 if (pw != null)
                 {
-                    pw._Capacity = capacity;
-                    pw._Stream.SetLength(0);
-                    pw._Stream.Position = 0;
+                    pw._capacity = capacity;
+                    pw._stream.SetLength(0);
+                    pw._stream.Position = 0;
                 }
             }
 
-            if (pw == null)
-                pw = new PacketWriter(capacity);
-
-            return pw;
+            return pw ?? (new PacketWriter(capacity));
         }
 
         public static void ReleaseInstance(PacketWriter pw)
         {
-            if (!_Pool.TryPop(out pw))
+            if (pw == null) throw new ArgumentNullException("pw");
+            if (Pool.TryPop(out pw)) return;
+            try
             {
-                try
+                using (StreamWriter op = new StreamWriter("neterr.log", true))
                 {
-                    using (StreamWriter op = new StreamWriter("neterr.log", true))
-                    {
-                        op.WriteLine("{0}\tInstance pool contains writer", DateTime.Now);
-                        op.WriteLine();
-                    }
+                    op.WriteLine("{0}\tInstance pool contains writer", DateTime.Now);
+                    op.WriteLine();
                 }
-                catch
-                {
-                    Console.WriteLine("net error");
-                }
+            }
+            catch
+            {
+                Console.WriteLine("net error");
             }
         }
 
         public void Write(byte data)
         {
-            _Stream.WriteByte(data);
+            _stream.WriteByte(data);
         }
 
         public void WriteByte(byte data)
         {
-            _Stream.WriteByte(data);
+            _stream.WriteByte(data);
         }
 
         public void Write(sbyte data)
@@ -154,13 +150,13 @@ namespace SlaysherNetworking.Packets.Utils
         {
             byte[] b;
             int length = data.Length;
-            if (_Strings != null && _Strings.Count > 0)
+            if (_strings != null && _strings.Count > 0)
             {
-                b = _Strings.Dequeue();
+                b = _strings.Dequeue();
                 length = b.Length / 2;
             }
             else
-                b = ASCIIEncoding.BigEndianUnicode.GetBytes(data);
+                b = Encoding.BigEndianUnicode.GetBytes(data);
 
             Write((short)length);
             Write(b, 0, b.Length);
@@ -168,7 +164,7 @@ namespace SlaysherNetworking.Packets.Utils
 
         public void Write8(string data)
         {
-            byte[] b = ASCIIEncoding.UTF8.GetBytes(data);
+            byte[] b = Encoding.UTF8.GetBytes(data);
             Write((short)b.Length);
             Write(b, 0, b.Length);
         }
@@ -186,7 +182,7 @@ namespace SlaysherNetworking.Packets.Utils
 
         public void Write(byte[] buffer, int offset, int count)
         {
-            _Stream.Write(buffer, offset, count);
+            _stream.Write(buffer, offset, count);
         }
 
         public void WriteDoublePacked(double d)

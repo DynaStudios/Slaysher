@@ -1,15 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using SlaysherNetworking.Packets;
+﻿using SlaysherNetworking.Packets;
 using SlaysherNetworking.Packets.Utils;
 
 namespace Slaysher.Network
 {
     public class PacketHandlers
     {
-        private static ClientPacketHandler[] _handlers;
+        private static readonly ClientPacketHandler[] _handlers;
 
         public static ClientPacketHandler[] Handlers
         {
@@ -29,14 +25,14 @@ namespace Slaysher.Network
             Register(PacketType.PlayerPosition, 29, 0, ReadPlayerPosition);
         }
 
-        public static void Register(PacketType packetID, int length, int minimumLength, OnPacketReceive onReceive)
+        public static void Register(PacketType packetId, int length, int minimumLength, OnPacketReceive onReceive)
         {
-            _handlers[(byte)packetID] = new ClientPacketHandler(packetID, length, minimumLength, onReceive);
+            _handlers[(byte)packetId] = new ClientPacketHandler(packetId, length, minimumLength, onReceive);
         }
 
-        public static ClientPacketHandler GetHandler(PacketType packetID)
+        public static ClientPacketHandler GetHandler(PacketType packetId)
         {
-            return _handlers[(byte)packetID];
+            return _handlers[(byte)packetId];
         }
 
         public static void ReadHandshake(Client client, PacketReader reader)

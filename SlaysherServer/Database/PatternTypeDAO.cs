@@ -1,16 +1,14 @@
 ﻿using System.Collections.Generic;
 
 using MySql.Data.MySqlClient;
-
-using SlaysherNetworking.Game.World.Objects;
 using SlaysherServer.Game;
 
 namespace SlaysherServer.Database
 {
     public class PatternTypeDAO
     {
-        private MySqlConnection _db;
-        private MySqlCommand _allPatternTypes = null;
+        private readonly MySqlConnection _db;
+        private MySqlCommand _allPatternTypes;
 
         internal PatternTypeDAO (MySqlConnection db)
         {
@@ -32,9 +30,9 @@ namespace SlaysherServer.Database
 
             while (reader.Read())
             {
-                PatternType patternType = new PatternType()
-                {
-                    _dbId = (int)reader["id"],
+                PatternType patternType = new PatternType
+                    {
+                    DbId = (int)reader["id"],
                     North = (int)reader["north"],
                     South = (int)reader["south"],
                     West = (int)reader["west"],

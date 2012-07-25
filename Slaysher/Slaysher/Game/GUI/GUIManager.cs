@@ -24,7 +24,7 @@ namespace Slaysher.Game.GUI
         {
             //Load Mouse Cursor and Menu Graphics
             Cursor myCursor = LoadCustomCursor(Application.StartupPath + @"\Content\Images\Game\Arrow.cur");
-            Form winForm = (Form)Form.FromHandle(Engine.Window.Handle);
+            Form winForm = (Form)Control.FromHandle(Engine.Window.Handle);
             winForm.Cursor = myCursor;
 
             //Make Mouse visible
@@ -35,7 +35,7 @@ namespace Slaysher.Game.GUI
 
         public void Render(Microsoft.Xna.Framework.GameTime time)
         {
-            if (Engine.GameState == GameState.MENU)
+            if (Engine.GameState == GameState.Menu)
             {
                 //Draw Menu
             }
@@ -51,7 +51,7 @@ namespace Slaysher.Game.GUI
             //Not necassery since GUIManager will always run
         }
 
-        public void keyboard_KeyboardKeyUp(object sender, EventArgs eventArgs)
+        public void KeyboardKeyboardKeyUp(object sender, EventArgs eventArgs)
         {
             KeyboardEventArgs eventA = (KeyboardEventArgs)eventArgs;
         }
@@ -64,7 +64,7 @@ namespace Slaysher.Game.GUI
             var curs = new Cursor(hCurs);
             // Note: force the cursor to own the handle so it gets released properly
             var fi = typeof(Cursor).GetField("ownHandle", BindingFlags.NonPublic | BindingFlags.Instance);
-            fi.SetValue(curs, true);
+            if (fi != null) fi.SetValue(curs, true);
             return curs;
         }
 

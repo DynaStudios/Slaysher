@@ -7,35 +7,37 @@ namespace SlaysherServer.Database
 {
     public class GameObjectDAO
     {
-        private MySqlConnection _db;
-        private MySqlCommand allGameObjectsCommand = null;
+        private readonly MySqlConnection _db;
+        private MySqlCommand _allGameObjectsCommand;
 
         internal GameObjectDAO(MySqlConnection db)
         {
             _db = db;
         }
 
-        public List<GameObject> getAllGameObjects()
+        public List<GameObject> GetAllGameObjects()
         {
-            if (allGameObjectsCommand == null)
+            if (_allGameObjectsCommand == null)
             {
-                allGameObjectsCommand = new MySqlCommand(
+                _allGameObjectsCommand = new MySqlCommand(
                         "SELECT id, posx, posy, posz, direction, model"
                         + " FROM gameobjects",
                         _db);
             }
 
-            MySqlDataReader reader = allGameObjectsCommand.ExecuteReader();
+            MySqlDataReader reader = _allGameObjectsCommand.ExecuteReader();
             List<GameObject> gameObjects = new List<GameObject>();
 
             while (reader.Read())
             {
-                GameObject obj = new GameObject();
-                obj.Id = (int)reader["id"];
-                obj.PosX = (float)reader["posx"];
-                obj.PosY = (float)reader["posy"];
-                obj.PosZ = (float)reader["posz"];
-                obj.Model = (string)reader["model"];
+                GameObject obj = new GameObject
+                    {
+                        Id = (int) reader["id"],
+                        PosX = (float) reader["posx"],
+                        PosY = (float) reader["posy"],
+                        PosZ = (float) reader["posz"],
+                        Model = (string) reader["model"]
+                    };
                 gameObjects.Add(obj);
             }
 

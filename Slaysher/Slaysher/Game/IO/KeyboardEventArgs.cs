@@ -5,7 +5,7 @@ namespace Slaysher.Game.IO
 {
     public class KeyboardEventArgs : EventArgs
     {
-        private Keys _pressedKey;
+        private readonly Keys _pressedKey;
 
         public Keys PressedKey { get { return _pressedKey; } }
 

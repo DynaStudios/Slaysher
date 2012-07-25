@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-namespace SlaysherNetworking.Game.Entities
+﻿namespace SlaysherNetworking.Game.Entities
 {
     public class Player : Entity
     {

@@ -68,6 +68,7 @@ namespace Slaysher.Game.Scenes
             Task.Factory.StartNew(() => _client.Start(ip));
 
             _worldMatrix = Matrix.Identity;
+
             _patternBaseModel = Engine.Content.Load<Model>("Models/Pattern/Pattern");
 
             lock (_client.WaitInitialPositionRequestLook)

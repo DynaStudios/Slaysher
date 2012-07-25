@@ -10,5 +10,6 @@ namespace SlaysherNetworking.Game.Entities
         public string Nickname { get; set; }
 
         public Player() { }
+
     }
 }

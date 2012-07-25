@@ -16,6 +16,7 @@ namespace SlaysherServer.Game.Models
 
         public Player Load()
         {
+            //TODO: DAO is missing atm
             Player newInstance = new Player();
 
             //Debug Player Info until Database implemented

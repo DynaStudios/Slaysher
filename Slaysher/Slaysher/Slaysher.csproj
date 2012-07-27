@@ -111,9 +111,12 @@
     <Compile Include="Game\Database\Database.cs" />
     <Compile Include="Game\GameState.cs" />
     <Compile Include="Game\GUI\GUIManager.cs" />
+    <Compile Include="Game\GUI\InputState.cs" />
     <Compile Include="Game\GUI\Menu\MenuComponent.cs" />
     <Compile Include="Game\GUI\Menu\MenuEntry.cs" />
     <Compile Include="Game\GUI\Menu\MenuSelectEvent.cs" />
+    <Compile Include="Game\GUI\ScreenManager.cs" />
+    <Compile Include="Game\GUI\Screens\GameScreen.cs" />
     <Compile Include="Game\IO\KeyboardEventArgs.cs" />
     <Compile Include="Game\IO\KeyboardHandler.cs" />
     <Compile Include="Game\Physics\Collisions\AABB.cs" />

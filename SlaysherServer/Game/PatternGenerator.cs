@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-
 using SlaysherServer.Database;
 
 namespace SlaysherServer.Game
@@ -17,8 +16,8 @@ namespace SlaysherServer.Game
 
     public class PatternGenerator
     {
-        private DAO _dao;
-        private List<PatternType> _types;
+        private readonly DAO _dao;
+        private readonly List<PatternType> _types;
         private Random _rnd = new Random();
 
         public PatternGenerator(DAO dao)
@@ -30,28 +29,28 @@ namespace SlaysherServer.Game
         private IEnumerable<PatternType> filterForWestBorder(IEnumerable<PatternType> src, int borderType)
         {
             return from t
-                in src
-                where t.West == borderType
-                select t;
+                       in src
+                   where t.West == borderType
+                   select t;
         }
 
         private IEnumerable<PatternType> filterForNordBorder(IEnumerable<PatternType> src, int borderType)
         {
             return new List<PatternType>(
                 from t
-                in src
+                    in src
                 where t.North == borderType
                 select t);
         }
 
-        private List<PatternType> getFilteredPatternType(List<List<Pattern>> referenc, int x, int y)
+        private List<PatternType> GetFilteredPatternType(List<List<Pattern>> referenc, int x, int y)
         {
             IEnumerable<PatternType> filterQuery = _types;
             if (x > 0)
             {
                 filterQuery = filterForWestBorder(
                     filterQuery,
-                    referenc[y][x - 1].Type.East);  // the east border of the west pattern
+                    referenc[y][x - 1].Type.East); // the east border of the west pattern
             }
             if (y > 0)
             {
@@ -77,8 +76,8 @@ namespace SlaysherServer.Game
             var referenc = new List<List<Pattern>>();
             var ret = new List<Pattern>();
             Random rnd = new Random();
-            int xMax = 20;
-            int yMax = 20;
+            const int xMax = 20;
+            const int yMax = 20;
 
             for (int yi = 0; yi < yMax; ++yi)
             {
@@ -86,26 +85,17 @@ namespace SlaysherServer.Game
 
                 for (int xi = 0; xi < xMax; ++xi)
                 {
+                    List<PatternType> query = GetFilteredPatternType(referenc, xi, yi);
 
-                    List<PatternType> query = getFilteredPatternType(referenc, xi, yi);
+                    PatternType type = query.Count == 0 ? missingPattern : query[rnd.Next(query.Count)];
 
-                    PatternType type;
-                    if (query.Count == 0)
-                    {
-                        type = missingPattern;
-                    }
-                    else
-                    {
-                        type = query[rnd.Next(query.Count)];
-                    }
-
-                    Pattern pattern = new Pattern()
-                    {
-                        Id = yi * xMax + xi,
-                        Type = type,
-                        X = xi * 32f,
-                        Y = yi * 32f
-                    };
+                    Pattern pattern = new Pattern
+                        {
+                            Id = yi*xMax + xi,
+                            Type = type,
+                            X = xi*32f,
+                            Y = yi*32f
+                        };
 
                     ret.Add(pattern);
                     referenc[yi].Add(pattern);

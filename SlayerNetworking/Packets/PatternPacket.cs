@@ -4,9 +4,9 @@ namespace SlaysherNetworking.Packets
 {
     public class PatternPacket : Packet
     {
-        public int PatternID { get; set; }
+        public int PatternId { get; set; }
 
-        public int TextureID { get; set; }
+        public int TextureId { get; set; }
 
         public float X { get; set; }
 
@@ -14,16 +14,13 @@ namespace SlaysherNetworking.Packets
 
         protected override int Length
         {
-            get
-            {
-                return 25;
-            }
+            get { return 25; }
         }
 
         public override void Read(PacketReader reader)
         {
-            PatternID = reader.ReadInt();
-            TextureID = reader.ReadInt();
+            PatternId = reader.ReadInt();
+            TextureId = reader.ReadInt();
             X = reader.ReadFloat();
             Y = reader.ReadFloat();
         }
@@ -31,8 +28,8 @@ namespace SlaysherNetworking.Packets
         public override void Write()
         {
             SetCapacity();
-            Writer.Write(PatternID);
-            Writer.Write(TextureID);
+            Writer.Write(PatternId);
+            Writer.Write(TextureId);
             Writer.Write(X);
             Writer.Write(Y);
         }

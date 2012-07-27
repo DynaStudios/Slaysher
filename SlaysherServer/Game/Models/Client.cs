@@ -3,8 +3,8 @@ using System.Linq;
 using System.Net.Sockets;
 using System.Threading.Tasks;
 using SlaysherNetworking.Game.Entities;
-using SlaysherNetworking.Network;
 using SlaysherNetworking.Packets;
+using SlaysherNetworking.Packets.Utils;
 using SlaysherServer.Network;
 
 namespace SlaysherServer.Game.Models
@@ -17,13 +17,8 @@ namespace SlaysherServer.Game.Models
         private ByteQueue _currentBuffer;
 
         private ByteQueue _processedBuffer;
-        private ByteQueue _fragPackets;
 
-        internal ByteQueue FragPackets
-        {
-            get { return _fragPackets; }
-            set { _fragPackets = value; }
-        }
+        internal ByteQueue FragPackets { get; set; }
 
         public static SocketAsyncEventArgsPool SendSocketEventPool = new SocketAsyncEventArgsPool(10);
         public static SocketAsyncEventArgsPool RecvSocketEventPool = new SocketAsyncEventArgsPool(10);
@@ -63,7 +58,7 @@ namespace SlaysherServer.Game.Models
 
             _currentBuffer = new ByteQueue();
             _processedBuffer = new ByteQueue();
-            _fragPackets = new ByteQueue();
+            FragPackets = new ByteQueue();
 
             _nextActivityCheck = DateTime.Now + TimeSpan.FromSeconds(30);
         }
@@ -76,7 +71,7 @@ namespace SlaysherServer.Game.Models
 
             _recvSocketEvent.SetBuffer(_recvBuffer, 0, _recvBuffer.Length);
             _recvSocketEvent.Completed += RecvCompleted;
-            _sendSocketEvent.Completed += Send_Completed;
+            _sendSocketEvent.Completed += SendCompleted;
 
             Task.Factory.StartNew(RecvStart);
         }
@@ -113,10 +108,10 @@ namespace SlaysherServer.Game.Models
                 {
                     if (client != this)
                     {
-                        EntityDespawnPacket dp = new EntityDespawnPacket { EntityId = client.ClientId };
+                        EntityDespawnPacket dp = new EntityDespawnPacket {EntityId = client.ClientId};
                         dp.Write();
                         byte[] data = dp.GetBuffer();
-                        client.Send_Sync(data);
+                        client.SendSync(data);
                     }
                 }
 

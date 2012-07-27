@@ -1,11 +1,12 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Graphics;
-using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Media;
+using Slaysher.Exceptions;
 using Slaysher.Game;
 using Slaysher.Game.Database;
 using Slaysher.Game.GUI;
@@ -16,10 +17,9 @@ namespace Slaysher
 {
     public class Engine : Microsoft.Xna.Framework.Game
     {
-        GraphicsDeviceManager graphics;
-        SpriteBatch spriteBatch;
+        private readonly GraphicsDeviceManager _graphics;
 
-        private Dictionary<String, IScene> _availableScenes;
+        private readonly Dictionary<String, IScene> _availableScenes;
         private IScene _activeScene;
         private bool _sceneLoaded;
         private string _sceneSwitchName;
@@ -32,15 +32,18 @@ namespace Slaysher
 
         public GUIManager GUIManager { get; set; }
 
-        private KeyboardHandler _keyboardHandler;
+        private readonly KeyboardHandler _keyboardHandler;
 
-        public KeyboardHandler Keyboard { get { return _keyboardHandler; } }
+        public KeyboardHandler Keyboard
+        {
+            get { return _keyboardHandler; }
+        }
 
         public Database ClientDatabase { get; set; }
 
         public Engine()
         {
-            graphics = new GraphicsDeviceManager(this);
+            _graphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
 
             InitGraphicsMode(1024, 768, false);
@@ -56,20 +59,14 @@ namespace Slaysher
             MediaPlayer.Volume = 0.3f;
         }
 
-        private bool typeIsScene(Type type)
+        private static bool TypeIsScene(Type type)
         {
             if (type.IsClass)
             {
-                Type sceneType = typeof(IScene);
+                Type sceneType = typeof (IScene);
                 Type[] interfaces = type.GetInterfaces();
 
-                foreach (Type i in interfaces)
-                {
-                    if (sceneType == i)
-                    {
-                        return true;
-                    }
-                }
+                return interfaces.Any(i => sceneType == i);
             }
             return false;
         }
@@ -79,9 +76,9 @@ namespace Slaysher
             Type[] types = assembly.GetTypes();
             foreach (Type type in types)
             {
-                if (typeIsScene(type))
+                if (TypeIsScene(type))
                 {
-                    IScene scene = (IScene)Activator.CreateInstance(type, this);
+                    IScene scene = (IScene) Activator.CreateInstance(type, this);
                     AddScene(scene);
                 }
             }
@@ -98,7 +95,7 @@ namespace Slaysher
             SwitchScene("splashScreen");
 #endif
 
-            GameState = GameState.GAME;
+            GameState = GameState.Game;
             GUIManager.LoadScene();
 
             base.Initialize();
@@ -107,12 +104,11 @@ namespace Slaysher
         protected override void LoadContent()
         {
             // Create a new SpriteBatch, which can be used to draw textures.
-            spriteBatch = new SpriteBatch(GraphicsDevice);
+            new SpriteBatch(GraphicsDevice);
         }
 
         protected override void UnloadContent()
         {
-            // TODO: Unload any non ContentManager content here
             _activeScene.UnloadScene();
         }
 
@@ -135,7 +131,7 @@ namespace Slaysher
             //Scene Rendering
             if (!_sceneLoaded)
             {
-                loadScene();
+                LoadScene();
             }
 
             if (_activeScene != null)
@@ -181,7 +177,7 @@ namespace Slaysher
             }
         }
 
-        private void loadScene()
+        private void LoadScene()
         {
             //Unload old scene
             if (_activeScene != null)
@@ -206,10 +202,10 @@ namespace Slaysher
                 if ((iWidth <= GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Width)
                     && (iHeight <= GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Height))
                 {
-                    graphics.PreferredBackBufferWidth = iWidth;
-                    graphics.PreferredBackBufferHeight = iHeight;
-                    graphics.IsFullScreen = bFullScreen;
-                    graphics.ApplyChanges();
+                    _graphics.PreferredBackBufferWidth = iWidth;
+                    _graphics.PreferredBackBufferHeight = iHeight;
+                    _graphics.IsFullScreen = false;
+                    _graphics.ApplyChanges();
                     return true;
                 }
             }
@@ -219,18 +215,15 @@ namespace Slaysher
                 // adapter can handle the video mode we are trying to set.  To do this, we will
                 // iterate thorugh the display modes supported by the adapter and check them against
                 // the mode we want to set.
-                foreach (DisplayMode dm in GraphicsAdapter.DefaultAdapter.SupportedDisplayModes)
+                if (
+                    GraphicsAdapter.DefaultAdapter.SupportedDisplayModes.Any(
+                        dm => (dm.Width == iWidth) && (dm.Height == iHeight)))
                 {
-                    // Check the width and height of each mode against the passed values
-                    if ((dm.Width == iWidth) && (dm.Height == iHeight))
-                    {
-                        // The mode is supported, so set the buffer formats, apply changes and return
-                        graphics.PreferredBackBufferWidth = iWidth;
-                        graphics.PreferredBackBufferHeight = iHeight;
-                        graphics.IsFullScreen = bFullScreen;
-                        graphics.ApplyChanges();
-                        return true;
-                    }
+                    _graphics.PreferredBackBufferWidth = iWidth;
+                    _graphics.PreferredBackBufferHeight = iHeight;
+                    _graphics.IsFullScreen = true;
+                    _graphics.ApplyChanges();
+                    return true;
                 }
             }
             return false;

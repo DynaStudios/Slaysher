@@ -1,13 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Media;
 using Slaysher.Game.GUI.Menu;
-using Slaysher.Game.IO;
 
 namespace Slaysher.Game.Scenes
 {
@@ -20,20 +15,18 @@ namespace Slaysher.Game.Scenes
 
         public Engine Engine { get; set; }
 
-        private string[] _menuItems;
-        private int _selectedItem;
+        private readonly string[] _menuItems;
 
-        private MenuComponent menu;
+        private MenuComponent _menu;
 
         public MainMenu(Engine engine)
         {
             Engine = engine;
 
-            _selectedItem = 0;
-            _menuItems = new string[] { "Game Test", "Servers", "Options", "Exit Game" };
+            _menuItems = new[] {"Game Test", "Servers", "Options", "Exit Game"};
         }
 
-        private MenuComponent createMenuComponent()
+        private MenuComponent CreateMenuComponent()
         {
             SpriteBatch spriteBatch = new SpriteBatch(Engine.GraphicsDevice);
             float backBufferWidth = Engine.GraphicsDevice.PresentationParameters.BackBufferWidth;
@@ -46,18 +39,18 @@ namespace Slaysher.Game.Scenes
 
         public void LoadScene()
         {
-            menu = createMenuComponent();
-            Engine.Components.Add(menu);
+            _menu = CreateMenuComponent();
+            Engine.Components.Add(_menu);
 
-            menu.MouseClick += mouse_MouseClick;
+            _menu.MouseClick += MouseMouseClick;
 
             Song mainMenuMusic = Engine.Content.Load<Song>("Sounds/Music/rainbow");
             MediaPlayer.Play(mainMenuMusic);
         }
 
-        public void mouse_MouseClick(object sender, EventArgs eventArgs)
+        public void MouseMouseClick(object sender, EventArgs eventArgs)
         {
-            MenuSelectEvent eventA = (MenuSelectEvent)eventArgs;
+            MenuSelectEvent eventA = (MenuSelectEvent) eventArgs;
 
             string selected = _menuItems[eventA.Selected];
 
@@ -78,28 +71,28 @@ namespace Slaysher.Game.Scenes
             }
         }
 
-        public void Render(Microsoft.Xna.Framework.GameTime time)
+        public void Render(GameTime time)
         {
-            if (Engine.GameState == GameState.GAME)
+            if (Engine.GameState == GameState.Game)
             {
-                menu.Enabled = true;
-                menu.Visible = true;
+                _menu.Enabled = true;
+                _menu.Visible = true;
             }
             else
             {
-                menu.Enabled = false;
-                menu.Visible = false;
+                _menu.Enabled = false;
+                _menu.Visible = false;
             }
         }
 
-        public void Update(Microsoft.Xna.Framework.GameTime time)
+        public void Update(GameTime time)
         {
         }
 
         public void UnloadScene()
         {
-            menu.MouseClick -= mouse_MouseClick;
-            Engine.Components.Remove(menu);
+            _menu.MouseClick -= MouseMouseClick;
+            Engine.Components.Remove(_menu);
             MediaPlayer.IsRepeating = false;
             MediaPlayer.Pause();
 

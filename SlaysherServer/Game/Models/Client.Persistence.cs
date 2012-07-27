@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using SlaysherNetworking.Game.Entities;
+﻿using SlaysherNetworking.Game.Entities;
 using SlaysherNetworking.Game.World;
 
 namespace SlaysherServer.Game.Models
@@ -17,12 +13,10 @@ namespace SlaysherServer.Game.Models
         public Player Load()
         {
             //TODO: DAO is missing atm
-            Player newInstance = new Player();
+            Player newInstance = new Player
+                {Health = 100, Nickname = "TestUser" + ClientId, Position = new WorldPosition(0, 0)};
 
             //Debug Player Info until Database implemented
-            newInstance.Health = 100;
-            newInstance.Nickname = "TestUser" + ClientId;
-            newInstance.Position = new WorldPosition(0, 0);
 
             return newInstance;
         }

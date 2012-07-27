@@ -26,7 +26,10 @@ namespace SlaysherServer.Network
 
         public void Push(SocketAsyncEventArgs item)
         {
-            if (item == null) { throw new ArgumentNullException("Items added to a SocketAsyncEventArgsPool cannot be null"); }
+            if (item == null)
+            {
+                throw new ArgumentNullException("Items added to a SocketAsyncEventArgsPool cannot be null");
+            }
 
             _mEventsPool.Push(item);
         }

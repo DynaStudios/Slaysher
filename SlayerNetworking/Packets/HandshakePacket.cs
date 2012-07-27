@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using SlaysherNetworking.Packets.Utils;
+﻿using SlaysherNetworking.Packets.Utils;
 
 namespace SlaysherNetworking.Packets
 {
@@ -10,7 +6,9 @@ namespace SlaysherNetworking.Packets
     {
         public string Username { get; set; }
 
-        public HandshakePacket() { }
+        public HandshakePacket()
+        {
+        }
 
         public HandshakePacket(string username)
         {

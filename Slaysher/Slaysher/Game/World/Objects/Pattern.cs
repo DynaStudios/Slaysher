@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Slaysher.Graphics.Camera;
 
@@ -10,8 +6,8 @@ namespace Slaysher.Game.World.Objects
 {
     public class Pattern
     {
-        private Texture2D _patternTexture;
-        private Vector3 _position;
+        private readonly Texture2D _patternTexture;
+        private readonly Vector3 _position;
 
         public Pattern(Vector3 position, Texture2D texture)
         {
@@ -36,9 +32,9 @@ namespace Slaysher.Game.World.Objects
                     effect.GraphicsDevice.DepthStencilState = DepthStencilState.Default;
                     //effect.CurrentTechnique.Passes[0].Apply();
 
-                    effect.World = modelTransforms[mesh.ParentBone.Index] * Matrix.CreateTranslation(_position);
-                    effect.View = camera.viewMatrix;
-                    effect.Projection = camera.projectionMatrix;
+                    effect.World = modelTransforms[mesh.ParentBone.Index]*Matrix.CreateTranslation(_position);
+                    effect.View = camera.ViewMatrix;
+                    effect.Projection = camera.ProjectionMatrix;
                 }
                 mesh.Draw();
             }

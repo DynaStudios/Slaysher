@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using SlaysherNetworking.Game.Entities;
+﻿using SlaysherNetworking.Game.Entities;
 using SlaysherNetworking.Packets.Utils;
 
 namespace SlaysherNetworking.Packets
@@ -15,10 +11,11 @@ namespace SlaysherNetworking.Packets
 
         public int Health { get; set; }
 
-        public PlayerInfoPacket() : base() { }
+        public PlayerInfoPacket()
+        {
+        }
 
         public PlayerInfoPacket(Player player)
-            : base()
         {
             PlayerId = player.Id;
             Nickname = player.Nickname;

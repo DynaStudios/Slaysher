@@ -11,7 +11,7 @@ namespace Slaysher.Game.IO
 
         public event EventHandler KeyUp;
 
-        private Dictionary<Keys, bool> _pressedKeys;
+        private readonly Dictionary<Keys, bool> _pressedKeys;
 
         public KeyboardHandler()
         {

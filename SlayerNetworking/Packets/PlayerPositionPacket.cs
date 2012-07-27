@@ -15,16 +15,14 @@ namespace SlaysherNetworking.Packets
 
         protected override int Length
         {
-            get
-            {
-                return 29;
-            }
+            get { return 29; }
         }
 
-        public PlayerPositionPacket() : base() { }
+        public PlayerPositionPacket()
+        {
+        }
 
         public PlayerPositionPacket(Player player)
-            : base()
         {
             PlayerId = player.Id;
             X = player.Position.X;

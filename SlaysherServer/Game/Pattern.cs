@@ -9,7 +9,7 @@
     // ice (cold desert) = 5
     public class PatternType
     {
-        internal int _dbId = 0;
+        internal int DbId = 0;
         public int North = 0;
         public int South = 0;
         public int West = 0;

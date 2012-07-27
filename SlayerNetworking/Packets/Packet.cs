@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
-using System.Linq;
 using System.Text;
 using System.Threading;
 using SlaysherNetworking.Packets.Utils;
@@ -16,7 +14,7 @@ namespace SlaysherNetworking.Packets
 
         protected PacketWriter Writer;
 
-        private int _Length;
+        private int _length;
 
         public bool Shared { get; private set; }
 
@@ -26,44 +24,43 @@ namespace SlaysherNetworking.Packets
 
         private int _sharesNum;
 
-        protected virtual int Length { get { return _Length; } set { _Length = value; } }
+        protected virtual int Length
+        {
+            get { return _length; }
+            set { _length = value; }
+        }
 
         public PacketType GetPacketType()
         {
             return PacketMap.GetPacketType(GetType());
         }
 
-        protected Packet()
-        {
-        }
-
         public void SetCapacity()
         {
             Writer = PacketWriter.CreateInstance(Length);
-            Writer.Write((byte)GetPacketType());
+            Writer.Write((byte) GetPacketType());
         }
 
         public void SetCapacity(int fixedLength)
         {
-            _Length = fixedLength;
+            _length = fixedLength;
             SetCapacity();
         }
 
         public void SetCapacity(int fixedLength, params string[] args)
         {
-            byte[] bytes;
-
-            _Length = fixedLength;
+            if (args == null) throw new ArgumentNullException("args");
+            _length = fixedLength;
             Queue<byte[]> strings = new Queue<byte[]>();
-            for (int i = 0; i < args.Length; ++i)
+            foreach (string argument in args)
             {
-                bytes = ASCIIEncoding.BigEndianUnicode.GetBytes(args[i]);
-                _Length += bytes.Length;
+                byte[] bytes = Encoding.BigEndianUnicode.GetBytes(argument);
+                _length += bytes.Length;
                 strings.Enqueue(bytes);
             }
 
             Writer = PacketWriter.CreateInstance(Length, strings);
-            Writer.Write((byte)GetPacketType());
+            Writer.Write((byte) GetPacketType());
         }
 
         public void SetShared(int num)
@@ -120,7 +117,8 @@ namespace SlaysherNetworking.Packets
                 }
                 catch (Exception e)
                 {
-                    throw new Exception(String.Format("Writer {0}, Request {1} \r\n{2}", underlyingBuffer.Length, Length, e));
+                    throw new Exception(String.Format("Writer {0}, Request {1} \r\n{2}", underlyingBuffer.Length, Length,
+                                                      e));
                 }
             }
 

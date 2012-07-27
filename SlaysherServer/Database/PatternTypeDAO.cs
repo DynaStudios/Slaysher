@@ -1,18 +1,15 @@
 ﻿using System.Collections.Generic;
-
 using MySql.Data.MySqlClient;
-
-using SlaysherNetworking.Game.World.Objects;
 using SlaysherServer.Game;
 
 namespace SlaysherServer.Database
 {
     public class PatternTypeDAO
     {
-        private MySqlConnection _db;
-        private MySqlCommand _allPatternTypes = null;
+        private readonly MySqlConnection _db;
+        private MySqlCommand _allPatternTypes;
 
-        internal PatternTypeDAO (MySqlConnection db)
+        internal PatternTypeDAO(MySqlConnection db)
         {
             _db = db;
         }
@@ -22,9 +19,9 @@ namespace SlaysherServer.Database
             if (_allPatternTypes == null)
             {
                 _allPatternTypes = new MySqlCommand(
-                        "SELECT id, north, south, west, east, textureid"
-                        + " FROM patterntype",
-                        _db);
+                    "SELECT id, north, south, west, east, textureid"
+                    + " FROM patterntype",
+                    _db);
             }
 
             MySqlDataReader reader = _allPatternTypes.ExecuteReader();
@@ -32,15 +29,15 @@ namespace SlaysherServer.Database
 
             while (reader.Read())
             {
-                PatternType patternType = new PatternType()
-                {
-                    _dbId = (int)reader["id"],
-                    North = (int)reader["north"],
-                    South = (int)reader["south"],
-                    West = (int)reader["west"],
-                    East = (int)reader["east"],
-                    TextureId = (int)reader["textureid"]
-                };
+                PatternType patternType = new PatternType
+                    {
+                        DbId = (int) reader["id"],
+                        North = (int) reader["north"],
+                        South = (int) reader["south"],
+                        West = (int) reader["west"],
+                        East = (int) reader["east"],
+                        TextureId = (int) reader["textureid"]
+                    };
                 patternTypes.Add(patternType);
             }
 

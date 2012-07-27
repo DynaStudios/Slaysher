@@ -1,7 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using SlaysherNetworking.Game.Entities;
-using SlaysherServer;
 
 namespace SlaysherServer.Game
 {
@@ -36,7 +34,7 @@ namespace SlaysherServer.Game
             //Do cool Tick Stuff here
 
             //Pattern Garbage Collection every 10 Seconds
-            if (serverTick % 200 == 0)
+            if (serverTick%200 == 0)
             {
                 patternGC();
             }

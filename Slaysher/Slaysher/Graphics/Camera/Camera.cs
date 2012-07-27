@@ -1,27 +1,21 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
+﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
 
 namespace Slaysher.Graphics.Camera
 {
     public class Camera
     {
-        private Vector3 position;
-        private Vector3 target;
-        public Matrix viewMatrix, projectionMatrix;
+        private Vector3 _position;
+        private Vector3 _target;
+        public Matrix ViewMatrix, ProjectionMatrix;
 
-        public float yaw, pitch, roll;
-        public float speed;
-        private Matrix cameraRotation;
+        public float Yaw, Pitch, Roll;
+        public float Speed;
+        private Matrix _cameraRotation;
 
-        private Vector3 desiredPosition;
-        private Vector3 desiredTarget;
-        private Vector3 offsetDistance;
+        private Vector3 _desiredPosition;
+        private Vector3 _desiredTarget;
+        private Vector3 _offsetDistance;
 
         public Camera()
         {
@@ -30,24 +24,24 @@ namespace Slaysher.Graphics.Camera
 
         public void ResetCamera()
         {
-            position = new Vector3(0, 0, 50);
-            target = new Vector3();
+            _position = new Vector3(0, 0, 50);
+            _target = new Vector3();
 
-            viewMatrix = Matrix.Identity;
-            projectionMatrix = Matrix.CreatePerspectiveFieldOfView(MathHelper.ToRadians(45.0f), 16 / 9, .5f, 500f);
+            ViewMatrix = Matrix.Identity;
+            ProjectionMatrix = Matrix.CreatePerspectiveFieldOfView(MathHelper.ToRadians(45.0f), 16/9, .5f, 500f);
 
-            desiredTarget = target;
-            desiredPosition = position;
+            _desiredTarget = _target;
+            _desiredPosition = _position;
 
-            offsetDistance = new Vector3(0, 10, 75);
+            _offsetDistance = new Vector3(0, 50, 75);
 
-            yaw = 0.0f;
-            pitch = 0.0f;
-            roll = 0.0f;
+            Yaw = 0.0f;
+            Pitch = 0.0f;
+            Roll = 0.0f;
 
-            speed = .3f;
+            Speed = .3f;
 
-            cameraRotation = Matrix.Identity;
+            _cameraRotation = Matrix.Identity;
         }
 
         public void Update(Matrix chasedObjectsWorld)
@@ -58,25 +52,25 @@ namespace Slaysher.Graphics.Camera
 
         private void UpdateViewMatrix(Matrix chasedObjectsWorld)
         {
-            viewMatrix = Matrix.CreateLookAt(position, target, Vector3.Up);
+            ViewMatrix = Matrix.CreateLookAt(_position, _target, Vector3.Up);
 
-            cameraRotation.Forward.Normalize();
+            _cameraRotation.Forward.Normalize();
             chasedObjectsWorld.Right.Normalize();
             chasedObjectsWorld.Up.Normalize();
 
-            cameraRotation = Matrix.CreateFromAxisAngle(cameraRotation.Forward, roll);
+            _cameraRotation = Matrix.CreateFromAxisAngle(_cameraRotation.Forward, Roll);
 
-            desiredTarget = chasedObjectsWorld.Translation;
-            target = desiredTarget;
-            target.X += yaw;
-            target.Y += pitch;
+            _desiredTarget = chasedObjectsWorld.Translation;
+            _target = _desiredTarget;
+            _target.X += Yaw;
+            _target.Y += Pitch;
 
-            desiredPosition = Vector3.Transform(offsetDistance, chasedObjectsWorld);
-            position = Vector3.SmoothStep(position, desiredPosition, .15f);
+            _desiredPosition = Vector3.Transform(_offsetDistance, chasedObjectsWorld);
+            _position = Vector3.SmoothStep(_position, _desiredPosition, .15f);
 
-            yaw = MathHelper.SmoothStep(yaw, 0f, .1f);
-            pitch = MathHelper.SmoothStep(pitch, 0f, .1f);
-            roll = MathHelper.SmoothStep(roll, 0f, .2f);
+            Yaw = MathHelper.SmoothStep(Yaw, 0f, .1f);
+            Pitch = MathHelper.SmoothStep(Pitch, 0f, .1f);
+            Roll = MathHelper.SmoothStep(Roll, 0f, .2f);
         }
 
         private void HandleInput()
@@ -85,58 +79,58 @@ namespace Slaysher.Graphics.Camera
 
             if (keyboardState.IsKeyDown(Keys.J))
             {
-                yaw += .02f;
+                Yaw += .02f;
             }
             if (keyboardState.IsKeyDown(Keys.L))
             {
-                yaw += -.02f;
+                Yaw += -.02f;
             }
             if (keyboardState.IsKeyDown(Keys.I))
             {
-                pitch += -.02f;
+                Pitch += -.02f;
             }
             if (keyboardState.IsKeyDown(Keys.K))
             {
-                pitch += .02f;
+                Pitch += .02f;
             }
             if (keyboardState.IsKeyDown(Keys.U))
             {
-                roll += -.02f;
+                Roll += -.02f;
             }
             if (keyboardState.IsKeyDown(Keys.O))
             {
-                roll += .02f;
+                Roll += .02f;
             }
 
             if (keyboardState.IsKeyDown(Keys.W))
             {
-                MoveCamera(cameraRotation.Forward);
+                MoveCamera(_cameraRotation.Forward);
             }
             if (keyboardState.IsKeyDown(Keys.S))
             {
-                MoveCamera(-cameraRotation.Forward);
+                MoveCamera(-_cameraRotation.Forward);
             }
             if (keyboardState.IsKeyDown(Keys.A))
             {
-                MoveCamera(-cameraRotation.Right);
+                MoveCamera(-_cameraRotation.Right);
             }
             if (keyboardState.IsKeyDown(Keys.D))
             {
-                MoveCamera(cameraRotation.Right);
+                MoveCamera(_cameraRotation.Right);
             }
             if (keyboardState.IsKeyDown(Keys.E))
             {
-                MoveCamera(cameraRotation.Up);
+                MoveCamera(_cameraRotation.Up);
             }
             if (keyboardState.IsKeyDown(Keys.Q))
             {
-                MoveCamera(-cameraRotation.Up);
+                MoveCamera(-_cameraRotation.Up);
             }
         }
 
         private void MoveCamera(Vector3 addedVector)
         {
-            position += speed * addedVector;
+            _position += Speed*addedVector;
         }
     }
 }

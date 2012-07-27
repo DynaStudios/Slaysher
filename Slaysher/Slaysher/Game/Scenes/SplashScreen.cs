@@ -14,7 +14,7 @@ namespace Slaysher.Game.Scenes
             get { return "splashScreen"; }
         }
 
-        private static int SPLASH_TIME = 4;
+        private const int SplashTime = 4;
 
         public Engine Engine { get; set; }
 
@@ -23,7 +23,7 @@ namespace Slaysher.Game.Scenes
 
         private Song _splashSoundfile;
 
-        private TimeSpan startTime;
+        private TimeSpan _startTime;
 
         public SplashScreen(Engine engine)
         {
@@ -38,34 +38,34 @@ namespace Slaysher.Game.Scenes
 
             MediaPlayer.Play(_splashSoundfile);
 
-            Engine.Keyboard.KeyUp += keyboard_KeyUp;
+            Engine.Keyboard.KeyUp += KeyboardKeyUp;
         }
 
-        public void Render(Microsoft.Xna.Framework.GameTime time)
+        public void Render(GameTime time)
         {
-            if (startTime == null)
+            if (_startTime == null)
             {
-                startTime = time.TotalGameTime;
+                _startTime = time.TotalGameTime;
             }
 
             _spriteBatch.Begin();
             _spriteBatch.Draw(_splashScreen, new Vector2(0, 0), Color.White);
             _spriteBatch.End();
 
-            if (time.TotalGameTime.Seconds == SplashScreen.SPLASH_TIME)
+            if (time.TotalGameTime.Seconds == SplashTime)
             {
                 //Engine.SwitchScene("boxTest");
                 Engine.SwitchScene("mainMenu");
             }
         }
 
-        public void Update(Microsoft.Xna.Framework.GameTime time)
+        public void Update(GameTime time)
         {
         }
 
-        private void keyboard_KeyUp(object sender, EventArgs eventArgs)
+        private void KeyboardKeyUp(object sender, EventArgs eventArgs)
         {
-            KeyboardEventArgs eventA = (KeyboardEventArgs)eventArgs;
+            KeyboardEventArgs eventA = (KeyboardEventArgs) eventArgs;
             if (eventA.PressedKey == Keys.Escape)
             {
                 Engine.SwitchScene("mainMenu");
@@ -77,7 +77,7 @@ namespace Slaysher.Game.Scenes
             _spriteBatch = null;
 
             MediaPlayer.Pause();
-            Engine.Keyboard.KeyUp -= keyboard_KeyUp;
+            Engine.Keyboard.KeyUp -= KeyboardKeyUp;
 
             Engine.Content.Unload();
         }

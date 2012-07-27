@@ -37,7 +37,7 @@ namespace Slaysher.Game.Scenes
                 {
                     effect.EnableDefaultLighting();
                     //effect.World = modelTransforms[mesh.ParentBone.Index] * worldMatrix * _position;
-                    effect.TextureEnabled = true;
+                    //effect.TextureEnabled = true;
                     //effect.Texture = _patternTexture;
 
                     effect.GraphicsDevice.DepthStencilState = DepthStencilState.Default;

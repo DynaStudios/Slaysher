@@ -14,30 +14,58 @@ namespace SlaysherNetworking.Game.Entities
 
         public int Health { get; set; }
 
+        public float SpeedMeterPerSecend
+        {
+            get { return Speed * 1000; }
+            set { Speed = value / 1000; }
+        }
         public float Speed { get; set; }
 
         public WorldPosition Position { get; set; }
 
-        protected DateTime _movemetStarted = new DateTime(0);
+        // position where a movement has started
+        private WorldPosition _startPosition = null;
 
-        protected float direction;
+        protected TimeSpan? _movemetStarted = null;
 
-        public void Move(float direction)
+        private float _direction;
+        public float Direction { get { return _direction; } }
+
+        public void Move(TimeSpan totalTime, float direction)
         {
-            DateTime now = DateTime.Now;
-            executeMovement(now);
+            ExecuteMovement(totalTime);
+            // using now position for the next movement
+            _startPosition = Position;
+            _movemetStarted = totalTime;
+            Turn(direction);
         }
 
-        private void executeMovement(DateTime movementEndTime)
+        public void Turn(float direction)
         {
-            if (_movemetStarted.Ticks == 0)
+            // XXX: smothered turnning would be nice
+            this._direction = direction;
+        }
+
+        public void StopMoving(TimeSpan totalTime)
+        {
+            // direction should stay as it is
+            ExecuteMovement(totalTime);
+            Position = _startPosition;
+            _startPosition = null;
+            _movemetStarted = null;
+        }
+
+        public void ExecuteMovement(TimeSpan current)
+        {
+            if (_movemetStarted == null || _startPosition == null)
             {
                 return;
             }
-            TimeSpan movedTime = movementEndTime - _movemetStarted;
+            TimeSpan movedTime = current - (TimeSpan)_movemetStarted;
             float distance = movedTime.Ticks * Speed;
 
-
+            Position.X = _startPosition.X + (float) (Math.Sin(_direction) * distance);
+            Position.Y = _startPosition.Y + (float) (Math.Cos(_direction) * distance);
         }
     }
 }

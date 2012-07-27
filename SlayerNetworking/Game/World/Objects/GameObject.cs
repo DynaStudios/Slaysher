@@ -16,6 +16,7 @@ namespace SlaysherNetworking.Game.World.Objects
 
         public GameObject()
         {
+
         }
     }
 }

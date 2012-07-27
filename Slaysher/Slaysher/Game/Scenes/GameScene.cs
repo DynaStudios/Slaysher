@@ -70,6 +70,7 @@ namespace Slaysher.Game.Scenes
             _worldMatrix = Matrix.Identity;
 
             _patternBaseModel = Engine.Content.Load<Model>("Models/Pattern/Pattern");
+            loadPlayerModel();
 
             lock (_client.WaitInitialPositionRequestLook)
             {
@@ -100,6 +101,7 @@ namespace Slaysher.Game.Scenes
                 {
                     key.Value.Draw(_patternBaseModel, _worldMatrix, _tempCamera);
                 }
+                renderPlayer();
             }
             else
             {

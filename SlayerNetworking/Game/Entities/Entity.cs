@@ -8,6 +8,8 @@ namespace SlaysherNetworking.Game.Entities
     {
         public int Id { get; set; }
 
+        public float ModelScaling { get; set; }
+
         public int ModelId { get; set; }
 
         public int TextureId { get; set; }

@@ -33,7 +33,7 @@ namespace Slaysher.Graphics.Camera
             _desiredTarget = _target;
             _desiredPosition = _position;
 
-            _offsetDistance = new Vector3(0, 50, 75);
+            _offsetDistance = new Vector3(0, 15, 20);
 
             Yaw = 0.0f;
             Pitch = 0.0f;

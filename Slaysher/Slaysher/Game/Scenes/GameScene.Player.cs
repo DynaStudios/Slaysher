@@ -46,8 +46,9 @@ namespace Slaysher.Game.Scenes
                     Vector3 position3d = new Vector3(Player.Position.X, 5, Player.Position.Y);
 
                     effect.World = modelTransforms[mesh.ParentBone.Index] * Matrix.CreateTranslation(position3d);
-                    effect.View = _tempCamera.viewMatrix;
-                    effect.Projection = _tempCamera.projectionMatrix;
+
+                    effect.View = _tempCamera.ViewMatrix;
+                    effect.Projection = _tempCamera.ProjectionMatrix;
                 }
                 mesh.Draw();
             }

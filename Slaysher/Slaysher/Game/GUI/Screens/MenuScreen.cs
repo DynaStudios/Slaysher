@@ -10,6 +10,9 @@ namespace Slaysher.Game.GUI.Screens
     {
         private readonly List<GuiItem> _menuEntries = new List<GuiItem>();
 
+        //Component Vars
+        public float ItemOffset { get; set; }
+
         /// <summary>
         /// Gets the list of menu entries, so derived classes can add
         /// or change the menu contents.
@@ -23,6 +26,8 @@ namespace Slaysher.Game.GUI.Screens
         {
             TransitionOnTime = TimeSpan.FromSeconds(0.5);
             TransitionOffTime = TimeSpan.FromSeconds(0.5);
+
+            ItemOffset = 25f;
         }
 
         public override void HandleInput(GameTime gameTime, InputState input)
@@ -65,9 +70,11 @@ namespace Slaysher.Game.GUI.Screens
 
             Vector2 position = new Vector2(0f, 175f);
 
+            int offsetCounter = 0;
             foreach (GuiItem item in MenuEntries)
             {
                 position.X = ScreenManager.GraphicsDevice.Viewport.Width/2 - item.GetWidth(this)/2;
+                position.Y += item.GetHeight(this) + (offsetCounter * ItemOffset);
 
                 if (ScreenState == ScreenState.TransitionOn)
                     position.X -= transitionOffset*256;
@@ -76,7 +83,7 @@ namespace Slaysher.Game.GUI.Screens
 
                 item.Position = position;
 
-                position.Y += item.GetHeight(this);
+                offsetCounter++;
             }
         }
     }

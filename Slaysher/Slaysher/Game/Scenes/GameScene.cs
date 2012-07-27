@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using Slaysher.Game.GUI.Screens;
 using Slaysher.Game.World.Objects;
 using Slaysher.Graphics.Camera;
 using Slaysher.Network;
@@ -13,7 +14,7 @@ using SlaysherNetworking.Packets.Utils;
 
 namespace Slaysher.Game.Scenes
 {
-    public partial class GameScene : IScene
+    public partial class GameScene : GameScreen, IScene
     {
         public string Name
         {
@@ -41,9 +42,9 @@ namespace Slaysher.Game.Scenes
         //Network Stuff
         private readonly Client _client;
 
-        public GameScene(Engine engine)
+        public GameScene()
         {
-            Engine = engine;
+            Engine = ScreenManager.Game as Engine;
 
             Pattern = new Dictionary<int, Pattern>();
             _patternTextures = new Dictionary<int, Texture2D>();

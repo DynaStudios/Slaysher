@@ -32,6 +32,9 @@ namespace Slaysher
 
         public GUIManager GUIManager { get; set; }
 
+        private readonly ScreenManager _screenManager;
+        private readonly ScreenFactory _screenFactory;
+
         private readonly KeyboardHandler _keyboardHandler;
 
         public KeyboardHandler Keyboard
@@ -45,6 +48,14 @@ namespace Slaysher
         {
             _graphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
+            TargetElapsedTime = TimeSpan.FromTicks(333333);
+
+            _screenFactory = new ScreenFactory();
+            Services.AddService(typeof(IScreenFactory), _screenFactory);
+
+            _screenManager = new ScreenManager(this);
+            Components.Add(_screenManager);
+            AddInitialScreens();
 
             InitGraphicsMode(1024, 768, false);
 
@@ -57,6 +68,13 @@ namespace Slaysher
             //Set Master Volumes. Replace later with user options
             SoundEffect.MasterVolume = 0.3f;
             MediaPlayer.Volume = 0.3f;
+
+        }
+
+        private void AddInitialScreens()
+        {
+            _screenManager.AddScreen(new BackgroundScene());
+            _screenManager.AddScreen(new MainMenuScene());
         }
 
         private static bool TypeIsScene(Type type)
@@ -86,16 +104,16 @@ namespace Slaysher
 
         protected override void Initialize()
         {
-            LoadScenesFromAssembly(Assembly.GetExecutingAssembly());
+            //LoadScenesFromAssembly(Assembly.GetExecutingAssembly());
 
             //Switch to chosen Scene
 #if DEBUG
-            SwitchScene("mainMenu");
+            //SwitchScene("mainMenu");
 #else
             SwitchScene("splashScreen");
 #endif
 
-            GameState = GameState.Game;
+            //GameState = GameState.Game;
             GUIManager.LoadScene();
 
             base.Initialize();
@@ -109,15 +127,15 @@ namespace Slaysher
 
         protected override void UnloadContent()
         {
-            _activeScene.UnloadScene();
+            //_activeScene.UnloadScene();
         }
 
         protected override void Update(GameTime gameTime)
         {
-            if (_activeScene != null)
+            /*if (_activeScene != null)
             {
                 _activeScene.Update(gameTime);
-            }
+            }*/
 
             Keyboard.Update(gameTime);
             GUIManager.Update(gameTime);
@@ -129,7 +147,7 @@ namespace Slaysher
             GraphicsDevice.Clear(Color.Gray);
 
             //Scene Rendering
-            if (!_sceneLoaded)
+            /*if (!_sceneLoaded)
             {
                 LoadScene();
             }
@@ -139,7 +157,7 @@ namespace Slaysher
                 _activeScene.Render(gameTime);
             }
 
-            GUIManager.Render(gameTime);
+            GUIManager.Render(gameTime);*/
             base.Draw(gameTime);
         }
 

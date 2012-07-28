@@ -46,13 +46,13 @@ namespace Slaysher.Game.GUI.Components
         public void InitVars()
         {
             //Set Button Default Values
-            Size = new Vector2(250, 50);
-            FillColor = Color.Orange;
-            HoverColor = Color.Red;
-            BorderColor = Color.Black;
+            Size = new Vector2(190, 40);
+            FillColor = Color.White;
+            HoverColor = Color.Blue;
+            BorderColor = Color.GreenYellow;
             TextColor = Color.White;
             Alpha = 1f;
-            BorderThickness = 4;
+            BorderThickness = 2;
         }
 
         public float GetWidth(GameScreen gameScreen)
@@ -77,7 +77,7 @@ namespace Slaysher.Game.GUI.Components
 
             if (_buttonTexture == null)
             {
-                _buttonTexture = gameScreen.ScreenManager.BlankTexture;
+                _buttonTexture = gameScreen.ScreenManager.Game.Content.Load<Texture2D>("Images/Game/Menu/btnBg");
             }
 
             Rectangle rec = new Rectangle((int) Position.X, (int) Position.Y, (int) Size.X, (int) Size.Y);

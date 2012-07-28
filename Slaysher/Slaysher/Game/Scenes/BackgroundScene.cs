@@ -30,7 +30,7 @@ namespace Slaysher.Game.Scenes
                     _content = new ContentManager(ScreenManager.Game.Services, "Content");
                 }
 
-                _backgroundTexture = _content.Load<Texture2D>("Images/Game/loadingScreen");
+                _backgroundTexture = _content.Load<Texture2D>("Images/Game/Menu/fanBg");
             }
         }
 

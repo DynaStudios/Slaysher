@@ -43,7 +43,6 @@ namespace Slaysher.Game.GUI
 
             SpriteBatch = new SpriteBatch(GraphicsDevice);
 
-            //TODO: Add SpriteFont and Blank Texture
             Font = content.Load<SpriteFont>("Fonts/menu");
             BlankTexture = content.Load<Texture2D>("Images/Game/dyna_splash");
 

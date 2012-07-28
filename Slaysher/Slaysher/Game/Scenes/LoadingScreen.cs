@@ -8,11 +8,10 @@ namespace Slaysher.Game.Scenes
 {
     public class LoadingScreen : GameScreen
     {
-
-        private bool _loadingIsSlow;
+        private readonly bool _loadingIsSlow;
         private bool _otherScreensAreGone;
 
-        private GameScreen[] _screensToLoad;
+        private readonly GameScreen[] _screensToLoad;
 
         private LoadingScreen(ScreenManager screenManager, bool loadingIsSlow, GameScreen[] screensToLoad)
         {

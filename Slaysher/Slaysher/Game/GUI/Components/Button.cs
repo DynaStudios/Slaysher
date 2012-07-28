@@ -17,7 +17,7 @@ namespace Slaysher.Game.GUI.Components
         public Color HoverColor { get; set; }
         public Color BorderColor { get; set; }
         public Color TextColor { get; set; }
-        
+
         public float Alpha { get; set; }
         public int BorderThickness { get; set; }
 
@@ -72,7 +72,6 @@ namespace Slaysher.Game.GUI.Components
 
         public void Draw(GameScreen gameScreen, GameTime gameTime)
         {
-
             SpriteBatch spriteBatch = gameScreen.ScreenManager.SpriteBatch;
             SpriteFont font = gameScreen.ScreenManager.Font;
 
@@ -81,31 +80,36 @@ namespace Slaysher.Game.GUI.Components
                 _buttonTexture = gameScreen.ScreenManager.BlankTexture;
             }
 
-            Rectangle rec = new Rectangle((int)Position.X, (int)Position.Y, (int)Size.X, (int)Size.Y);
+            Rectangle rec = new Rectangle((int) Position.X, (int) Position.Y, (int) Size.X, (int) Size.Y);
 
             //Fill Button
             if (_isHovered)
             {
-                spriteBatch.Draw(_buttonTexture, rec, HoverColor * Alpha);
+                spriteBatch.Draw(_buttonTexture, rec, HoverColor*Alpha);
             }
-            else 
-            { 
-                spriteBatch.Draw(_buttonTexture, rec, FillColor * Alpha);
+            else
+            {
+                spriteBatch.Draw(_buttonTexture, rec, FillColor*Alpha);
             }
 
             //Draw Border
-            spriteBatch.Draw(_buttonTexture, new Rectangle(rec.Left, rec.Top, rec.Width, BorderThickness), BorderColor * Alpha);
-            spriteBatch.Draw(_buttonTexture, new Rectangle(rec.Left, rec.Top, BorderThickness, rec.Height), BorderColor * Alpha);
-            spriteBatch.Draw(_buttonTexture, new Rectangle(rec.Right - BorderThickness, rec.Top, BorderThickness, rec.Height), BorderColor * Alpha);
-            spriteBatch.Draw(_buttonTexture, new Rectangle(rec.Left, rec.Bottom - BorderThickness, rec.Width, BorderThickness), BorderColor * Alpha);
+            spriteBatch.Draw(_buttonTexture, new Rectangle(rec.Left, rec.Top, rec.Width, BorderThickness),
+                             BorderColor*Alpha);
+            spriteBatch.Draw(_buttonTexture, new Rectangle(rec.Left, rec.Top, BorderThickness, rec.Height),
+                             BorderColor*Alpha);
+            spriteBatch.Draw(_buttonTexture,
+                             new Rectangle(rec.Right - BorderThickness, rec.Top, BorderThickness, rec.Height),
+                             BorderColor*Alpha);
+            spriteBatch.Draw(_buttonTexture,
+                             new Rectangle(rec.Left, rec.Bottom - BorderThickness, rec.Width, BorderThickness),
+                             BorderColor*Alpha);
 
             //Draw the Text centered in the button
             Vector2 textSize = font.MeasureString(Text);
-            Vector2 textPosition = new Vector2(rec.Center.X, rec.Center.Y) - textSize / 2f;
+            Vector2 textPosition = new Vector2(rec.Center.X, rec.Center.Y) - textSize/2f;
             textPosition.X = (int) textPosition.X;
             textPosition.Y = (int) textPosition.Y;
-            spriteBatch.DrawString(font, Text, textPosition, TextColor * Alpha);
-
+            spriteBatch.DrawString(font, Text, textPosition, TextColor*Alpha);
         }
 
         protected virtual void OnClicked()
@@ -118,15 +122,10 @@ namespace Slaysher.Game.GUI.Components
 
         public void HandleInput(InputState input)
         {
-
             var mousePosition = new Vector2(input.MouseState.X, input.MouseState.Y);
 
-            var posX = Position.X;
-            var posY = Position.Y;
-            var sizeX = Size.X;
-            var sizeY = Size.Y;
-
-            if (mousePosition.X >= Position.X && mousePosition.Y >= Position.Y && mousePosition.X <= Position.X + Size.X && mousePosition.Y <= Position.Y + Size.Y)
+            if (mousePosition.X >= Position.X && mousePosition.Y >= Position.Y && mousePosition.X <= Position.X + Size.X &&
+                mousePosition.Y <= Position.Y + Size.Y)
             {
                 _isHovered = true;
                 if (input.MouseState.LeftButton == ButtonState.Pressed)
@@ -138,7 +137,6 @@ namespace Slaysher.Game.GUI.Components
             {
                 _isHovered = false;
             }
-
         }
     }
 }

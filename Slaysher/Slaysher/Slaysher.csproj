@@ -111,7 +111,7 @@
     <Compile Include="Game\Database\Database.cs" />
     <Compile Include="Game\GameState.cs" />
     <Compile Include="Game\GUI\Components\Button.cs" />
-    <Compile Include="Game\GUI\Components\GuiItem.cs" />
+    <Compile Include="Game\GUI\Components\IGuiItem.cs" />
     <Compile Include="Game\GUI\GUIManager.cs" />
     <Compile Include="Game\GUI\InputState.cs" />
     <Compile Include="Game\GUI\IScreenFactory.cs" />

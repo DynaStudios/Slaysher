@@ -1,5 +1,6 @@
 ﻿using System;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Audio;
 using Slaysher.Game.GUI.Components;
 using Slaysher.Game.GUI.Screens;
 
@@ -9,17 +10,7 @@ namespace Slaysher.Game.Scenes
     {
         public MainMenuScene()
         {
-            Button playButton = new Button("Start Game");
-            Button optionsButton = new Button("Options");
-            Button exitButton = new Button("Exit Game");
-
-            playButton.Clicked += StartGameButtonClicked;
-            optionsButton.Clicked += OptionsButtonClicked;
-            exitButton.Clicked += ExitGameButtonClicked;
-
-            MenuEntries.Add(playButton);
-            MenuEntries.Add(optionsButton);
-            MenuEntries.Add(exitButton);
+            
             
         }
 
@@ -29,6 +20,20 @@ namespace Slaysher.Game.Scenes
         {
             base.Activate(instancePreserved);
             PresentationOffset = new Vector2((ScreenManager.GraphicsDevice.Viewport.Width / 4) * 3.5f, (ScreenManager.GraphicsDevice.Viewport.Height / 4) * 2.25f);
+
+            SoundEffect hoverSound = ScreenManager.Game.Content.Load<SoundEffect>("Sounds/GUI/btnHover");
+
+            Button playButton = new Button("Start Game") { HoverSound = hoverSound };
+            Button optionsButton = new Button("Options") { HoverSound = hoverSound };
+            Button exitButton = new Button("Exit Game") { HoverSound = hoverSound };
+
+            playButton.Clicked += StartGameButtonClicked;
+            optionsButton.Clicked += OptionsButtonClicked;
+            exitButton.Clicked += ExitGameButtonClicked;
+
+            MenuEntries.Add(playButton);
+            MenuEntries.Add(optionsButton);
+            MenuEntries.Add(exitButton);
         }
 
         #endregion

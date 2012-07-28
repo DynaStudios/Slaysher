@@ -1,5 +1,6 @@
 ﻿using System;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using Slaysher.Game.GUI.Screens;
@@ -9,6 +10,8 @@ namespace Slaysher.Game.GUI.Components
     public class Button : IGuiItem
     {
         public Vector2 Position { get; set; }
+        public SoundEffect HoverSound { get; set; }
+        public SoundEffect ClickSound { get; set; }
 
         //Button Properties
         public Vector2 Size { get; set; }
@@ -26,6 +29,9 @@ namespace Slaysher.Game.GUI.Components
         public event EventHandler<EventArgs> Clicked;
 
         private bool _isHovered;
+        private bool _playedHoverSound;
+        private bool _playedClickSound;
+
         private Texture2D _buttonTexture;
 
         public Button(string buttonText)
@@ -116,6 +122,11 @@ namespace Slaysher.Game.GUI.Components
         {
             if (Clicked != null)
             {
+                if (ClickSound != null)
+                {
+                    ClickSound.Play();
+                    _playedClickSound = true;
+                }
                 Clicked(this, EventArgs.Empty);
             }
         }
@@ -128,6 +139,13 @@ namespace Slaysher.Game.GUI.Components
                 mousePosition.Y <= Position.Y + Size.Y)
             {
                 _isHovered = true;
+
+                if (!_playedHoverSound && HoverSound != null)
+                {
+                    HoverSound.Play();
+                    _playedHoverSound = true;
+                }
+
                 if (input.MouseState.LeftButton == ButtonState.Pressed)
                 {
                     OnClicked();
@@ -136,6 +154,7 @@ namespace Slaysher.Game.GUI.Components
             else
             {
                 _isHovered = false;
+                _playedHoverSound = false;
             }
         }
     }

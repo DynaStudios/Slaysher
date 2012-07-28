@@ -22,10 +22,11 @@ namespace Slaysher.Game.Scenes
             PresentationOffset = new Vector2((ScreenManager.GraphicsDevice.Viewport.Width / 4) * 3.5f, (ScreenManager.GraphicsDevice.Viewport.Height / 4) * 2.25f);
 
             SoundEffect hoverSound = ScreenManager.Game.Content.Load<SoundEffect>("Sounds/GUI/btnHover");
+            SoundEffect clickSound = ScreenManager.Game.Content.Load<SoundEffect>("Sounds/GUI/click");
 
-            Button playButton = new Button("Start Game") { HoverSound = hoverSound };
-            Button optionsButton = new Button("Options") { HoverSound = hoverSound };
-            Button exitButton = new Button("Exit Game") { HoverSound = hoverSound };
+            Button playButton = new Button("Start Game") { HoverSound = hoverSound, ClickSound = clickSound};
+            Button optionsButton = new Button("Options") { HoverSound = hoverSound, ClickSound = clickSound };
+            Button exitButton = new Button("Exit Game") { HoverSound = hoverSound, ClickSound = clickSound };
 
             playButton.Clicked += StartGameButtonClicked;
             optionsButton.Clicked += OptionsButtonClicked;

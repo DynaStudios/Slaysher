@@ -151,6 +151,11 @@
       <Importer>TextureImporter</Importer>
       <Processor>TextureProcessor</Processor>
     </Compile>
+    <Compile Include="Sounds\GUI\click.mp3">
+      <Name>click</Name>
+      <Importer>Mp3Importer</Importer>
+      <Processor>SoundEffectProcessor</Processor>
+    </Compile>
     <None Include="Data\patternTextures.xml">
       <Name>patternTextures</Name>
       <Importer>XmlImporter</Importer>

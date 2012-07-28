@@ -10,6 +10,8 @@ namespace Slaysher.Game.GUI.Screens
     {
         private readonly List<GuiItem> _menuEntries = new List<GuiItem>();
 
+        public Vector2 PresentationOffset { get; set; }
+
         //Component Vars
         public float ItemOffset { get; set; }
 
@@ -28,6 +30,7 @@ namespace Slaysher.Game.GUI.Screens
             TransitionOffTime = TimeSpan.FromSeconds(0.5);
 
             ItemOffset = 15f;
+            PresentationOffset = new Vector2(0f, 175f);
         }
 
         /// <summary>
@@ -81,13 +84,21 @@ namespace Slaysher.Game.GUI.Screens
         {
             float transitionOffset = (float) Math.Pow(TransitionPosition, 2);
 
-            Vector2 position = new Vector2(0f, 175f);
+            Vector2 position = PresentationOffset;
 
             int offsetCounter = 0;
             foreach (GuiItem item in MenuEntries)
             {
-                position.X = ScreenManager.GraphicsDevice.Viewport.Width/2 - item.GetWidth(this)/2;
-                position.Y += item.GetHeight(this) + (offsetCounter * ItemOffset);
+                if (position.X > 0f)
+                {
+                    position.X = PresentationOffset.X - item.GetWidth(this) / 2;
+                }
+                else 
+                { 
+                    position.X = ScreenManager.GraphicsDevice.Viewport.Width/2 - item.GetWidth(this)/2;
+                }
+                var yOffset = (offsetCounter > 0) ? ItemOffset : 0;
+                position.Y += item.GetHeight(this) + yOffset;
 
                 if (ScreenState == ScreenState.TransitionOn)
                     position.X -= transitionOffset*256;

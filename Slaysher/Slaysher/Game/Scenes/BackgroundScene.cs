@@ -17,7 +17,11 @@ namespace Slaysher.Game.Scenes
              TransitionOffTime = TimeSpan.FromSeconds(0.5);
          }
 
-         public override void Activate(bool instancePreserved)
+        /// <summary>
+        /// Activates the screen. This method gets called after the screen is added to the screen manager.
+        /// </summary>
+        /// <param name="instancePreserved">Not used yet! Will be used later for serialization</param>
+        public override void Activate(bool instancePreserved)
          {
              if (!instancePreserved)
              {
@@ -30,7 +34,10 @@ namespace Slaysher.Game.Scenes
              }
          }
 
-         public override void Unload()
+        /// <summary>
+        /// Unloads screen content.
+        /// </summary>
+        public override void Unload()
          {
              _content.Unload();
          }
@@ -48,7 +55,15 @@ namespace Slaysher.Game.Scenes
              spriteBatch.End();
          }
 
-         public override void Update(GameTime gameTime, bool otherScreenHasFocus, bool coveredByOtherScreen)
+        /// <summary>
+        /// This method gets called with every update call. All screens get called! Even the not visible one.
+        /// 
+        /// To update just the visible one use HandleInput()
+        /// </summary>
+        /// <param name="gameTime">Current GameTime</param>
+        /// <param name="otherScreenHasFocus">Is another screen having focus?</param>
+        /// <param name="coveredByOtherScreen">Depending on covered or not the screen will be visible. Pass true to always be visible in the background</param>
+        public override void Update(GameTime gameTime, bool otherScreenHasFocus, bool coveredByOtherScreen)
          {
              base.Update(gameTime, otherScreenHasFocus, false);
          }

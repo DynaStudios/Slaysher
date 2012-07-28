@@ -76,21 +76,39 @@ namespace Slaysher.Game.GUI.Screens
             ScreenState = ScreenState.TransitionOn;
         }
 
+        /// <summary>
+        /// Activates the screen. This method gets called after the screen is added to the screen manager.
+        /// </summary>
+        /// <param name="instancePreserved">Not used yet! Will be used later for serialization</param>
         public virtual void Activate(bool instancePreserved)
         {
             
         }
 
+        /// <summary>
+        /// Gets called when a screen is being deactivated. 
+        /// </summary>
         public virtual void Deactivate()
         {
             
         }
 
+        /// <summary>
+        /// Unloads screen content.
+        /// </summary>
         public virtual void Unload()
         {
             
         }
 
+        /// <summary>
+        /// This method gets called with every update call. All screens get called! Even the not visible one.
+        /// 
+        /// To update just the visible one use HandleInput()
+        /// </summary>
+        /// <param name="gameTime">Current GameTime</param>
+        /// <param name="otherScreenHasFocus">Is another screen having focus?</param>
+        /// <param name="coveredByOtherScreen">Depending on covered or not the screen will be visible. Pass true to always be visible in the background</param>
         public virtual void Update(GameTime gameTime, bool otherScreenHasFocus, bool coveredByOtherScreen)
         {
             _otherScreenHasFocus = otherScreenHasFocus;
@@ -146,6 +164,11 @@ namespace Slaysher.Game.GUI.Screens
             return true;
         }
 
+        /// <summary>
+        /// The same as Update() except only active screens get called.
+        /// </summary>
+        /// <param name="gameTime">Current GameTime</param>
+        /// <param name="input">Input Object to access Mouse and Keyboard</param>
         public virtual void HandleInput(GameTime gameTime, InputState input) { }
 
         public virtual void Draw(GameTime gameTime) { }

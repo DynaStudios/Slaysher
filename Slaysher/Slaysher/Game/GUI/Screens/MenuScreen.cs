@@ -30,6 +30,11 @@ namespace Slaysher.Game.GUI.Screens
             ItemOffset = 15f;
         }
 
+        /// <summary>
+        /// The same as Update() except only active screens get called.
+        /// </summary>
+        /// <param name="gameTime">Current GameTime</param>
+        /// <param name="input">Input Object to access Mouse and Keyboard</param>
         public override void HandleInput(GameTime gameTime, InputState input)
         {
             foreach (GuiItem menuEntry in MenuEntries)
@@ -38,6 +43,14 @@ namespace Slaysher.Game.GUI.Screens
             }
         }
 
+        /// <summary>
+        /// This method gets called with every update call. All screens get called! Even the not visible one.
+        /// 
+        /// To update just the visible one use HandleInput()
+        /// </summary>
+        /// <param name="gameTime">Current GameTime</param>
+        /// <param name="otherScreenHasFocus">Is another screen having focus?</param>
+        /// <param name="coveredByOtherScreen">Depending on covered or not the screen will be visible. Pass true to always be visible in the background</param>
         public override void Update(GameTime gameTime, bool otherScreenHasFocus, bool coveredByOtherScreen)
         {
             base.Update(gameTime, otherScreenHasFocus, coveredByOtherScreen);

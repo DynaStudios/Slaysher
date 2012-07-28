@@ -48,9 +48,9 @@ namespace Slaysher.Game.Scenes
              spriteBatch.End();
          }
 
-         public override void Update(Microsoft.Xna.Framework.GameTime gameTime, bool otherScreenHasFocus, bool coveredByOtherScreen)
+         public override void Update(GameTime gameTime, bool otherScreenHasFocus, bool coveredByOtherScreen)
          {
-             base.Update(gameTime, otherScreenHasFocus, coveredByOtherScreen);
+             base.Update(gameTime, otherScreenHasFocus, false);
          }
     }
 }

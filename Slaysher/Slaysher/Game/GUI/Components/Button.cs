@@ -46,7 +46,7 @@ namespace Slaysher.Game.GUI.Components
         public void InitVars()
         {
             //Set Button Default Values
-            Size = new Vector2(250, 75);
+            Size = new Vector2(250, 50);
             FillColor = Color.Orange;
             HoverColor = Color.Red;
             BorderColor = Color.Black;

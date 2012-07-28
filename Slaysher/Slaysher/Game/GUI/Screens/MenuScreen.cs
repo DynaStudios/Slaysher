@@ -27,7 +27,7 @@ namespace Slaysher.Game.GUI.Screens
             TransitionOnTime = TimeSpan.FromSeconds(0.5);
             TransitionOffTime = TimeSpan.FromSeconds(0.5);
 
-            ItemOffset = 25f;
+            ItemOffset = 15f;
         }
 
         public override void HandleInput(GameTime gameTime, InputState input)

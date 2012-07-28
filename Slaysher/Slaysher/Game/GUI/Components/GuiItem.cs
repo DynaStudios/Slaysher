@@ -3,7 +3,7 @@ using Slaysher.Game.GUI.Screens;
 
 namespace Slaysher.Game.GUI.Components
 {
-    public interface GuiItem
+    public interface IGuiItem
     {
         Vector2 Position { get; set; }
 

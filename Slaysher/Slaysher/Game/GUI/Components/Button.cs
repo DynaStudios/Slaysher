@@ -6,7 +6,7 @@ using Slaysher.Game.GUI.Screens;
 
 namespace Slaysher.Game.GUI.Components
 {
-    public class Button : GuiItem
+    public class Button : IGuiItem
     {
         public Vector2 Position { get; set; }
 

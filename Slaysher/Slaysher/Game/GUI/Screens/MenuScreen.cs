@@ -8,7 +8,7 @@ namespace Slaysher.Game.GUI.Screens
 {
     public class MenuScreen : GameScreen
     {
-        private readonly List<GuiItem> _menuEntries = new List<GuiItem>();
+        private readonly List<IGuiItem> _menuEntries = new List<IGuiItem>();
 
         public Vector2 PresentationOffset { get; set; }
 
@@ -19,7 +19,7 @@ namespace Slaysher.Game.GUI.Screens
         /// Gets the list of menu entries, so derived classes can add
         /// or change the menu contents.
         /// </summary>
-        protected IList<GuiItem> MenuEntries
+        protected IList<IGuiItem> MenuEntries
         {
             get { return _menuEntries; }
         }
@@ -40,7 +40,7 @@ namespace Slaysher.Game.GUI.Screens
         /// <param name="input">Input Object to access Mouse and Keyboard</param>
         public override void HandleInput(GameTime gameTime, InputState input)
         {
-            foreach (GuiItem menuEntry in MenuEntries)
+            foreach (IGuiItem menuEntry in MenuEntries)
             {
                 menuEntry.HandleInput(input);
             }
@@ -58,7 +58,7 @@ namespace Slaysher.Game.GUI.Screens
         {
             base.Update(gameTime, otherScreenHasFocus, coveredByOtherScreen);
 
-            foreach (GuiItem item in MenuEntries)
+            foreach (IGuiItem item in MenuEntries)
             {
                 item.Update(this, gameTime);
             }
@@ -72,7 +72,7 @@ namespace Slaysher.Game.GUI.Screens
 
             spriteBatch.Begin();
 
-            foreach (GuiItem item in MenuEntries)
+            foreach (IGuiItem item in MenuEntries)
             {
                 item.Draw(this, gameTime);
             }
@@ -87,7 +87,7 @@ namespace Slaysher.Game.GUI.Screens
             Vector2 position = PresentationOffset;
 
             int offsetCounter = 0;
-            foreach (GuiItem item in MenuEntries)
+            foreach (IGuiItem item in MenuEntries)
             {
                 if (position.X > 0f)
                 {

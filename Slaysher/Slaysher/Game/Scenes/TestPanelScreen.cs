@@ -11,6 +11,7 @@ namespace Slaysher.Game.Scenes
         public override void Activate(bool instancePreserved)
         {
             base.Activate(instancePreserved);
+            PanelEntries.Add(new Label("Hallo Welt") { Color = Color.OrangeRed });
             PanelEntries.Add(new Button("Test Button 1"));
             PanelEntries.Add(new Button("Test Button 2"));
             PanelEntries.Add(new Button("Test Button 3"));

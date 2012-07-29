@@ -54,6 +54,7 @@ namespace Slaysher
             Services.AddService(typeof(IScreenFactory), _screenFactory);
 
             _screenManager = new ScreenManager(this);
+
             Components.Add(_screenManager);
             AddInitialScreens();
 

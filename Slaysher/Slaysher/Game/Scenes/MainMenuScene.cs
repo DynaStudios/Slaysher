@@ -10,8 +10,6 @@ namespace Slaysher.Game.Scenes
     {
         public MainMenuScene()
         {
-            
-            
         }
 
         #region Overrides of GameScreen
@@ -25,15 +23,15 @@ namespace Slaysher.Game.Scenes
             SoundEffect clickSound = ScreenManager.Game.Content.Load<SoundEffect>("Sounds/GUI/click");
 
             Button playButton = new Button("Start Game") { HoverSound = hoverSound, ClickSound = clickSound};
-            Button optionsButton = new Button("Options") { HoverSound = hoverSound, ClickSound = clickSound };
+            Button panelButton = new Button("Panel Test") { HoverSound = hoverSound, ClickSound = clickSound };
             Button exitButton = new Button("Exit Game") { HoverSound = hoverSound, ClickSound = clickSound };
 
             playButton.Clicked += StartGameButtonClicked;
-            optionsButton.Clicked += OptionsButtonClicked;
+            panelButton.Clicked += PanelButtonClicked;
             exitButton.Clicked += ExitGameButtonClicked;
 
             MenuEntries.Add(playButton);
-            MenuEntries.Add(optionsButton);
+            MenuEntries.Add(panelButton);
             MenuEntries.Add(exitButton);
         }
 
@@ -44,9 +42,9 @@ namespace Slaysher.Game.Scenes
             LoadingScreen.Load(ScreenManager, true, new GameScene());
         }
 
-        private void OptionsButtonClicked(object sender, EventArgs e)
+        private void PanelButtonClicked(object sender, EventArgs e)
         {
-            //todo: To be implemented with options branch
+            ScreenManager.AddScreen(new TestPanelScreen {Title = "Panel Test"});
         }
 
         private void ExitGameButtonClicked(object sender, EventArgs e)

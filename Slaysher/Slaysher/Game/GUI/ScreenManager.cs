@@ -101,7 +101,9 @@ namespace Slaysher.Game.GUI
 
                 if (screen.ScreenState == ScreenState.TransitionOn || screen.ScreenState == ScreenState.Active)
                 {
-                    if (!otherScreenHasFocus)
+                    bool otherScreenIsPopup = _screens.Any(gameScreen => gameScreen.IsPopup);
+
+                    if (!otherScreenHasFocus || otherScreenIsPopup)
                     {
                         screen.HandleInput(gameTime, _input);
                         otherScreenHasFocus = true;

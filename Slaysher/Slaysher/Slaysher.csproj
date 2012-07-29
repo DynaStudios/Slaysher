@@ -122,6 +122,7 @@
     <Compile Include="Game\GUI\ScreenManager.cs" />
     <Compile Include="Game\GUI\Screens\GameScreen.cs" />
     <Compile Include="Game\GUI\Screens\MenuScreen.cs" />
+    <Compile Include="Game\GUI\Screens\WindowScreen.cs" />
     <Compile Include="Game\IO\KeyboardEventArgs.cs" />
     <Compile Include="Game\IO\KeyboardHandler.cs" />
     <Compile Include="Game\Physics\Collisions\AABB.cs" />
@@ -134,6 +135,7 @@
     <Compile Include="Game\Scenes\LoadingScreen.cs" />
     <Compile Include="Game\Scenes\MainMenu.cs" />
     <Compile Include="Game\Scenes\MainMenuScene.cs" />
+    <Compile Include="Game\Scenes\TestPanelScreen.cs" />
     <Compile Include="Game\Scenes\SplashScreen.cs" />
     <Compile Include="Game\World\Objects\Pattern.cs" />
     <Compile Include="Graphics\Camera\Camera.cs" />

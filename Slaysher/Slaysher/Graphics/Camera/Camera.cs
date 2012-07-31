@@ -1,36 +1,54 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
 
+using SlaysherNetworking.Game.World;
+
 namespace Slaysher.Graphics.Camera
 {
+    public static class Extension
+    {
+        public static Vector3 CreateOnSurfacePosition(this WorldPosition worldPosition)
+        {
+            return new Vector3(worldPosition.X, 0, worldPosition.Y);
+        }
+    }
+
     public class Camera
     {
+        private WorldPosition _target;
         private Vector3 _position;
-        private Vector3 _target;
-        public Matrix ViewMatrix, ProjectionMatrix;
-
-        public float Yaw, Pitch, Roll;
-        public float Speed;
+        private Vector3 _targetPosition;
         private Matrix _cameraRotation;
 
         private Vector3 _desiredPosition;
         private Vector3 _desiredTarget;
         private Vector3 _offsetDistance;
 
-        public Camera()
+        public Matrix ViewMatrix, ProjectionMatrix;
+
+        public float Yaw, Pitch, Roll;
+        public float Speed;
+        public WorldPosition Target
         {
+            set { _target = value; }
+            get { return _target; }
+        }
+
+        public Camera(WorldPosition target)
+        {
+            _target = target;
             ResetCamera();
         }
 
         public void ResetCamera()
         {
             _position = new Vector3(0, 0, 50);
-            _target = new Vector3();
+            //_target = new Vector3();
 
             ViewMatrix = Matrix.Identity;
             ProjectionMatrix = Matrix.CreatePerspectiveFieldOfView(MathHelper.ToRadians(45.0f), 16/9, .5f, 500f);
 
-            _desiredTarget = _target;
+            _desiredTarget = new Vector3(_target.X, 0, _target.Y);
             _desiredPosition = _position;
 
             _offsetDistance = new Vector3(0, 15, 20);
@@ -46,13 +64,16 @@ namespace Slaysher.Graphics.Camera
 
         public void Update(Matrix chasedObjectsWorld)
         {
-            HandleInput();
-            UpdateViewMatrix(chasedObjectsWorld);
+            //HandleInput();
+            if (_target != null)
+            {
+                UpdateViewMatrix(chasedObjectsWorld);
+            }
         }
 
         private void UpdateViewMatrix(Matrix chasedObjectsWorld)
         {
-            ViewMatrix = Matrix.CreateLookAt(_position, _target, Vector3.Up);
+            ViewMatrix = Matrix.CreateLookAt(_position, _target.CreateOnSurfacePosition(), Vector3.Up);
 
             _cameraRotation.Forward.Normalize();
             chasedObjectsWorld.Right.Normalize();
@@ -61,7 +82,7 @@ namespace Slaysher.Graphics.Camera
             _cameraRotation = Matrix.CreateFromAxisAngle(_cameraRotation.Forward, Roll);
 
             _desiredTarget = chasedObjectsWorld.Translation;
-            _target = _desiredTarget;
+            _target = new WorldPosition(_desiredTarget.X, _desiredTarget.Z);
             _target.X += Yaw;
             _target.Y += Pitch;
 

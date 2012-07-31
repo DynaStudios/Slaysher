@@ -29,7 +29,8 @@ namespace Slaysher.Game.Scenes
 
         private Matrix _worldMatrix;
 
-        private readonly Camera _tempCamera = new Camera();
+        private readonly Camera _tempCamera = new Camera(new SlaysherNetworking.Game.World.WorldPosition());
+        public Camera Camera { get { return _tempCamera; } }
         private Model _patternBaseModel;
 
         private readonly Dictionary<int, Texture2D> _patternTextures;
@@ -144,6 +145,10 @@ namespace Slaysher.Game.Scenes
             }
 
             _tempCamera.Update(_worldMatrix);
+            if (Player != null)
+            {
+                Player.Update(_worldMatrix);
+            }
         }
 
         public Texture2D LoadPatternTexture(int textureId)

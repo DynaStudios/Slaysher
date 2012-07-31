@@ -4,9 +4,13 @@ using System.Net;
 using System.Net.Sockets;
 using System.Threading;
 using System.Threading.Tasks;
+
 using Microsoft.Xna.Framework;
+
+using Slaysher.Game.Entities;
 using Slaysher.Game.Scenes;
 using Slaysher.Game.World.Objects;
+
 using SlaysherNetworking.Game.Entities;
 using SlaysherNetworking.Game.World;
 using SlaysherNetworking.Packets;
@@ -383,7 +387,12 @@ namespace Slaysher.Network
             Console.WriteLine("Received Player Info Packet");
             if (client.GameScene.Player == null && pip.PlayerId == 0)
             {
-                client.GameScene.Player = new Player {Nickname = pip.Nickname, Health = pip.Health};
+                ClientPlayer player = new ClientPlayer {
+                    Nickname = pip.Nickname,
+                    Health = pip.Health
+                };
+                client.GameScene.Player = player;
+                client.GameScene.Camera.Target = player.Position;
             }
             else
             {

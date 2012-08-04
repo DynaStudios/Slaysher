@@ -76,8 +76,8 @@ namespace SlaysherServer.Game
             var referenc = new List<List<Pattern>>();
             var ret = new List<Pattern>();
             Random rnd = new Random();
-            const int xMax = 20;
-            const int yMax = 20;
+            const int xMax = 7;
+            const int yMax = 7;
 
             for (int yi = 0; yi < yMax; ++yi)
             {

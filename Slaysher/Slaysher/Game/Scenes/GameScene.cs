@@ -2,12 +2,16 @@
 using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
+
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+
+using Slaysher.Game.Entities;
 using Slaysher.Game.World.Objects;
 using Slaysher.Graphics.Camera;
 using Slaysher.Network;
+
 using SlaysherNetworking.Game.World.Objects;
 using SlaysherNetworking.Packets.Utils;
 
@@ -26,10 +30,12 @@ namespace Slaysher.Game.Scenes
 
         public Dictionary<int, Pattern> Pattern;
         public Dictionary<int, GameObject> GameObjects;
+        public ClientPlayer Player { get; set; }
 
         private Matrix _worldMatrix;
 
-        private readonly Camera _tempCamera = new Camera();
+        private readonly Camera _tempCamera = new Camera(new SlaysherNetworking.Game.World.WorldPosition());
+        public Camera Camera { get { return _tempCamera; } }
         private Model _patternBaseModel;
 
         private readonly Dictionary<int, Texture2D> _patternTextures;
@@ -68,15 +74,12 @@ namespace Slaysher.Game.Scenes
             Task.Factory.StartNew(() => _client.Start(ip));
 
             _worldMatrix = Matrix.Identity;
+
             _patternBaseModel = Engine.Content.Load<Model>("Models/Pattern/Pattern");
 
-            lock (_client.WaitInitialPositionRequestLook)
-            {
-                if (_client.WaitInitialPositionRequest)
-                {
-                    Monitor.Wait(_client.WaitInitialPositionRequestLook);
-                }
-            }
+            _client.WaitForInitialPositionRequest();
+            Player.LoadPlayerModel(Engine.Content);
+            Camera.Target = Player.VisualPosition;
 
             _contentLoaded = true;
         }
@@ -99,6 +102,7 @@ namespace Slaysher.Game.Scenes
                 {
                     key.Value.Draw(_patternBaseModel, _worldMatrix, _tempCamera);
                 }
+                Player.Render(Camera);
             }
             else
             {
@@ -141,6 +145,10 @@ namespace Slaysher.Game.Scenes
             }
 
             _tempCamera.Update(_worldMatrix);
+            if (Player != null)
+            {
+                Player.Update(_worldMatrix);
+            }
         }
 
         public Texture2D LoadPatternTexture(int textureId)

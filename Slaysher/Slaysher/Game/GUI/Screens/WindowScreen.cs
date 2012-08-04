@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Slaysher.Game.GUI.Components;
@@ -59,8 +60,10 @@ namespace Slaysher.Game.GUI.Screens
 
             spriteBatch.Draw(_windowBackground, rec, Color.Black*0.3f);
 
+            var zSortedList = (from a in PanelEntries orderby a.ZIndex ascending select a).ToArray();
+
             //Loop Items here
-            foreach (IGuiItem item in PanelEntries)
+            foreach (IGuiItem item in zSortedList)
             {
                 item.Draw(this, gameTime);
             }

@@ -9,6 +9,7 @@ namespace Slaysher.Game.GUI.Components
     public class Label : IGuiItem
     {
         public Vector2 Position { get; set; }
+        public int ZIndex { get; set; }
         public SoundEffect HoverSound { get; set; }
         public SoundEffect ClickSound { get; set; }
 

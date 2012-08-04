@@ -21,7 +21,7 @@ namespace Slaysher.Game.Scenes
             DropDownItem item3 = new DropDownItem(3, "Test3");
             List<DropDownItem> dropDownItems = new List<DropDownItem> {item1, item2, item3};
 
-            DropDown dropDown = new DropDown(dropDownItems, item2);
+            DropDown dropDown = new DropDown(dropDownItems, item2) {ZIndex = 1};
             dropDown.SelectionChanged += DropDownItemChanged;
 
             PanelEntries.Add(new Label("Hallo Welt") { Color = Color.OrangeRed });

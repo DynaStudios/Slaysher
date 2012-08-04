@@ -7,6 +7,7 @@ namespace Slaysher.Game.GUI.Components
     public interface IGuiItem
     {
         Vector2 Position { get; set; }
+        int ZIndex { get; set; }
         
         //Sound Effects
         SoundEffect HoverSound { get; set; }

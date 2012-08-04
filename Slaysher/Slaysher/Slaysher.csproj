@@ -124,8 +124,10 @@
     <Compile Include="Game\Scenes\IScene.cs" />
     <Compile Include="Game\Scenes\MainMenu.cs" />
     <Compile Include="Game\Scenes\SplashScreen.cs" />
+    <Compile Include="Game\Entities\ClientPlayer.cs" />
     <Compile Include="Game\World\Objects\Pattern.cs" />
     <Compile Include="Graphics\Camera\Camera.cs" />
+    <Compile Include="Graphics\Extensions.cs" />
     <Compile Include="Network\ClientPacketHandler.cs" />
     <Compile Include="Network\Client.cs" />
     <Compile Include="Network\PacketHandlers.cs" />
@@ -177,6 +179,7 @@
       <Install>true</Install>
     </BootstrapperPackage>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <Import Project="$(MSBuildExtensionsPath)\Microsoft\XNA Game Studio\Microsoft.Xna.GameStudio.targets" />
   <!--

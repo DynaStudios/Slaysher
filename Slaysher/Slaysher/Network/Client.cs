@@ -4,9 +4,13 @@ using System.Net;
 using System.Net.Sockets;
 using System.Threading;
 using System.Threading.Tasks;
+
 using Microsoft.Xna.Framework;
+
+using Slaysher.Game.Entities;
 using Slaysher.Game.Scenes;
 using Slaysher.Game.World.Objects;
+
 using SlaysherNetworking.Game.Entities;
 using SlaysherNetworking.Game.World;
 using SlaysherNetworking.Packets;
@@ -316,6 +320,16 @@ namespace Slaysher.Network
                 _fragPackets.Enqueue(data, 0, data.Length);
         }
 
+        public void WaitForInitialPositionRequest() {
+            lock (WaitInitialPositionRequestLook)
+            {
+                if (WaitInitialPositionRequest)
+                {
+                    Monitor.Wait(WaitInitialPositionRequestLook);
+                }
+            }
+        }
+
         private byte[] GetBufferToBeRead(int length)
         {
             int availableData = _fragPackets.Size + _readingBufferQueue.Size;
@@ -383,7 +397,15 @@ namespace Slaysher.Network
             Console.WriteLine("Received Player Info Packet");
             if (client.GameScene.Player == null && pip.PlayerId == 0)
             {
-                client.GameScene.Player = new Player {Nickname = pip.Nickname, Health = pip.Health};
+                ClientPlayer player = new ClientPlayer {
+                    Nickname = pip.Nickname,
+                    Health = pip.Health
+                };
+                // FIXME: ModelScaling should be dynamic, model depending and influencable by the server
+                player.ModelScaling = 1f / 128f;
+                client.GameScene.Player = player;
+
+                player.Position = new WorldPosition(20.0f, 20.0f);
             }
             else
             {
@@ -396,7 +418,8 @@ namespace Slaysher.Network
             Console.WriteLine("Received Player Position Packet");
             if (client.GameScene.Player != null)
             {
-                client.GameScene.Player.Position = new WorldPosition(ppp.X, ppp.Y);
+                client.GameScene.Player.Position.X = ppp.X;
+                client.GameScene.Player.Position.Y = ppp.Y;
             }
             else
             {

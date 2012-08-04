@@ -26,6 +26,7 @@ namespace Slaysher.Game.GUI.Components
         private bool _collapsed;
         private bool _hovered;
         private bool _playedHoverSound;
+        private Vector2 _dropDownItemSize;
         private Texture2D _dropDownBackground;
 
         public DropDown(List<DropDownItem> items, DropDownItem selectedItem)
@@ -76,7 +77,7 @@ namespace Slaysher.Game.GUI.Components
             if(!_collapsed && Items.Count != 0)
             {
                 Vector2 position = Position;
-                Vector2 size = font.MeasureString(Items[0].Label);
+                _dropDownItemSize = font.MeasureString(Items[0].Label);
 
                 //Initial Position
                 position.Y += Size.Y;
@@ -89,7 +90,7 @@ namespace Slaysher.Game.GUI.Components
                     bool even = (i%2 == 0);
 
                     item.Draw(gameScreen, position, Size, even);
-                    position.Y += size.Y;
+                    position.Y += _dropDownItemSize.Y;
                 }
             }
         }
@@ -98,9 +99,10 @@ namespace Slaysher.Game.GUI.Components
         {
             var mousePosition = new Vector2(input.MouseState.X, input.MouseState.Y);
 
+            //Check if DropDows is collapsed
             if (_collapsed)
             {
-
+                //Check if Mouse is inside DropDownBox
                 if (mousePosition.X >= Position.X && mousePosition.Y >= Position.Y && mousePosition.X <= Position.X + Size.X &&
                     mousePosition.Y <= Position.Y + Size.Y)
                 {
@@ -126,6 +128,32 @@ namespace Slaysher.Game.GUI.Components
             else
             {
                 //Check if Item gets selected
+                var expandedDropDownSize = Size.Y + (_dropDownItemSize.Y*Items.Count);
+                if (mousePosition.X >= Position.X && mousePosition.Y >= Position.Y && mousePosition.X <= Position.X + Size.X &&
+                    mousePosition.Y <= Position.Y + expandedDropDownSize)
+                {
+                    //Mouse is inside DropDown or DropDownItems
+                    if (mousePosition.X >= Position.X && mousePosition.Y >= Position.Y && mousePosition.X <= Position.X + Size.X &&
+                    mousePosition.Y <= Position.Y + Size.Y)
+                    {
+                        //Mouse is just over DropDown Box
+                        if (input.MouseState.LeftButton == ButtonState.Pressed)
+                        {
+                            _collapsed = true;
+                        }
+                        else
+                        {
+                            //Mouse Clicked an DropDownItem!
+
+                        }
+                    }
+                }
+                else
+                {
+                    if (input.MouseState.LeftButton == ButtonState.Pressed) { 
+                        _collapsed = true;
+                    }
+                }
             }
         }
 

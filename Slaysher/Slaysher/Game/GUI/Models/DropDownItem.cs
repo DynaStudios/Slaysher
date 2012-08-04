@@ -26,7 +26,7 @@ namespace Slaysher.Game.GUI.Models
 
             Rectangle rec = new Rectangle((int) position.X, (int) position.Y, (int) labelSize.X, (int) labelSize.Y);
             //Draw Rectangle
-            gameScreen.ScreenManager.SpriteBatch.Draw(gameScreen.ScreenManager.BlankTexture, rec, Color.White);
+            gameScreen.ScreenManager.SpriteBatch.Draw(gameScreen.ScreenManager.BlankTexture, rec, Color.Black);
             //Draw Font
             gameScreen.ScreenManager.SpriteBatch.DrawString(gameScreen.ScreenManager.Font, Label, position, Color.White);
         }

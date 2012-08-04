@@ -23,7 +23,7 @@ namespace SlaysherNetworking.Game.Entities
         }
         public float Speed { get; set; }
 
-        public WorldPosition Position { get; set; }
+        public virtual WorldPosition Position { get; set; }
 
         // position where a movement has started
         private WorldPosition _startPosition = null;

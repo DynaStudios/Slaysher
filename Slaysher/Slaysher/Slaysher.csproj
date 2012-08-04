@@ -127,6 +127,7 @@
     <Compile Include="Game\Entities\ClientPlayer.cs" />
     <Compile Include="Game\World\Objects\Pattern.cs" />
     <Compile Include="Graphics\Camera\Camera.cs" />
+    <Compile Include="Graphics\Extensions.cs" />
     <Compile Include="Network\ClientPacketHandler.cs" />
     <Compile Include="Network\Client.cs" />
     <Compile Include="Network\PacketHandlers.cs" />

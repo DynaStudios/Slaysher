@@ -2,12 +2,16 @@
 using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
+
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+
+using Slaysher.Game.Entities;
 using Slaysher.Game.World.Objects;
 using Slaysher.Graphics.Camera;
 using Slaysher.Network;
+
 using SlaysherNetworking.Game.World.Objects;
 using SlaysherNetworking.Packets.Utils;
 
@@ -26,6 +30,7 @@ namespace Slaysher.Game.Scenes
 
         public Dictionary<int, Pattern> Pattern;
         public Dictionary<int, GameObject> GameObjects;
+        public ClientPlayer Player { get; set; }
 
         private Matrix _worldMatrix;
 
@@ -71,15 +76,10 @@ namespace Slaysher.Game.Scenes
             _worldMatrix = Matrix.Identity;
 
             _patternBaseModel = Engine.Content.Load<Model>("Models/Pattern/Pattern");
-            loadPlayerModel();
 
-            lock (_client.WaitInitialPositionRequestLook)
-            {
-                if (_client.WaitInitialPositionRequest)
-                {
-                    Monitor.Wait(_client.WaitInitialPositionRequestLook);
-                }
-            }
+            _client.WaitForInitialPositionRequest();
+            Player.LoadPlayerModel(Engine.Content);
+            Camera.Target = Player.VisualPosition;
 
             _contentLoaded = true;
         }
@@ -102,7 +102,7 @@ namespace Slaysher.Game.Scenes
                 {
                     key.Value.Draw(_patternBaseModel, _worldMatrix, _tempCamera);
                 }
-                renderPlayer();
+                Player.Render(Camera);
             }
             else
             {

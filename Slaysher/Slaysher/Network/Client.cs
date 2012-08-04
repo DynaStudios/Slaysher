@@ -320,6 +320,16 @@ namespace Slaysher.Network
                 _fragPackets.Enqueue(data, 0, data.Length);
         }
 
+        public void WaitForInitialPositionRequest() {
+            lock (WaitInitialPositionRequestLook)
+            {
+                if (WaitInitialPositionRequest)
+                {
+                    Monitor.Wait(WaitInitialPositionRequestLook);
+                }
+            }
+        }
+
         private byte[] GetBufferToBeRead(int length)
         {
             int availableData = _fragPackets.Size + _readingBufferQueue.Size;
@@ -391,8 +401,11 @@ namespace Slaysher.Network
                     Nickname = pip.Nickname,
                     Health = pip.Health
                 };
+                // FIXME: ModelScaling should be dynamic, model depending and influencable by the server
+                player.ModelScaling = 1f / 128f;
                 client.GameScene.Player = player;
-                client.GameScene.Camera.Target = player.Position;
+
+                player.Position = new WorldPosition(20.0f, 20.0f);
             }
             else
             {
@@ -405,7 +418,8 @@ namespace Slaysher.Network
             Console.WriteLine("Received Player Position Packet");
             if (client.GameScene.Player != null)
             {
-                client.GameScene.Player.Position = new WorldPosition(ppp.X, ppp.Y);
+                client.GameScene.Player.Position.X = ppp.X;
+                client.GameScene.Player.Position.Y = ppp.Y;
             }
             else
             {

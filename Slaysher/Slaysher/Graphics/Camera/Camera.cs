@@ -1,18 +1,11 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
 
+using Slaysher.Graphics;
 using SlaysherNetworking.Game.World;
 
 namespace Slaysher.Graphics.Camera
 {
-    public static class Extension
-    {
-        public static Vector3 CreateOnSurfacePosition(this WorldPosition worldPosition)
-        {
-            return new Vector3(worldPosition.X, 0, worldPosition.Y);
-        }
-    }
-
     public class Camera
     {
         private WorldPosition _target;
@@ -69,7 +62,6 @@ namespace Slaysher.Graphics.Camera
 
         private void UpdateViewMatrix(Matrix chasedObjectsWorld)
         {
-            ViewMatrix = Matrix.CreateLookAt(_position, _target.CreateOnSurfacePosition(), Vector3.Up);
 
             _cameraRotation.Forward.Normalize();
             chasedObjectsWorld.Right.Normalize();
@@ -84,6 +76,7 @@ namespace Slaysher.Graphics.Camera
             Yaw = MathHelper.SmoothStep(Yaw, 0f, .1f);
             Pitch = MathHelper.SmoothStep(Pitch, 0f, .1f);
             Roll = MathHelper.SmoothStep(Roll, 0f, .2f);
+            ViewMatrix = Matrix.CreateLookAt(_position, _target.CreateOnSurfacePosition(), Vector3.Up);
         }
 
         private void HandleInput()
@@ -115,22 +108,6 @@ namespace Slaysher.Graphics.Camera
                 Roll += .02f;
             }
 
-            if (keyboardState.IsKeyDown(Keys.W))
-            {
-                MoveCamera(_cameraRotation.Forward);
-            }
-            if (keyboardState.IsKeyDown(Keys.S))
-            {
-                MoveCamera(-_cameraRotation.Forward);
-            }
-            if (keyboardState.IsKeyDown(Keys.A))
-            {
-                MoveCamera(-_cameraRotation.Right);
-            }
-            if (keyboardState.IsKeyDown(Keys.D))
-            {
-                MoveCamera(_cameraRotation.Right);
-            }
             if (keyboardState.IsKeyDown(Keys.E))
             {
                 MoveCamera(_cameraRotation.Up);

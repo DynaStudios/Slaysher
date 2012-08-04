@@ -5,6 +5,19 @@ using Slaysher.Game.IO;
 
 namespace Slaysher.Game.GUI
 {
+    public static class Extensions
+    {
+        public static bool IsMuseIn(this MouseState mouseState, Vector2 position, Vector2 size)
+        {
+            var mousePosition = new Vector2(mouseState.X, mouseState.Y);
+
+            return mousePosition.X >= position.X
+                && mousePosition.Y >= position.Y
+                && mousePosition.X <= position.X + size.X
+                && mousePosition.Y <= position.Y + size.Y;
+        }
+    }
+
     public class InputState
     {
         public KeyboardHandler KeyboardHandler { get; set; }

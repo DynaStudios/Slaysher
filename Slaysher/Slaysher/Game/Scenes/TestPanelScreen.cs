@@ -31,9 +31,7 @@ namespace Slaysher.Game.Scenes
             PanelEntries.Add(new Button("Test Button 1"));
             PanelEntries.Add(new Button("Test Button 2"));
             PanelEntries.Add(new Button("Test Button 3"));
-            PanelEntries.Add(new CheckBox() {
-                FillColor = Color.Red
-            });
+            PanelEntries.Add(new CheckBox());
 
             Vector2 itemSize = UpdateSubItemPositions();
             PresentationOffset = new Vector2(ScreenManager.GraphicsDevice.Viewport.Width/2 - itemSize.X/2,

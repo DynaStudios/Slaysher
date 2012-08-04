@@ -12,6 +12,13 @@ namespace Slaysher.Game.IO
         private bool _leftMouseButtonIsDown;
         private bool _rightMouseButtonIsDown;
 
+        public MouseHandler GetHandler()
+        {
+            MouseState mouseState = Mouse.GetState();
+            MouseHandler mouseHandler = new MouseHandler();
+            return mouseHandler;
+        }
+
         public void Update(GameTime gameTime)
         {
             MouseState mouseState = Mouse.GetState();

@@ -3,6 +3,8 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+
+using Slaysher.Game.GUI;
 using Slaysher.Game.GUI.Screens;
 
 namespace Slaysher.Game.GUI.Components
@@ -27,7 +29,7 @@ namespace Slaysher.Game.GUI.Components
 
         public string Text { get; protected set; }
 
-        public event EventHandler<EventArgs> Clicked;
+        public virtual event EventHandler<EventArgs> Clicked;
 
         private bool _isHovered;
         private bool _playedHoverSound;
@@ -132,12 +134,11 @@ namespace Slaysher.Game.GUI.Components
             }
         }
 
-        public void HandleInput(InputState input)
+        public virtual void HandleInput(InputState input)
         {
             var mousePosition = new Vector2(input.MouseState.X, input.MouseState.Y);
 
-            if (mousePosition.X >= Position.X && mousePosition.Y >= Position.Y && mousePosition.X <= Position.X + Size.X &&
-                mousePosition.Y <= Position.Y + Size.Y)
+            if (input.MouseState.IsMuseIn(Position, Size))
             {
                 _isHovered = true;
 

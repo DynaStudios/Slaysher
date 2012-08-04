@@ -111,6 +111,7 @@
     <Compile Include="Game\Database\Database.cs" />
     <Compile Include="Game\GameState.cs" />
     <Compile Include="Game\GUI\Components\Button.cs" />
+    <Compile Include="Game\GUI\Components\CheckBox.cs" />
     <Compile Include="Game\GUI\Components\DropDown.cs" />
     <Compile Include="Game\GUI\Components\IGuiItem.cs" />
     <Compile Include="Game\GUI\Components\Label.cs" />

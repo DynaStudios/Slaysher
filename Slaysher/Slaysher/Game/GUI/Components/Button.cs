@@ -33,7 +33,7 @@ namespace Slaysher.Game.GUI.Components
         private bool _playedHoverSound;
         private bool _playedClickSound;
 
-        private Texture2D _buttonTexture;
+        protected Texture2D _buttonTexture;
 
         public Button(string buttonText)
         {
@@ -77,7 +77,7 @@ namespace Slaysher.Game.GUI.Components
             //todo: I don't know yet ^^
         }
 
-        public void Draw(GameScreen gameScreen, GameTime gameTime)
+        public virtual void Draw(GameScreen gameScreen, GameTime gameTime)
         {
             SpriteBatch spriteBatch = gameScreen.ScreenManager.SpriteBatch;
             SpriteFont font = gameScreen.ScreenManager.Font;

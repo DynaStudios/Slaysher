@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using Slaysher.Game.GUI;
 using Slaysher.Game.GUI.Screens;
 using Slaysher.Game.Entities;
 using Slaysher.Game.World.Objects;
@@ -17,7 +18,7 @@ using SlaysherNetworking.Packets.Utils;
 
 namespace Slaysher.Game.Scenes
 {
-    public partial class GameScene : GameScreen, IScene
+    public partial class GameScene : GameScreen
     {
         public string Name
         {
@@ -25,8 +26,6 @@ namespace Slaysher.Game.Scenes
         }
 
         public Engine Engine { get; set; }
-
-        private SpriteBatch _spriteBatch;
 
         public Dictionary<int, Pattern> Pattern;
         public Dictionary<int, GameObject> GameObjects;
@@ -41,22 +40,55 @@ namespace Slaysher.Game.Scenes
         private readonly Dictionary<int, Texture2D> _patternTextures;
         private Dictionary<int, string> _availablePatternTextures;
 
-        private Texture2D _loadingScreen;
         private volatile bool _contentLoaded;
 
         //Network Stuff
-        private readonly Client _client;
+        private Client _client;
 
         public GameScene()
         {
-            Engine = ScreenManager.Game as Engine;
-
             Pattern = new Dictionary<int, Pattern>();
             _patternTextures = new Dictionary<int, Texture2D>();
             GameObjects = new Dictionary<int, GameObject>();
-
-            _client = new Client(this);
         }
+
+        #region Overrides of GameScreen
+
+        public override void Activate(bool instancePreserved)
+        {
+            base.Activate(instancePreserved);
+            Engine = ScreenManager.Game as Engine;
+            _client = new Client(this);
+
+            AsyncLoadScene();
+
+        }
+
+        public override void Update(GameTime gameTime, bool otherScreenHasFocus, bool coveredByOtherScreen)
+        {
+            base.Update(gameTime, otherScreenHasFocus, coveredByOtherScreen);
+        }
+
+        public override void Draw(GameTime gameTime)
+        {
+            if (_contentLoaded) { 
+                TickPlayer(gameTime);
+                TickWorld(gameTime);
+
+                foreach (KeyValuePair<int, Pattern> key in Pattern)
+                {
+                    key.Value.Draw(_patternBaseModel, _worldMatrix, _tempCamera);
+                }
+                Player.Render(Camera);
+            }
+        }
+
+        public override void HandleInput(GameTime gameTime, InputState input)
+        {
+            base.HandleInput(gameTime, input);
+        }
+
+        #endregion
 
         private void AsyncLoadScene()
         {
@@ -82,34 +114,6 @@ namespace Slaysher.Game.Scenes
             Camera.Target = Player.VisualPosition;
 
             _contentLoaded = true;
-        }
-
-        public void LoadScene()
-        {
-            _spriteBatch = new SpriteBatch(Engine.GraphicsDevice);
-            _loadingScreen = Engine.Content.Load<Texture2D>("Images/Game/loadingScreen");
-            ThreadPool.QueueUserWorkItem(delegate { AsyncLoadScene(); });
-        }
-
-        public void Render(GameTime time)
-        {
-            if (_contentLoaded)
-            {
-                TickPlayer(time);
-                TickWorld(time);
-
-                foreach (KeyValuePair<int, Pattern> key in Pattern)
-                {
-                    key.Value.Draw(_patternBaseModel, _worldMatrix, _tempCamera);
-                }
-                Player.Render(Camera);
-            }
-            else
-            {
-                _spriteBatch.Begin();
-                _spriteBatch.Draw(_loadingScreen, new Vector2(0, 0), Color.White);
-                _spriteBatch.End();
-            }
         }
 
         public void Update(GameTime time)

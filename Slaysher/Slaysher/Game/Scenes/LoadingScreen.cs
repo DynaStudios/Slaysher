@@ -27,9 +27,10 @@ namespace Slaysher.Game.Scenes
             {
                 gameScreen.ExitScreen();
 
-                LoadingScreen loadingScreen = new LoadingScreen(screenManager, loadingIsSlow, screensToLoad);
-                screenManager.AddScreen(loadingScreen);
             }
+
+            LoadingScreen loadingScreen = new LoadingScreen(screenManager, loadingIsSlow, screensToLoad);
+            screenManager.AddScreen(loadingScreen);
         }
 
         #region Overrides of GameScreen

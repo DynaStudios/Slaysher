@@ -66,7 +66,41 @@ namespace Slaysher.Game.Scenes
 
         public override void Update(GameTime gameTime, bool otherScreenHasFocus, bool coveredByOtherScreen)
         {
-            base.Update(gameTime, otherScreenHasFocus, coveredByOtherScreen);
+            KeyboardState keyBoardState = Keyboard.GetState();
+
+            //Rotate Cube along its Up Vector
+            if (keyBoardState.IsKeyDown(Keys.X))
+            {
+                _worldMatrix = Matrix.CreateFromAxisAngle(Vector3.Up, .02f) * _worldMatrix;
+            }
+            if (keyBoardState.IsKeyDown(Keys.Z))
+            {
+                _worldMatrix = Matrix.CreateFromAxisAngle(Vector3.Up, -.02f) * _worldMatrix;
+            }
+
+            //Move Cube Forward, Back, Left, and Right
+            if (keyBoardState.IsKeyDown(Keys.Up))
+            {
+                _worldMatrix *= Matrix.CreateTranslation(_worldMatrix.Forward);
+            }
+            if (keyBoardState.IsKeyDown(Keys.Down))
+            {
+                _worldMatrix *= Matrix.CreateTranslation(_worldMatrix.Backward);
+            }
+            if (keyBoardState.IsKeyDown(Keys.Left))
+            {
+                _worldMatrix *= Matrix.CreateTranslation(-_worldMatrix.Right);
+            }
+            if (keyBoardState.IsKeyDown(Keys.Right))
+            {
+                _worldMatrix *= Matrix.CreateTranslation(_worldMatrix.Right);
+            }
+
+            _tempCamera.Update(_worldMatrix);
+            if (Player != null)
+            {
+                Player.Update(_worldMatrix);
+            }
         }
 
         public override void Draw(GameTime gameTime)
@@ -81,11 +115,6 @@ namespace Slaysher.Game.Scenes
                 }
                 Player.Render(Camera);
             }
-        }
-
-        public override void HandleInput(GameTime gameTime, InputState input)
-        {
-            base.HandleInput(gameTime, input);
         }
 
         #endregion
@@ -114,45 +143,6 @@ namespace Slaysher.Game.Scenes
             Camera.Target = Player.VisualPosition;
 
             _contentLoaded = true;
-        }
-
-        public void Update(GameTime time)
-        {
-            KeyboardState keyBoardState = Keyboard.GetState();
-
-            //Rotate Cube along its Up Vector
-            if (keyBoardState.IsKeyDown(Keys.X))
-            {
-                _worldMatrix = Matrix.CreateFromAxisAngle(Vector3.Up, .02f)*_worldMatrix;
-            }
-            if (keyBoardState.IsKeyDown(Keys.Z))
-            {
-                _worldMatrix = Matrix.CreateFromAxisAngle(Vector3.Up, -.02f)*_worldMatrix;
-            }
-
-            //Move Cube Forward, Back, Left, and Right
-            if (keyBoardState.IsKeyDown(Keys.Up))
-            {
-                _worldMatrix *= Matrix.CreateTranslation(_worldMatrix.Forward);
-            }
-            if (keyBoardState.IsKeyDown(Keys.Down))
-            {
-                _worldMatrix *= Matrix.CreateTranslation(_worldMatrix.Backward);
-            }
-            if (keyBoardState.IsKeyDown(Keys.Left))
-            {
-                _worldMatrix *= Matrix.CreateTranslation(-_worldMatrix.Right);
-            }
-            if (keyBoardState.IsKeyDown(Keys.Right))
-            {
-                _worldMatrix *= Matrix.CreateTranslation(_worldMatrix.Right);
-            }
-
-            _tempCamera.Update(_worldMatrix);
-            if (Player != null)
-            {
-                Player.Update(_worldMatrix);
-            }
         }
 
         public Texture2D LoadPatternTexture(int textureId)

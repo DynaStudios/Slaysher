@@ -3,11 +3,10 @@ using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
 using Slaysher.Game.IO;
-using Slaysher.Game.Scenes;
 
 namespace Slaysher.Game.GUI
 {
-    public class GUIManager : IScene
+    public class GUIManager
     {
         public string Name
         {

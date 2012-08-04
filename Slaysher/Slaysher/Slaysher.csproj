@@ -138,12 +138,9 @@
     <Compile Include="Game\Scenes\GameScene.cs" />
     <Compile Include="Game\Scenes\GameScene.Player.cs" />
     <Compile Include="Game\Scenes\GameScene.World.cs" />
-    <Compile Include="Game\Scenes\IScene.cs" />
     <Compile Include="Game\Scenes\LoadingScreen.cs" />
-    <Compile Include="Game\Scenes\MainMenu.cs" />
     <Compile Include="Game\Scenes\MainMenuScene.cs" />
     <Compile Include="Game\Scenes\TestPanelScreen.cs" />
-    <Compile Include="Game\Scenes\SplashScreen.cs" />
     <Compile Include="Game\Entities\ClientPlayer.cs" />
     <Compile Include="Game\World\Objects\Pattern.cs" />
     <Compile Include="Graphics\Camera\Camera.cs" />

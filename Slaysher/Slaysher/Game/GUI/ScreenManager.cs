@@ -5,6 +5,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using Slaysher.Game.GUI.Screens;
+using Slaysher.Game.IO;
 
 namespace Slaysher.Game.GUI
 {
@@ -13,7 +14,7 @@ namespace Slaysher.Game.GUI
         private readonly List<GameScreen> _screens = new List<GameScreen>();
         private readonly List<GameScreen> _tempScreenList = new List<GameScreen>();
 
-        private readonly InputState _input = new InputState();
+        private readonly InputState _input;
 
         public SpriteBatch SpriteBatch { get; protected set; }
         public SpriteFont Font { get; protected set; }
@@ -26,6 +27,7 @@ namespace Slaysher.Game.GUI
         public ScreenManager(Engine game) : base(game)
         {
             TraceEnabled = false;
+            _input = new InputState();
         }
 
         #region Overrides of DrawableGameComponent
@@ -80,7 +82,9 @@ namespace Slaysher.Game.GUI
 
         public override void Update(GameTime gameTime)
         {
-            
+            //Update Mouse and Keyboard Handlers
+            _input.Update(gameTime);
+
             _tempScreenList.Clear();
 
             foreach (GameScreen gameScreen in _screens)

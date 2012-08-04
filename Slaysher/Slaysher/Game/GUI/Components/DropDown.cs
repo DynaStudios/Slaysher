@@ -114,7 +114,7 @@ namespace Slaysher.Game.GUI.Components
                         _playedHoverSound = true;
                     }
 
-                    if (input.MouseState.LeftButton == ButtonState.Pressed)
+                    if (input.LeftMouseClicked)
                     {
                         _collapsed = false;
                     }
@@ -137,7 +137,7 @@ namespace Slaysher.Game.GUI.Components
                     mousePosition.Y <= Position.Y + Size.Y)
                     {
                         //Mouse is just over DropDown Box
-                        if (input.MouseState.LeftButton == ButtonState.Pressed)
+                        if (input.LeftMouseClicked)
                         {
                             _collapsed = true;
                         }
@@ -150,7 +150,8 @@ namespace Slaysher.Game.GUI.Components
                 }
                 else
                 {
-                    if (input.MouseState.LeftButton == ButtonState.Pressed) { 
+                    if (input.LeftMouseClicked)
+                    { 
                         _collapsed = true;
                     }
                 }

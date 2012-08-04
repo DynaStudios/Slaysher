@@ -128,6 +128,9 @@
     <Compile Include="Game\GUI\Screens\WindowScreen.cs" />
     <Compile Include="Game\IO\KeyboardEventArgs.cs" />
     <Compile Include="Game\IO\KeyboardHandler.cs" />
+    <Compile Include="Game\IO\MouseEventArgs.cs" />
+    <Compile Include="Game\IO\MouseHandler.cs" />
+    <Compile Include="Game\IO\MouseKey.cs" />
     <Compile Include="Game\Physics\Collisions\AABB.cs" />
     <Compile Include="Game\Physics\Collisions\Box.cs" />
     <Compile Include="Game\Scenes\BackgroundScene.cs" />

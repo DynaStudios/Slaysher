@@ -35,7 +35,7 @@ namespace Slaysher.Graphics.Camera
 
         public void ResetCamera()
         {
-            _offsetDistance = new Vector3(0, 50, 20);
+            _offsetDistance = new Vector3(0, 15, 5);
             _position = _target.CreateOnSurfacePosition() + _offsetDistance;
             // new Vector3(0, 0, 50);
             //_target = new Vector3();

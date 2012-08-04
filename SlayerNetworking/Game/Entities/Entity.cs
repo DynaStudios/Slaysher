@@ -16,12 +16,13 @@ namespace SlaysherNetworking.Game.Entities
 
         public int Health { get; set; }
 
-        public float SpeedMeterPerSecend
+        // Speed in meter per second
+        public float Speed
         {
-            get { return Speed * 1000; }
-            set { Speed = value / 1000; }
+            get { return SpeedMeeterPerMillisecond * 1000; }
+            set { SpeedMeeterPerMillisecond = value / 1000; }
         }
-        public float Speed { get; set; }
+        public float SpeedMeeterPerMillisecond { get; set; }
 
         public virtual WorldPosition Position { get; set; }
 
@@ -33,11 +34,16 @@ namespace SlaysherNetworking.Game.Entities
         private float _direction;
         public float Direction { get { return _direction; } }
 
+        public Entity()
+        {
+            Speed = 2.0f;
+        }
+
         public void Move(TimeSpan totalTime, float direction)
         {
             ExecuteMovement(totalTime);
             // using now position for the next movement
-            _startPosition = Position;
+            _startPosition = new WorldPosition(Position);
             _movemetStarted = totalTime;
             Turn(direction);
         }
@@ -52,7 +58,6 @@ namespace SlaysherNetworking.Game.Entities
         {
             // direction should stay as it is
             ExecuteMovement(totalTime);
-            Position = _startPosition;
             _startPosition = null;
             _movemetStarted = null;
         }
@@ -64,10 +69,10 @@ namespace SlaysherNetworking.Game.Entities
                 return;
             }
             TimeSpan movedTime = current - (TimeSpan)_movemetStarted;
-            float distance = movedTime.Ticks * Speed;
+            float distance = (float) (movedTime.TotalMilliseconds * SpeedMeeterPerMillisecond);
 
-            Position.X = _startPosition.X + (float) (Math.Sin(_direction) * distance);
-            Position.Y = _startPosition.Y + (float) (Math.Cos(_direction) * distance);
+            Position.X = _startPosition.X + (float)(Math.Sin(_direction * Math.PI / 180) * distance);
+            Position.Y = _startPosition.Y - (float)(Math.Cos(_direction * Math.PI / 180) * distance);
         }
     }
 }

@@ -402,7 +402,7 @@ namespace Slaysher.Network
                     Health = pip.Health
                 };
                 // FIXME: ModelScaling should be dynamic, model depending and influencable by the server
-                player.ModelScaling = 1f / 128f;
+                player.ModelScaling = 1f / 512f;
                 client.GameScene.Player = player;
 
                 player.Position = new WorldPosition(20.0f, 20.0f);

@@ -1,4 +1,6 @@
-﻿using Microsoft.Xna.Framework;
+﻿using System.Collections.Generic;
+
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
@@ -11,6 +13,18 @@ using SlaysherNetworking.Game.Entities;
 
 namespace Slaysher.Game.Entities
 {
+    class Directions
+    {
+        public const float Up = 0;
+        public const float UpRight = 45.0f;
+        public const float Right = 90.0f;
+        public const float DownRight = 135.0f;
+        public const float Down = 180.0f;
+        public const float DownLeft = 225.0f;
+        public const float Left = 270.0f;
+        public const float UpLeft = 315.0f;
+    }
+
     public class ClientPlayer : Player
     {
         public override WorldPosition Position
@@ -35,27 +49,65 @@ namespace Slaysher.Game.Entities
 
         public void Update(Matrix chasedObjectsWorld)
         {
-            HandleInput();
         }
 
-        private void HandleInput()
+        private void HandleInput(GameTime time)
         {
             KeyboardState keyboardState = Keyboard.GetState();
+            float? direction = null;
+
             if (keyboardState.IsKeyDown(Keys.W))
             {
-                Position.Y -= 0.5f;
+                if (!keyboardState.IsKeyDown(Keys.S))
+                {
+                    if (keyboardState.IsKeyDown(Keys.A))
+                    {
+                        direction = Directions.UpLeft;
+                    }
+                    else if (keyboardState.IsKeyDown(Keys.D))
+                    {
+                        direction = Directions.UpRight;
+                    }
+                    else
+                    {
+                        direction = Directions.Up;
+                    }
+                }
             }
-            if (keyboardState.IsKeyDown(Keys.S))
+            else if (keyboardState.IsKeyDown(Keys.S))
             {
-                Position.Y += 0.5f;
+                if (keyboardState.IsKeyDown(Keys.A))
+                {
+                    direction = Directions.DownLeft;
+                }
+                else if (keyboardState.IsKeyDown(Keys.D))
+                {
+                    direction = Directions.DownRight;
+                }
+                else
+                {
+                    direction = Directions.Down;
+                }
             }
-            if (keyboardState.IsKeyDown(Keys.A))
+            else
             {
-                Position.X -= 0.5f;
+                if (keyboardState.IsKeyDown(Keys.A))
+                {
+                    direction = Directions.Left;
+                }
+                else if (keyboardState.IsKeyDown(Keys.D))
+                {
+                    direction = Directions.Right;
+                }
             }
-            if (keyboardState.IsKeyDown(Keys.D))
+
+            if (direction != null)
             {
-                Position.X += 0.5f;
+                Move(time.TotalGameTime, (float)direction);
+            }
+            else
+            {
+                StopMoving(time.TotalGameTime);
             }
         }
 
@@ -68,7 +120,6 @@ namespace Slaysher.Game.Entities
 
         public void Render(Camera camera)
         {
-            smoothMove();
             Matrix[] modelTransforms = new Matrix[Model.Bones.Count];
             Model.CopyAbsoluteBoneTransformsTo(modelTransforms);
             Matrix playerModelScale = Matrix.CreateScale(ModelScaling);
@@ -105,7 +156,8 @@ namespace Slaysher.Game.Entities
 
         public void Tick(GameTime time)
         {
-            ExecuteMovement(time.ElapsedGameTime);
+            HandleInput(time);
+            smoothMove();
             //TODO: Update stuff like position etc. here
         }
     }

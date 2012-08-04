@@ -48,7 +48,6 @@ namespace Slaysher
             Services.AddService(typeof(IScreenFactory), _screenFactory);
 
             _screenManager = new ScreenManager(this);
-            _screenManager.TraceEnabled = true;
 
             Components.Add(_screenManager);
             AddInitialScreens();

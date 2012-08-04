@@ -114,11 +114,13 @@ namespace Slaysher.Game.GUI.Components
                              BorderColor*Alpha);
 
             //Draw the Text centered in the button
-            Vector2 textSize = font.MeasureString(Text);
-            Vector2 textPosition = new Vector2(rec.Center.X, rec.Center.Y) - textSize/2f;
-            textPosition.X = (int) textPosition.X;
-            textPosition.Y = (int) textPosition.Y;
-            spriteBatch.DrawString(font, Text, textPosition, TextColor*Alpha);
+            if (Text != "") { 
+                Vector2 textSize = font.MeasureString(Text);
+                Vector2 textPosition = new Vector2(rec.Center.X, rec.Center.Y) - textSize/2f;
+                textPosition.X = (int) textPosition.X;
+                textPosition.Y = (int) textPosition.Y;
+                spriteBatch.DrawString(font, Text, textPosition, TextColor*Alpha);
+            }
         }
 
         protected virtual void OnClicked()

@@ -31,7 +31,7 @@ namespace Slaysher.Game.GUI.Components {
             if (Active)
             {
                 drawingTextue = ActiveTexture ??
-                    screenManager.Game.Content.Load<Texture2D>("Images/Game/GUI/CheckBoxX");
+                    screenManager.Game.Content.Load<Texture2D>("Images/GUI/CheckBoxX");
             }
             else
             {
@@ -46,7 +46,7 @@ namespace Slaysher.Game.GUI.Components {
         protected override void OnClicked()
         {
             Active = !Active;
-            if (Clicked == null)
+            if (Clicked != null)
             {
                 Clicked(this, EventArgs.Empty);
             }

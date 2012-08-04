@@ -147,7 +147,7 @@ namespace Slaysher.Game.GUI.Components
                     _playedHoverSound = true;
                 }
 
-                if (input.MouseState.LeftButton == ButtonState.Pressed)
+                if (input.LeftMouseClicked)
                 {
                     OnClicked();
                 }

@@ -47,6 +47,8 @@ namespace Slaysher
         public Engine()
         {
             _graphics = new GraphicsDeviceManager(this);
+            IsFixedTimeStep = false;
+
             Content.RootDirectory = "Content";
             TargetElapsedTime = TimeSpan.FromTicks(333333);
 

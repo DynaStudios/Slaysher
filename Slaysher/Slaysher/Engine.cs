@@ -1,12 +1,9 @@
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Reflection;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Media;
-using Slaysher.Exceptions;
 using Slaysher.Game;
 using Slaysher.Game.Database;
 using Slaysher.Game.GUI;
@@ -18,11 +15,6 @@ namespace Slaysher
     public class Engine : Microsoft.Xna.Framework.Game
     {
         private readonly GraphicsDeviceManager _graphics;
-
-        private readonly Dictionary<String, IScene> _availableScenes;
-        private IScene _activeScene;
-        private bool _sceneLoaded;
-        private string _sceneSwitchName;
 
         public string Username { get; set; }
 
@@ -63,7 +55,6 @@ namespace Slaysher
 
             InitGraphicsMode(1024, 768, false);
 
-            _availableScenes = new Dictionary<string, IScene>();
             _keyboardHandler = new KeyboardHandler();
 
             GUIManager = new GUIManager(this);
@@ -81,42 +72,9 @@ namespace Slaysher
             _screenManager.AddScreen(new MainMenuScene());
         }
 
-        private static bool TypeIsScene(Type type)
-        {
-            if (type.IsClass)
-            {
-                Type sceneType = typeof (IScene);
-                Type[] interfaces = type.GetInterfaces();
-
-                return interfaces.Any(i => sceneType == i);
-            }
-            return false;
-        }
-
-        public void LoadScenesFromAssembly(Assembly assembly)
-        {
-            Type[] types = assembly.GetTypes();
-            foreach (Type type in types)
-            {
-                if (TypeIsScene(type))
-                {
-                    IScene scene = (IScene) Activator.CreateInstance(type, this);
-                    AddScene(scene);
-                }
-            }
-        }
 
         protected override void Initialize()
         {
-            //LoadScenesFromAssembly(Assembly.GetExecutingAssembly());
-
-            //Switch to chosen Scene
-#if DEBUG
-            //SwitchScene("mainMenu");
-#else
-            SwitchScene("splashScreen");
-#endif
-
             //GameState = GameState.Game;
             GUIManager.LoadScene();
 
@@ -136,11 +94,6 @@ namespace Slaysher
 
         protected override void Update(GameTime gameTime)
         {
-            /*if (_activeScene != null)
-            {
-                _activeScene.Update(gameTime);
-            }*/
-
             Keyboard.Update(gameTime);
             GUIManager.Update(gameTime);
             base.Update(gameTime);
@@ -149,70 +102,7 @@ namespace Slaysher
         protected override void Draw(GameTime gameTime)
         {
             GraphicsDevice.Clear(Color.Black);
-
-            //Scene Rendering
-            /*if (!_sceneLoaded)
-            {
-                LoadScene();
-            }
-
-            if (_activeScene != null)
-            {
-                _activeScene.Render(gameTime);
-            }
-
-            GUIManager.Render(gameTime);*/
             base.Draw(gameTime);
-        }
-
-        /// <summary>
-        /// Adds Scene to availbale Scene List
-        /// </summary>
-        /// <param name="sceneName">Name of the scene</param>
-        /// <param name="scene">IScene Implementation</param>
-        public void AddScene(IScene scene)
-        {
-            if (!_availableScenes.ContainsKey(scene.Name))
-            {
-                _availableScenes.Add(scene.Name, scene);
-            }
-            else
-            {
-                throw new SceneException("Scenename already exists");
-            }
-        }
-
-        /// <summary>
-        /// Switches to given IScene
-        /// </summary>
-        /// <param name="sceneName">Name of the scene to load.</param>
-        public void SwitchScene(String sceneName)
-        {
-            if (_availableScenes.ContainsKey(sceneName))
-            {
-                _sceneSwitchName = sceneName;
-                _sceneLoaded = false;
-            }
-            else
-            {
-                throw new SceneException("Scene were not found!");
-            }
-        }
-
-        private void LoadScene()
-        {
-            //Unload old scene
-            if (_activeScene != null)
-            {
-                _activeScene.UnloadScene();
-            }
-
-            //Set new Scene
-            _activeScene = _availableScenes[_sceneSwitchName];
-
-            //Load new Scene
-            _activeScene.LoadScene();
-            _sceneLoaded = true;
         }
 
         public bool InitGraphicsMode(int iWidth, int iHeight, bool bFullScreen)

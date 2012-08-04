@@ -102,5 +102,11 @@ namespace Slaysher.Game.Entities
         {
             Model = content.Load<Model>("Models/Pattern/Player/goblin_fbx");
         }
+
+        public void Tick(GameTime time)
+        {
+            ExecuteMovement(time.ElapsedGameTime);
+            //TODO: Update stuff like position etc. here
+        }
     }
 }

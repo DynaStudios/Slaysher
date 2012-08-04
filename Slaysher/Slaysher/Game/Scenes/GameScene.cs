@@ -106,7 +106,7 @@ namespace Slaysher.Game.Scenes
         public override void Draw(GameTime gameTime)
         {
             if (_contentLoaded) { 
-                TickPlayer(gameTime);
+                Player.Tick(gameTime);
                 TickWorld(gameTime);
 
                 foreach (KeyValuePair<int, Pattern> key in Pattern)

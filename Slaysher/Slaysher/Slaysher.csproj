@@ -136,7 +136,6 @@
     <Compile Include="Game\Physics\Collisions\Box.cs" />
     <Compile Include="Game\Scenes\BackgroundScene.cs" />
     <Compile Include="Game\Scenes\GameScene.cs" />
-    <Compile Include="Game\Scenes\GameScene.Player.cs" />
     <Compile Include="Game\Scenes\GameScene.World.cs" />
     <Compile Include="Game\Scenes\LoadingScreen.cs" />
     <Compile Include="Game\Scenes\MainMenuScene.cs" />

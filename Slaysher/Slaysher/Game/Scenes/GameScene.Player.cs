@@ -29,6 +29,7 @@ namespace Slaysher.Game.Scenes
             _playerModel = Engine.Content.Load<Model>("Models/Pattern/Player/goblin_fbx");
             Player.Position = new WorldPosition(20.0f, 20.0f);
             Player.ModelScaling = 1f/128f;
+            _tempCamera.Target = Player.Position;
         }
 
         private void renderPlayer()

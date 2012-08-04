@@ -17,11 +17,11 @@ namespace Slaysher.Graphics.Camera
     {
         private WorldPosition _target;
         private Vector3 _position;
-        private Vector3 _targetPosition;
+        //private Vector3 _targetPosition;
         private Matrix _cameraRotation;
 
-        private Vector3 _desiredPosition;
-        private Vector3 _desiredTarget;
+        //private Vector3 _desiredPosition;
+        //private Vector3 _desiredTarget;
         private Vector3 _offsetDistance;
 
         public Matrix ViewMatrix, ProjectionMatrix;
@@ -42,16 +42,13 @@ namespace Slaysher.Graphics.Camera
 
         public void ResetCamera()
         {
-            _position = new Vector3(0, 0, 50);
+            _offsetDistance = new Vector3(0, 50, 20);
+            _position = _target.CreateOnSurfacePosition() + _offsetDistance;
+            // new Vector3(0, 0, 50);
             //_target = new Vector3();
 
             ViewMatrix = Matrix.Identity;
             ProjectionMatrix = Matrix.CreatePerspectiveFieldOfView(MathHelper.ToRadians(45.0f), 16/9, .5f, 500f);
-
-            _desiredTarget = new Vector3(_target.X, 0, _target.Y);
-            _desiredPosition = _position;
-
-            _offsetDistance = new Vector3(0, 15, 20);
 
             Yaw = 0.0f;
             Pitch = 0.0f;
@@ -64,7 +61,6 @@ namespace Slaysher.Graphics.Camera
 
         public void Update(Matrix chasedObjectsWorld)
         {
-            //HandleInput();
             if (_target != null)
             {
                 UpdateViewMatrix(chasedObjectsWorld);
@@ -79,15 +75,11 @@ namespace Slaysher.Graphics.Camera
             chasedObjectsWorld.Right.Normalize();
             chasedObjectsWorld.Up.Normalize();
 
+            Vector3 targetPosition = Target.CreateOnSurfacePosition();
+
             _cameraRotation = Matrix.CreateFromAxisAngle(_cameraRotation.Forward, Roll);
-
-            _desiredTarget = chasedObjectsWorld.Translation;
-            _target = new WorldPosition(_desiredTarget.X, _desiredTarget.Z);
-            _target.X += Yaw;
-            _target.Y += Pitch;
-
-            _desiredPosition = Vector3.Transform(_offsetDistance, chasedObjectsWorld);
-            _position = Vector3.SmoothStep(_position, _desiredPosition, .15f);
+            Vector3 desiredPosition = Vector3.Transform(_offsetDistance + targetPosition, chasedObjectsWorld);
+            _position = Vector3.SmoothStep(_position, desiredPosition, .15f);
 
             Yaw = MathHelper.SmoothStep(Yaw, 0f, .1f);
             Pitch = MathHelper.SmoothStep(Pitch, 0f, .1f);

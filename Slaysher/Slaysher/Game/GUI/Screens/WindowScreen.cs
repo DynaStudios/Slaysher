@@ -95,7 +95,7 @@ namespace Slaysher.Game.GUI.Screens
                 position.X = PresentationOffset.X + ItemPadding;
 
                 var yOffset = (offsetCount > 0) ? ItemOffset : 0;
-                var startY = (offsetCount > 0) ? guiItem.GetHeight(this) : ItemPadding;
+                var startY = (offsetCount > 0) ? PanelEntries[offsetCount - 1].GetHeight(this) : ItemPadding;
                 position.Y += startY + yOffset;
 
                 if (ScreenState == ScreenState.TransitionOn)

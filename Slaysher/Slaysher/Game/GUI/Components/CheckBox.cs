@@ -1,13 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
-
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-
-using Slaysher.Game.GUI;
 using Slaysher.Game.GUI.Screens;
 
-namespace Slaysher.Game.GUI.Components {
+namespace Slaysher.Game.GUI.Components
+{
     public class CheckBox : Button
     {
         public override event EventHandler<EventArgs> Clicked;
@@ -20,27 +17,34 @@ namespace Slaysher.Game.GUI.Components {
         public CheckBox() : base("")
         {
             FillColor = Color.LightGreen;
+            Size = new Vector2(25, 25);
         }
 
         public override void Draw(GameScreen gameScreen, GameTime gameTime)
         {
+            base.Draw(gameScreen, gameTime);
             ScreenManager screenManager = gameScreen.ScreenManager;
             SpriteBatch spriteBatch = screenManager.SpriteBatch;
-            Texture2D drawingTextue;
 
             if (Active)
             {
-                drawingTextue = ActiveTexture ??
-                    screenManager.Game.Content.Load<Texture2D>("Images/GUI/CheckBoxX");
-            }
-            else
-            {
-                drawingTextue = _buttonTexture ?? screenManager.BlankTexture;
-            }
+                Texture2D drawingTextue = ActiveTexture ??
+                                          screenManager.Game.Content.Load<Texture2D>("Images/GUI/CheckBoxX");
 
-            Rectangle rectangle = new Rectangle((int)Position.X, (int)Position.Y, 20, 20);
+                Vector2 textureSize = Size;
+                textureSize.X -= BorderThickness;
+                textureSize.Y -= BorderThickness;
 
-            screenManager.SpriteBatch.Draw(drawingTextue, rectangle, FillColor);
+                Vector2 texturePosition = Position;
+                texturePosition.X += BorderThickness;
+                texturePosition.Y += BorderThickness;
+
+                Rectangle rectangle = new Rectangle((int) texturePosition.X, (int) texturePosition.Y,
+                                                    (int) textureSize.X - BorderThickness,
+                                                    (int) textureSize.Y - BorderThickness);
+
+                spriteBatch.Draw(drawingTextue, rectangle, FillColor);
+            }
         }
 
         protected override void OnClicked()

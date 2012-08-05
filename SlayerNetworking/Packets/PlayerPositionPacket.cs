@@ -15,7 +15,7 @@ namespace SlaysherNetworking.Packets
 
         protected override int Length
         {
-            get { return 29; }
+            get { return 17; }
         }
 
         public PlayerPositionPacket()

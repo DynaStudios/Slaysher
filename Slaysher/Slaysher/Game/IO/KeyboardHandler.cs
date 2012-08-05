@@ -7,9 +7,9 @@ namespace Slaysher.Game.IO
 {
     public class KeyboardHandler
     {
-        public event EventHandler KeyDown;
+        public event EventHandler<KeyboardEventArgs> KeyDown;
 
-        public event EventHandler KeyUp;
+        public event EventHandler<KeyboardEventArgs> KeyUp;
 
         private readonly Dictionary<Keys, bool> _pressedKeys;
 

@@ -18,12 +18,12 @@ namespace Slaysher.Network
 
             Register(PacketType.Handshake, 0, 3, ReadHandshake);
             Register(PacketType.KeepAlive, 9, 0, ReadKeepAlive);
-            Register(PacketType.Pattern, 25, 0, ReadPattern);
+            Register(PacketType.Pattern, 17, 0, ReadPattern);
             Register(PacketType.EntitySpawn, 0, 17, ReadEntitySpawn);
             Register(PacketType.EntityDespawn, 5, 0, ReadEntityDespawn);
-            Register(PacketType.PlayerInfo, 0, 11, ReadPlayerInfo);
-            Register(PacketType.PlayerPosition, 29, 0, ReadPlayerPosition);
-            Register(PacketType.Movement, 37, 0, ReadMovement);
+            Register(PacketType.PlayerInfo, 0, 9, ReadPlayerInfo);
+            Register(PacketType.PlayerPosition, 17, 0, ReadPlayerPosition);
+            Register(PacketType.Movement, 25, 0, ReadMovement);
         }
 
         public static void Register(PacketType packetId, int length, int minimumLength, OnPacketReceive onReceive)

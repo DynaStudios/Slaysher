@@ -19,7 +19,7 @@ namespace SlaysherServer.Network.Handler
 
             Register(PacketType.Handshake, 0, 3, ReadHandshake);
             Register(PacketType.KeepAlive, 9, 0, ReadKeepAlive);
-            Register(PacketType.Movement, 37, 0, ReadMovement);
+            Register(PacketType.Movement, 25, 0, ReadMovement);
         }
 
         public static void Register(PacketType packetId, int length, int minimumLength, OnPacketReceive onReceive)

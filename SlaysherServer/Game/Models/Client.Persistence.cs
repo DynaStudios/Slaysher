@@ -14,7 +14,12 @@ namespace SlaysherServer.Game.Models
         {
             //TODO: DAO is missing atm
             Player newInstance = new Player
-                {Health = 100, Nickname = "TestUser" + ClientId, Position = new WorldPosition(0, 0)};
+                {
+                    Health = 100,
+                    Nickname = "TestUser" + ClientId,
+                    Position = new WorldPosition(0, 0),
+                    Speed = 10.0f
+                };
 
             //Debug Player Info until Database implemented
 

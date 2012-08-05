@@ -31,7 +31,7 @@ namespace SlaysherNetworking.Packets
 
         public override void Write()
         {
-            SetCapacity(11, Nickname);
+            SetCapacity(9, Nickname);
             Writer.Write(PlayerId);
             Writer.Write(Nickname);
             Writer.Write(Health);

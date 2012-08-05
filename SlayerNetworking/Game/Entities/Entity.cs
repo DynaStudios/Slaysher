@@ -16,7 +16,9 @@ namespace SlaysherNetworking.Game.Entities
 
         public int Health { get; set; }
 
-        // Speed in meter per second
+        /// <summary>
+        /// Speed in meter per second
+        /// </summary>
         public float Speed
         {
             get { return SpeedMeeterPerMillisecond * 1000; }

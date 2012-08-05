@@ -157,6 +157,7 @@ namespace Slaysher.Game.Entities
 
         public void Tick(GameTime time)
         {
+            ExecuteMovement(time.TotalGameTime);
             HandleInput();
             smoothMove();
         }

@@ -9,7 +9,7 @@ namespace SlaysherNetworking.Packets
         public int EntetyId { get; set; }
         public float Direction { get; set; }
         public float Speed { get; set; }
-        protected override int Length { get { return 37; } }
+        protected override int Length { get { return 25; } }
 
         public MovePacket()
         {

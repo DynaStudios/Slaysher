@@ -183,6 +183,7 @@ namespace SlaysherServer.Game.Models
         {
             if (Player.ExecutePreparedMove(totalTime))
             {
+                Console.WriteLine("Sending move");
                 MovePacket mp = new MovePacket
                 {
                     EntetyId = Player.Id,

@@ -164,6 +164,7 @@ namespace Slaysher.Game.Entities
 
         private void SendMove(float direction)
         {
+            System.Console.WriteLine("Sending move");
             MovePacket movePacket = new MovePacket
             {
                 EntetyId = Id,
@@ -175,6 +176,7 @@ namespace Slaysher.Game.Entities
 
         private void SendStopMoving()
         {
+            System.Console.WriteLine("Sending stop");
             MovePacket movePacket = new MovePacket
             {
                 EntetyId = Id,

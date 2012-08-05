@@ -58,8 +58,11 @@ namespace SlaysherNetworking.Game.Entities
             }
 
             StopMoving(totalTime);
-            Speed = (float)_preparedSpeed;
-            Move(totalTime, (float)_preparedDirection);
+            if (_preparedSpeed > 0)
+            {
+                Speed = (float)_preparedSpeed;
+                Move(totalTime, (float)_preparedDirection);
+            }
             _preparedDirection = null;
             _preparedSpeed = null;
             return true;

@@ -50,6 +50,7 @@ namespace Slaysher.Game.Entities
         }
         public Model Model { get; set; }
         public WorldPosition VisualPosition { get; set; }
+        private float? _lastMovementDirection = null;
 
         public ClientPlayer(Client client)
         {
@@ -157,14 +158,20 @@ namespace Slaysher.Game.Entities
 
         public void Tick(GameTime time)
         {
+            ExecutePreparedMove(time.TotalGameTime);
             ExecuteMovement(time.TotalGameTime);
-            HandleInput();
+
             smoothMove();
+            HandleInput();
         }
 
         private void SendMove(float direction)
         {
-            System.Console.WriteLine("Sending move");
+            if (_lastMovementDirection != null && _lastMovementDirection == direction)
+            {
+                return;
+            }
+            _lastMovementDirection = direction;
             MovePacket movePacket = new MovePacket
             {
                 EntetyId = Id,
@@ -176,7 +183,11 @@ namespace Slaysher.Game.Entities
 
         private void SendStopMoving()
         {
-            System.Console.WriteLine("Sending stop");
+            if (_lastMovementDirection == null)
+            {
+                return;
+            }
+            _lastMovementDirection = null;
             MovePacket movePacket = new MovePacket
             {
                 EntetyId = Id,

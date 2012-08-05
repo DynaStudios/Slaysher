@@ -401,9 +401,11 @@ namespace Slaysher.Network
             }
 
             entity.StopMoving(null);
-            entity.Position.X = position.X;
-            entity.Position.Y = position.Y;
-            entity.PrepareToMove(direction, speed);
+            entity.Position = position;
+            if (speed > 0)
+            {
+                entity.PrepareToMove(direction, speed);
+            }
         }
 
         public static void HandlePlayerInfo(Client client, PlayerInfoPacket pip)
@@ -433,8 +435,8 @@ namespace Slaysher.Network
             Console.WriteLine("Received Player Position Packet");
             if (client.GameScene.Player != null)
             {
-                client.GameScene.Player.Position.X = ppp.X;
-                client.GameScene.Player.Position.Y = ppp.Y;
+                WorldPosition wp = new WorldPosition(ppp.X, ppp.Y);
+                client.GameScene.Player.Position = wp;
             }
             else
             {

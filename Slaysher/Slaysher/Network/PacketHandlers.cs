@@ -115,16 +115,16 @@ namespace Slaysher.Network
 
         public static void ReadMovement(Client client, PacketReader reader)
         {
-            MovePacket movePacket = new MovePacket();
-            movePacket.Read(reader);
+            MovePacket mp = new MovePacket();
+            mp.Read(reader);
 
             if (!reader.Failed)
             {
                 client.Move(
-                    movePacket.EntetyId,
-                    movePacket.Position,
-                    movePacket.Direction,
-                    movePacket.Speed);
+                    mp.EntetyId,
+                    mp.Position,
+                    mp.Direction,
+                    mp.Speed);
             }
             else
             {

@@ -47,6 +47,7 @@ namespace SlaysherServer.Game.Models
 
         public Server Server { get; set; }
 
+        // would a ServerPlayer class be usefull?
         public Player Player { get; private set; }
 
         private readonly Socket _socket;
@@ -181,18 +182,20 @@ namespace SlaysherServer.Game.Models
 
         internal void Update(TimeSpan totalTime)
         {
-            if (Player.ExecutePreparedMove(totalTime))
+            if (Player != null)
             {
-                Console.WriteLine("Sending move");
-                MovePacket mp = new MovePacket
+                if (Player.ExecutePreparedMove(totalTime))
                 {
-                    EntetyId = Player.Id,
-                    Direction = Player.Direction,
-                    Position = Player.Position,
-                    Speed = Player.Speed,
-                };
+                    MovePacket mp = new MovePacket
+                    {
+                        EntetyId = Player.Id,
+                        Direction = Player.Direction,
+                        Position = Player.Position,
+                        Speed = Player.IsMoving ? Player.Speed : 0.0f,
+                    };
 
-                SendPacket(mp);
+                    SendPacket(mp);
+                }
             }
         }
     }

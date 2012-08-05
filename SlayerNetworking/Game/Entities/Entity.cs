@@ -35,6 +35,7 @@ namespace SlaysherNetworking.Game.Entities
 
         private float _direction;
         public float Direction { get { return _direction; } }
+        public bool IsMoving { get { return _movemetStarted != null; } }
 
         private float? _preparedDirection;
         private float? _preparedSpeed;

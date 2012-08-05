@@ -94,7 +94,7 @@ namespace Slaysher.Network
             SendPacket(handshake);
         }
 
-        private void SendPacket(Packet packet)
+        public void SendPacket(Packet packet)
         {
             _packetsToSend.Enqueue(packet);
 
@@ -392,12 +392,27 @@ namespace Slaysher.Network
             throw new NotImplementedException();
         }
 
+        public void Move(int entityId, WorldPosition position, float direction, float speed)
+        {
+            Entity entity;
+            if (!GameScene.Enteties.TryGetValue(entityId, out entity))
+            {
+                return;
+            }
+
+            entity.StopMoving(null);
+            entity.Position.X = position.X;
+            entity.Position.Y = position.Y;
+            entity.PrepareToMove(direction, speed);
+        }
+
         public static void HandlePlayerInfo(Client client, PlayerInfoPacket pip)
         {
             Console.WriteLine("Received Player Info Packet");
             if (client.GameScene.Player == null && pip.PlayerId == 0)
             {
-                ClientPlayer player = new ClientPlayer {
+                ClientPlayer player = new ClientPlayer(client) {
+                    Id = pip.PlayerId,
                     Nickname = pip.Nickname,
                     Health = pip.Health
                 };

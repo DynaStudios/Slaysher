@@ -34,9 +34,33 @@ namespace SlaysherNetworking.Game.Entities
         private float _direction;
         public float Direction { get { return _direction; } }
 
+        private float? _preparedDirection;
+        private float? _preparedSpeed;
+
         public Entity()
         {
             Speed = 2.0f;
+        }
+
+        public void PrepareToMove(float direction, float speed)
+        {
+            _preparedDirection = direction;
+            _preparedSpeed = speed;
+        }
+
+        public bool ExecutePreparedMove(TimeSpan totalTime)
+        {
+            if (_preparedDirection == null || _preparedSpeed == null)
+            {
+                return false;
+            }
+
+            StopMoving(totalTime);
+            Speed = (float)_preparedSpeed;
+            Move(totalTime, (float)_preparedDirection);
+            _preparedDirection = null;
+            _preparedSpeed = null;
+            return true;
         }
 
         public void Move(TimeSpan totalTime, float direction)
@@ -54,10 +78,14 @@ namespace SlaysherNetworking.Game.Entities
             this._direction = direction;
         }
 
-        public void StopMoving(TimeSpan totalTime)
+        public void StopMoving(TimeSpan? totalTime)
         {
+
             // direction should stay as it is
-            ExecuteMovement(totalTime);
+            if (totalTime != null)
+            {
+                ExecuteMovement((TimeSpan)totalTime);
+            }
             _startPosition = null;
             _movemetStarted = null;
         }

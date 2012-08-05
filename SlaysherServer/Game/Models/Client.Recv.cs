@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Net.Sockets;
 using System.Threading;
+
+using SlaysherNetworking.Game.Entities;
 using SlaysherNetworking.Packets;
 using SlaysherNetworking.Packets.Utils;
 
@@ -10,6 +12,17 @@ namespace SlaysherServer.Game.Models
     {
         public int TimesEnqueuedForRecv;
         private readonly object _queueSwapLock = new object();
+
+        public void PlayerRequestsToMove(int playerId, float direction, float speed)
+        {
+            if (Player.Id != playerId)
+            {
+                Console.WriteLine("player({0}) send MoveRequest with wrong id({1})", Player.Id, playerId);
+                return;
+            }
+
+            Player.PrepareToMove(direction, speed);
+        }
 
         private void RecvStart()
         {
@@ -109,9 +122,8 @@ namespace SlaysherServer.Game.Models
                 client.SendPacket(new HandshakePacket(packet.Username));
 
                 Console.WriteLine("Send Player Information");
-                client.Player = client.Load();
-                client.SendPacket(new PlayerInfoPacket(client.Player));
-                client.SendPacket(new PlayerPositionPacket(client.Player));
+                client.LoadPlayer();
+                client.SendPlayerInfo();
 
                 client.SendPattern();
 
@@ -121,6 +133,17 @@ namespace SlaysherServer.Game.Models
                 KeepAlivePacket keepAlive = new KeepAlivePacket {TimeStamp = client.LastSendKeepAliveStamp};
                 client.SendPacket(keepAlive);
             }
+        }
+
+        private void SendPlayerInfo()
+        {
+            SendPacket(new PlayerInfoPacket(Player));
+            SendPacket(new PlayerPositionPacket(Player));
+        }
+
+        private void LoadPlayer()
+        {
+            Player = Load();
         }
 
         public static void HandleKeepAlive(Client client, KeepAlivePacket ap)

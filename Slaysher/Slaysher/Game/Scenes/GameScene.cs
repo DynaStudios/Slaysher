@@ -13,6 +13,7 @@ using Slaysher.Game.World.Objects;
 using Slaysher.Graphics.Camera;
 using Slaysher.Network;
 
+using SlaysherNetworking.Game.Entities;
 using SlaysherNetworking.Game.World.Objects;
 using SlaysherNetworking.Packets.Utils;
 
@@ -29,7 +30,20 @@ namespace Slaysher.Game.Scenes
 
         public Dictionary<int, Pattern> Pattern;
         public Dictionary<int, GameObject> GameObjects;
-        public ClientPlayer Player { get; set; }
+        public Dictionary<int, Entity> Enteties { get; protected set; }
+        private ClientPlayer _player;
+        public ClientPlayer Player {
+            get { return _player; }
+            set
+            {
+                if (_player != null && Enteties.ContainsKey(_player.Id))
+                {
+                    Enteties.Remove(_player.Id);
+                }
+                _player = value;
+                Enteties.Add(_player.Id, _player);
+            }
+        }
 
         private Matrix _worldMatrix;
 
@@ -50,6 +64,7 @@ namespace Slaysher.Game.Scenes
             Pattern = new Dictionary<int, Pattern>();
             _patternTextures = new Dictionary<int, Texture2D>();
             GameObjects = new Dictionary<int, GameObject>();
+            Enteties = new Dictionary<int, Entity>();
         }
 
         #region Overrides of GameScreen

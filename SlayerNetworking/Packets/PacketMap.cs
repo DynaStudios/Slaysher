@@ -17,14 +17,15 @@ namespace SlaysherNetworking.Packets
 
         private static Dictionary<Type, PacketType> _map = new Dictionary<Type, PacketType>
             {
-                {typeof (HandshakePacket), PacketType.Handshake},
-                {typeof (KickPacket), PacketType.Kick},
-                {typeof (KeepAlivePacket), PacketType.KeepAlive},
+                {typeof (HandshakePacket),      PacketType.Handshake},
+                {typeof (KickPacket),           PacketType.Kick},
+                {typeof (KeepAlivePacket),      PacketType.KeepAlive},
                 {typeof (PlayerPositionPacket), PacketType.PlayerPosition},
-                {typeof (PatternPacket), PacketType.Pattern},
-                {typeof (EntitySpawnPacket), PacketType.EntitySpawn},
-                {typeof (EntityDespawnPacket), PacketType.EntityDespawn},
-                {typeof (PlayerInfoPacket), PacketType.PlayerInfo}
+                {typeof (PatternPacket),        PacketType.Pattern},
+                {typeof (EntitySpawnPacket),    PacketType.EntitySpawn},
+                {typeof (EntityDespawnPacket),  PacketType.EntityDespawn},
+                {typeof (PlayerInfoPacket),     PacketType.PlayerInfo},
+                {typeof (MovePacket),           PacketType.Movement}
             };
 
         private static readonly ConcurrentDictionary<Type, PacketType> ConcurrentMap =

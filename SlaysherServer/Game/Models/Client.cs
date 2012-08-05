@@ -1,10 +1,13 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Net.Sockets;
 using System.Threading.Tasks;
+
 using SlaysherNetworking.Game.Entities;
 using SlaysherNetworking.Packets;
 using SlaysherNetworking.Packets.Utils;
+
 using SlaysherServer.Network;
 
 namespace SlaysherServer.Game.Models
@@ -44,7 +47,7 @@ namespace SlaysherServer.Game.Models
 
         public Server Server { get; set; }
 
-        public Player Player { get; set; }
+        public Player Player { get; private set; }
 
         private readonly Socket _socket;
 
@@ -173,6 +176,22 @@ namespace SlaysherServer.Game.Models
                         Server.NetworkSignal.Set();
                     }
                 }
+            }
+        }
+
+        internal void Update(TimeSpan totalTime)
+        {
+            if (Player.ExecutePreparedMove(totalTime))
+            {
+                MovePacket mp = new MovePacket
+                {
+                    EntetyId = Player.Id,
+                    Direction = Player.Direction,
+                    Position = Player.Position,
+                    Speed = Player.Speed,
+                };
+
+                SendPacket(mp);
             }
         }
     }

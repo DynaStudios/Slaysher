@@ -8,8 +8,11 @@ using Microsoft.Xna.Framework.Input;
 using Slaysher.Game;
 using Slaysher.Graphics;
 using Slaysher.Graphics.Camera;
+using Slaysher.Network;
+
 using SlaysherNetworking.Game.World;
 using SlaysherNetworking.Game.Entities;
+using SlaysherNetworking.Packets;
 
 namespace Slaysher.Game.Entities
 {
@@ -27,6 +30,7 @@ namespace Slaysher.Game.Entities
 
     public class ClientPlayer : Player
     {
+        private Client _client;
         public override WorldPosition Position
         {
             get { return base.Position; }
@@ -47,11 +51,16 @@ namespace Slaysher.Game.Entities
         public Model Model { get; set; }
         public WorldPosition VisualPosition { get; set; }
 
+        public ClientPlayer(Client client)
+        {
+            _client = client;
+        }
+
         public void Update(Matrix chasedObjectsWorld)
         {
         }
 
-        private void HandleInput(GameTime time)
+        private void HandleInput()
         {
             KeyboardState keyboardState = Keyboard.GetState();
             float? direction = null;
@@ -103,11 +112,11 @@ namespace Slaysher.Game.Entities
 
             if (direction != null)
             {
-                Move(time.TotalGameTime, (float)direction);
+                SendMove((float)direction);
             }
             else
             {
-                StopMoving(time.TotalGameTime);
+                SendStopMoving();
             }
         }
 
@@ -132,16 +141,8 @@ namespace Slaysher.Game.Entities
                 foreach (BasicEffect effect in mesh.Effects)
                 {
                     effect.EnableDefaultLighting();
-                    //effect.World = modelTransforms[mesh.ParentBone.Index] * worldMatrix * _position;
-                    //effect.TextureEnabled = true;
-                    //effect.Texture = _patternTexture;
-
                     effect.GraphicsDevice.DepthStencilState = DepthStencilState.Default;
-                    //effect.CurrentTechnique.Passes[0].Apply();
-
-                    effect.World = (modelTransforms[mesh.ParentBone.Index] * playerModelScale)
-                            * position3dMatrix;
-
+                    effect.World = (modelTransforms[mesh.ParentBone.Index] * playerModelScale) * position3dMatrix;
                     effect.View = camera.ViewMatrix;
                     effect.Projection = camera.ProjectionMatrix;
                 }
@@ -156,9 +157,30 @@ namespace Slaysher.Game.Entities
 
         public void Tick(GameTime time)
         {
-            HandleInput(time);
+            HandleInput();
             smoothMove();
-            //TODO: Update stuff like position etc. here
+        }
+
+        private void SendMove(float direction)
+        {
+            MovePacket movePacket = new MovePacket
+            {
+                EntetyId = Id,
+                Direction = direction,
+                Speed = Speed
+            };
+            _client.SendPacket(movePacket);
+        }
+
+        private void SendStopMoving()
+        {
+            MovePacket movePacket = new MovePacket
+            {
+                EntetyId = Id,
+                Direction = 0,
+                Speed = 0
+            };
+            _client.SendPacket(movePacket);
         }
     }
 }

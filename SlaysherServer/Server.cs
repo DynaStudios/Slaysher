@@ -350,8 +350,8 @@ namespace SlaysherServer
             if (OnBeforeAccept(e.AcceptSocket))
             {
                 Console.WriteLine("Incoming Connection");
-                Interlocked.Increment(ref _nextClientId);
-                Client c = new Client(_nextClientId, this, e.AcceptSocket);
+                int clientId = Interlocked.Increment(ref _nextClientId);
+                Client c = new Client(clientId, this, e.AcceptSocket);
 
                 c.Start();
 

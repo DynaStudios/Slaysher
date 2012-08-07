@@ -21,6 +21,7 @@ namespace SlaysherServer
     {
         public const int TICK_TIME = 50;
         public static int SightRadius = 10;
+        private DateTime _startTime;
 
         private readonly Socket _listener;
         private readonly SocketAsyncEventArgs _acceptEventArgs;
@@ -58,6 +59,7 @@ namespace SlaysherServer
 
         public Server()
         {
+            _startTime = DateTime.Now;
             //Network Setup
             PacketMap.Initialize();
 
@@ -102,20 +104,14 @@ namespace SlaysherServer
         /// <param name="state"></param>
         private void GlobalTickProc(object state)
         {
+            TimeSpan runTime = DateTime.Now - _startTime;
             _serverTick++;
             World.Tick(_serverTick);
 
             Client[] clients = GetClients();
-            long timeInMs = _serverTick * TICK_TIME; 
-            TimeSpan timeSpan = new TimeSpan(
-                    (int)(timeInMs / 24 / 60 / 60 / 1000),
-                    (int)(timeInMs / 60 / 60 / 1000) % 24,
-                    (int)(timeInMs / 60 / 1000) % 60,
-                    (int)(timeInMs / 1000) % 60,
-                    (int)timeInMs % 1000);
             Parallel.ForEach<Client>(clients, (client) =>
             {
-                client.Update(timeSpan);
+                client.Update(runTime);
             });
         }
 

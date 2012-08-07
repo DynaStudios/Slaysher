@@ -149,8 +149,13 @@ namespace Slaysher.Game.GUI.Components
                         if (input.LeftMouseClicked)
                         {
                             var selectedItem = Math.Floor((mousePosition.Y - Position.Y) / _dropDownItemSize.Y);
-                            SelectedItem = Items[(int) (selectedItem - 1)];
-                            OnSelectionChanged(new EventArgs());
+
+                            if (selectedItem - 1 < Items.Count) { 
+
+                                SelectedItem = Items[(int) (selectedItem - 1)];
+                                OnSelectionChanged(new EventArgs());
+
+                            }
                             _collapsed = true;
                         }
                     }

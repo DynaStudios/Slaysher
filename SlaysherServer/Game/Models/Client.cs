@@ -1,10 +1,14 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Net.Sockets;
 using System.Threading.Tasks;
+
 using SlaysherNetworking.Game.Entities;
 using SlaysherNetworking.Packets;
 using SlaysherNetworking.Packets.Utils;
+
+using SlaysherServer.Game.Entities;
 using SlaysherServer.Network;
 
 namespace SlaysherServer.Game.Models
@@ -44,7 +48,8 @@ namespace SlaysherServer.Game.Models
 
         public Server Server { get; set; }
 
-        public Player Player { get; set; }
+        // would a ServerPlayer class be usefull?
+        public ServerPlayer Player { get; private set; }
 
         private readonly Socket _socket;
 
@@ -172,6 +177,18 @@ namespace SlaysherServer.Game.Models
                         Server.ClientsToDispose.Enqueue(this);
                         Server.NetworkSignal.Set();
                     }
+                }
+            }
+        }
+
+        internal void Update(TimeSpan totalTime)
+        {
+            if (Player != null)
+            {
+                MovePacket mp = Player.CreatePreperedMovePacket(totalTime);
+                if (mp != null)
+                {
+                    SendPacket(mp);
                 }
             }
         }

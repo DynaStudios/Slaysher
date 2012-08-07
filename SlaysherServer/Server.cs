@@ -19,7 +19,9 @@ namespace SlaysherServer
 {
     public class Server
     {
+        public const int TICK_TIME = 50;
         public static int SightRadius = 10;
+        private DateTime _startTime;
 
         private readonly Socket _listener;
         private readonly SocketAsyncEventArgs _acceptEventArgs;
@@ -57,6 +59,7 @@ namespace SlaysherServer
 
         public Server()
         {
+            _startTime = DateTime.Now;
             //Network Setup
             PacketMap.Initialize();
 
@@ -87,7 +90,7 @@ namespace SlaysherServer
                 Client.SendSocketEventPool.Push(new SocketAsyncEventArgs());
             }
 
-            _globalTick = new Timer(GlobalTickProc, null, 50, 50);
+            _globalTick = new Timer(GlobalTickProc, null, TICK_TIME, TICK_TIME);
 
             while (_running)
             {
@@ -101,8 +104,15 @@ namespace SlaysherServer
         /// <param name="state"></param>
         private void GlobalTickProc(object state)
         {
+            TimeSpan runTime = DateTime.Now - _startTime;
             _serverTick++;
             World.Tick(_serverTick);
+
+            Client[] clients = GetClients();
+            Parallel.ForEach<Client>(clients, (client) =>
+            {
+                client.Update(runTime);
+            });
         }
 
         //Eventhandler

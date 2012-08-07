@@ -1,4 +1,6 @@
-﻿using SlaysherNetworking.Game.Entities;
+﻿using SlaysherServer.Game.Entities;
+
+using SlaysherNetworking.Game.Entities;
 using SlaysherNetworking.Game.World;
 
 namespace SlaysherServer.Game.Models
@@ -10,11 +12,16 @@ namespace SlaysherServer.Game.Models
             //TODO: Implement
         }
 
-        public Player Load()
+        public ServerPlayer Load()
         {
             //TODO: DAO is missing atm
-            Player newInstance = new Player
-                {Health = 100, Nickname = "TestUser" + ClientId, Position = new WorldPosition(0, 0)};
+            ServerPlayer newInstance = new ServerPlayer
+                {
+                    Health = 100,
+                    Nickname = "TestUser" + ClientId,
+                    Position = new WorldPosition(0, 0),
+                    Speed = 10.0f
+                };
 
             //Debug Player Info until Database implemented
 

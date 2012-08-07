@@ -53,6 +53,7 @@
     <Compile Include="Packets\HandshakePacket.cs" />
     <Compile Include="Packets\KeepAlivePacket.cs" />
     <Compile Include="Packets\KickPacket.cs" />
+    <Compile Include="Packets\MovePacket.cs" />
     <Compile Include="Packets\Packet.cs" />
     <Compile Include="Packets\PacketMap.cs" />
     <Compile Include="Packets\PacketType.cs" />

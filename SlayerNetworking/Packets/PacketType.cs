@@ -9,6 +9,7 @@
         Pattern = 0x04,
         EntitySpawn = 0x05,
         EntityDespawn = 0x06,
-        PlayerInfo = 0x07
+        PlayerInfo = 0x07,
+        Movement = 0x08
     }
 }

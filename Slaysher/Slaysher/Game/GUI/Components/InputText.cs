@@ -121,10 +121,7 @@ namespace Slaysher.Game.GUI.Components
             if (_hasFocus)
             {
                 //Handle Keystrokes
-                foreach (Keys pressedKey in input.PressedKeys)
-                {
-                    Text += pressedKey.ToString();
-                }
+                Text = Extensions.HandleKeyboardInput(Text, input.PressedKeys);
             }
         }
     }

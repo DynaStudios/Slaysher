@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Text;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
 using Slaysher.Game.IO;
@@ -16,6 +17,44 @@ namespace Slaysher.Game.GUI
                 && mousePosition.Y >= position.Y
                 && mousePosition.X <= position.X + size.X
                 && mousePosition.Y <= position.Y + size.Y;
+        }
+
+        public static string HandleKeyboardInput(string text, List<Keys> keys, int cursorPosition = -1)
+        {
+            KeyboardState keyboard = Keyboard.GetState();
+            StringBuilder stringBuilder = new StringBuilder(text);
+            cursorPosition = (cursorPosition != -1) ? cursorPosition : stringBuilder.Length - 1;
+
+            foreach (Keys key in keys)
+            {
+                if (key == Keys.LeftShift)
+                {
+                    continue;
+                }
+                if (key == Keys.Back)
+                {
+                    if (stringBuilder.Length != 0) { 
+                        stringBuilder.Remove(cursorPosition, 1);
+                        cursorPosition++;
+                    }
+                    continue;
+                }
+                if (key == Keys.Space)
+                {
+                    stringBuilder.Insert(cursorPosition + 1, " ");
+                    continue;
+                }
+
+                bool shiftPressed = (keyboard.IsKeyDown(Keys.LeftShift));
+
+                var inputText = (shiftPressed) ? key.ToString() : key.ToString().ToLower();
+
+                stringBuilder.Insert(cursorPosition + 1, inputText);
+                cursorPosition++;
+
+            }
+
+            return stringBuilder.ToString();
         }
     }
 
@@ -37,6 +76,7 @@ namespace Slaysher.Game.GUI
             PressedKeys = new List<Keys>();
 
             KeyboardHandler.KeyUp += KeyboardHandler_KeyUp;
+            KeyboardHandler.KeyDown += KeyboardHandler_KeyDown;
             MouseHandler.MouseButtonUp += MouseHandler_MouseButtonUp;
         }
 
@@ -64,6 +104,11 @@ namespace Slaysher.Game.GUI
         private void KeyboardHandler_KeyUp(object sender, KeyboardEventArgs e)
         {
             PressedKeys.Add(e.PressedKey);
+        }
+
+        void KeyboardHandler_KeyDown(object sender, KeyboardEventArgs e)
+        {
+
         }
 
         private void MouseHandler_MouseButtonUp(object sender, MouseEventArgs e)

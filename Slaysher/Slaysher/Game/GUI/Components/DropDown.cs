@@ -56,6 +56,7 @@ namespace Slaysher.Game.GUI.Components
         {
             SpriteBatch spriteBatch = gameScreen.ScreenManager.SpriteBatch;
             SpriteFont font = gameScreen.ScreenManager.Font;
+            SpriteFont smallFont = gameScreen.ScreenManager.SmallFont;
 
             if (_dropDownBackground == null)
             {
@@ -77,7 +78,7 @@ namespace Slaysher.Game.GUI.Components
             if(!_collapsed && Items.Count != 0)
             {
                 Vector2 position = Position;
-                _dropDownItemSize = font.MeasureString(Items[0].Label);
+                _dropDownItemSize = smallFont.MeasureString(Items[0].Label);
 
                 //Initial Position
                 position.Y += Size.Y;

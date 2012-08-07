@@ -2,6 +2,7 @@
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Input;
 using Slaysher.Game.GUI.Screens;
 
 namespace Slaysher.Game.GUI.Components
@@ -24,6 +25,7 @@ namespace Slaysher.Game.GUI.Components
 
         public Texture2D BorderTexture { get; set; }
         public Color BorderColor { get; set; }
+        public Color FocusColor { get; set; }
         public int BorderThickness { get; set; }
 
         public event EventHandler ValueChange;
@@ -42,6 +44,7 @@ namespace Slaysher.Game.GUI.Components
 
             BorderThickness = 4;
             BorderColor = Color.White;
+            FocusColor = Color.Yellow;
             PaddingLeft = 10;
 
             Text = "Test";
@@ -83,23 +86,46 @@ namespace Slaysher.Game.GUI.Components
             }
 
             //Draw Border
+            var borderColor = (!_hasFocus) ? BorderColor : FocusColor;
             var borderTexture = BorderTexture ?? gameScreen.ScreenManager.BlankTexture;
             spriteBatch.Draw(borderTexture, new Rectangle(rec.Left, rec.Top, rec.Width, BorderThickness),
-                             BorderColor);
+                             borderColor);
             spriteBatch.Draw(borderTexture, new Rectangle(rec.Left, rec.Top, BorderThickness, rec.Height),
-                             BorderColor);
+                             borderColor);
             spriteBatch.Draw(borderTexture,
                              new Rectangle(rec.Right - BorderThickness, rec.Top, BorderThickness, rec.Height),
-                             BorderColor);
+                             borderColor);
             spriteBatch.Draw(borderTexture,
                              new Rectangle(rec.Left, rec.Bottom - BorderThickness, rec.Width, BorderThickness),
-                             BorderColor);
+                             borderColor);
         }
 
 
         public void HandleInput(InputState input)
         {
-            
+            if (input.MouseState.IsMouseIn(Position, Size))
+            {
+                if (input.LeftMouseClicked && !_hasFocus)
+                {
+                    _hasFocus = true;
+                }
+            }
+            else
+            {
+                if (input.LeftMouseClicked && _hasFocus)
+                {
+                    _hasFocus = false;
+                }
+            }
+
+            if (_hasFocus)
+            {
+                //Handle Keystrokes
+                foreach (Keys pressedKey in input.PressedKeys)
+                {
+                    Text += pressedKey.ToString();
+                }
+            }
         }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
 using Slaysher.Game.IO;
@@ -7,7 +8,7 @@ namespace Slaysher.Game.GUI
 {
     public static class Extensions
     {
-        public static bool IsMuseIn(this MouseState mouseState, Vector2 position, Vector2 size)
+        public static bool IsMouseIn(this MouseState mouseState, Vector2 position, Vector2 size)
         {
             var mousePosition = new Vector2(mouseState.X, mouseState.Y);
 
@@ -26,10 +27,14 @@ namespace Slaysher.Game.GUI
         public bool LeftMouseClicked { get; protected set; }
         public bool RightMouseClicked { get; protected set; }
 
+        public List<Keys> PressedKeys;
+
         public InputState()
         {
             KeyboardHandler = new KeyboardHandler();
             MouseHandler = new MouseHandler();
+
+            PressedKeys = new List<Keys>();
 
             KeyboardHandler.KeyUp += KeyboardHandler_KeyUp;
             MouseHandler.MouseButtonUp += MouseHandler_MouseButtonUp;
@@ -50,13 +55,15 @@ namespace Slaysher.Game.GUI
             LeftMouseClicked = false;
             RightMouseClicked = false;
 
+            PressedKeys.Clear();
+
             KeyboardHandler.Update(gameTime);
             MouseHandler.Update(gameTime);
         }
 
         private void KeyboardHandler_KeyUp(object sender, KeyboardEventArgs e)
         {
-
+            PressedKeys.Add(e.PressedKey);
         }
 
         private void MouseHandler_MouseButtonUp(object sender, MouseEventArgs e)

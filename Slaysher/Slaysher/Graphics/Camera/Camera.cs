@@ -16,6 +16,11 @@ namespace Slaysher.Graphics.Camera
         //private Vector3 _desiredPosition;
         //private Vector3 _desiredTarget;
         private Vector3 _offsetDistance;
+        public Vector3 OffsetDistance
+        {
+            get { return _offsetDistance; }
+            set { _offsetDistance = value; }
+        }
 
         public Matrix ViewMatrix, ProjectionMatrix;
 
@@ -30,12 +35,12 @@ namespace Slaysher.Graphics.Camera
         public Camera(WorldPosition target)
         {
             _target = target;
+            _offsetDistance = new Vector3(0, 15, 5);
             ResetCamera();
         }
 
         public void ResetCamera()
         {
-            _offsetDistance = new Vector3(0, 15, 5);
             _position = _target.CreateOnSurfacePosition() + _offsetDistance;
             // new Vector3(0, 0, 50);
             //_target = new Vector3();

@@ -98,7 +98,7 @@ namespace Slaysher.Network
 
             if (!reader.Failed)
             {
-                Client.HandlePlayerInfo(client, pip);
+                client.HandlePlayerInfo(pip);
             }
         }
 

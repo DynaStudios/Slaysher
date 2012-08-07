@@ -408,21 +408,20 @@ namespace Slaysher.Network
             }
         }
 
-        public static void HandlePlayerInfo(Client client, PlayerInfoPacket pip)
+        public void HandlePlayerInfo(PlayerInfoPacket pip)
         {
             Console.WriteLine("Received Player Info Packet");
-            if (client.GameScene.Player == null && pip.PlayerId == 0)
+            if (GameScene.Player == null && pip.PlayerId == 0)
             {
-                ClientPlayer player = new ClientPlayer(client) {
+                ClientPlayer player = new ClientPlayer(this) {
                     Id = pip.PlayerId,
                     Nickname = pip.Nickname,
-                    Health = pip.Health
+                    Health = pip.Health,
+                    Position = new WorldPosition(pip.X, pip.Y)
                 };
                 // FIXME: ModelScaling should be dynamic, model depending and influencable by the server
                 player.ModelScaling = 1f / 512f;
-                client.GameScene.Player = player;
-
-                player.Position = new WorldPosition(20.0f, 20.0f);
+                GameScene.Player = player;
             }
             else
             {

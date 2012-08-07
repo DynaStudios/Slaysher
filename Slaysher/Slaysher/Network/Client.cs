@@ -94,7 +94,7 @@ namespace Slaysher.Network
             SendPacket(handshake);
         }
 
-        private void SendPacket(Packet packet)
+        public void SendPacket(Packet packet)
         {
             _packetsToSend.Enqueue(packet);
 
@@ -392,20 +392,36 @@ namespace Slaysher.Network
             throw new NotImplementedException();
         }
 
-        public static void HandlePlayerInfo(Client client, PlayerInfoPacket pip)
+        public void Move(int entityId, WorldPosition position, float direction, float speed)
+        {
+            Entity entity;
+            if (!GameScene.Enteties.TryGetValue(entityId, out entity))
+            {
+                return;
+            }
+
+            entity.StopMoving(null);
+            entity.Position = position;
+            if (speed > 0)
+            {
+                entity.PrepareToMove(direction, speed);
+            }
+        }
+
+        public void HandlePlayerInfo(PlayerInfoPacket pip)
         {
             Console.WriteLine("Received Player Info Packet");
-            if (client.GameScene.Player == null && pip.PlayerId == 0)
+            if (GameScene.Player == null && pip.PlayerId == 0)
             {
-                ClientPlayer player = new ClientPlayer {
+                ClientPlayer player = new ClientPlayer(this) {
+                    Id = pip.PlayerId,
                     Nickname = pip.Nickname,
-                    Health = pip.Health
+                    Health = pip.Health,
+                    Position = new WorldPosition(pip.X, pip.Y)
                 };
                 // FIXME: ModelScaling should be dynamic, model depending and influencable by the server
                 player.ModelScaling = 1f / 512f;
-                client.GameScene.Player = player;
-
-                player.Position = new WorldPosition(20.0f, 20.0f);
+                GameScene.Player = player;
             }
             else
             {
@@ -413,13 +429,13 @@ namespace Slaysher.Network
             }
         }
 
-        public static void HandlePlayerPosition(Client client, PlayerPositionPacket ppp)
+        public void HandlePlayerPosition(PlayerPositionPacket ppp)
         {
             Console.WriteLine("Received Player Position Packet");
-            if (client.GameScene.Player != null)
+            if (GameScene.Player != null)
             {
-                client.GameScene.Player.Position.X = ppp.X;
-                client.GameScene.Player.Position.Y = ppp.Y;
+                WorldPosition wp = new WorldPosition(ppp.X, ppp.Y);
+                GameScene.Player.Position = wp;
             }
             else
             {

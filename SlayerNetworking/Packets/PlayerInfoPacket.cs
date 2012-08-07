@@ -11,6 +11,9 @@ namespace SlaysherNetworking.Packets
 
         public int Health { get; set; }
 
+        public float X { get; set; }
+        public float Y { get; set; }
+
         public PlayerInfoPacket()
         {
         }
@@ -31,7 +34,7 @@ namespace SlaysherNetworking.Packets
 
         public override void Write()
         {
-            SetCapacity(9, Nickname);
+            SetCapacity(17, Nickname);
             Writer.Write(PlayerId);
             Writer.Write(Nickname);
             Writer.Write(Health);

@@ -16,7 +16,7 @@ namespace Slaysher.Game.GUI.Components
         public SoundEffect HoverSound { get; set; }
         public SoundEffect ClickSound { get; set; }
 
-        private Vector2 Size { get; set; }
+        public Vector2 Size { get; set; }
 
         //DropDown Properties
         public List<DropDownItem> Items { get; protected set; }

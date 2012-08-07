@@ -430,13 +430,13 @@ namespace Slaysher.Network
             }
         }
 
-        public static void HandlePlayerPosition(Client client, PlayerPositionPacket ppp)
+        public void HandlePlayerPosition(PlayerPositionPacket ppp)
         {
             Console.WriteLine("Received Player Position Packet");
-            if (client.GameScene.Player != null)
+            if (GameScene.Player != null)
             {
                 WorldPosition wp = new WorldPosition(ppp.X, ppp.Y);
-                client.GameScene.Player.Position = wp;
+                GameScene.Player.Position = wp;
             }
             else
             {

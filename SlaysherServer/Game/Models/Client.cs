@@ -8,6 +8,7 @@ using SlaysherNetworking.Game.Entities;
 using SlaysherNetworking.Packets;
 using SlaysherNetworking.Packets.Utils;
 
+using SlaysherServer.Game.Entities;
 using SlaysherServer.Network;
 
 namespace SlaysherServer.Game.Models
@@ -48,7 +49,7 @@ namespace SlaysherServer.Game.Models
         public Server Server { get; set; }
 
         // would a ServerPlayer class be usefull?
-        public Player Player { get; private set; }
+        public ServerPlayer Player { get; private set; }
 
         private readonly Socket _socket;
 
@@ -184,16 +185,9 @@ namespace SlaysherServer.Game.Models
         {
             if (Player != null)
             {
-                if (Player.ExecutePreparedMove(totalTime))
+                MovePacket mp = Player.CreatePreperedMovePacket(totalTime);
+                if (mp != null)
                 {
-                    MovePacket mp = new MovePacket
-                    {
-                        EntetyId = Player.Id,
-                        Direction = Player.Direction,
-                        Position = Player.Position,
-                        Speed = Player.IsMoving ? Player.Speed : 0.0f,
-                    };
-
                     SendPacket(mp);
                 }
             }

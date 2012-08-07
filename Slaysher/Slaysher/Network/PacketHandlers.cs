@@ -109,7 +109,7 @@ namespace Slaysher.Network
 
             if (!reader.Failed)
             {
-                Client.HandlePlayerPosition(client, ppp);
+                client.HandlePlayerPosition(ppp);
             }
         }
 

@@ -39,7 +39,7 @@ namespace Slaysher.Game.GUI.Components
         private bool _hasFocus;
         private SpriteFont _font;
         private int _cursorPosition;
-        private Dictionary<string, int> _charWidth; 
+        private readonly Dictionary<string, int> _charWidth; 
 
         public InputText()
         {
@@ -124,6 +124,10 @@ namespace Slaysher.Game.GUI.Components
                 if (input.LeftMouseClicked && !_hasFocus)
                 {
                     _hasFocus = true;
+                    if (FocusChanged != null)
+                    {
+                        FocusChanged(this, EventArgs.Empty);
+                    }
                 }
                 else if(input.LeftMouseClicked)
                 {
@@ -135,6 +139,10 @@ namespace Slaysher.Game.GUI.Components
                 if (input.LeftMouseClicked && _hasFocus)
                 {
                     _hasFocus = false;
+                    if(FocusChanged != null)
+                    {
+                        FocusChanged(this, EventArgs.Empty);
+                    }
                 }
             }
 
@@ -152,7 +160,6 @@ namespace Slaysher.Game.GUI.Components
                         if(input.PressedKeys.Contains(Keys.Back))
                         {
                             HandleKeyboardInput(input.PressedKeys);
-                            return;
                         }    
                     }
                     else 
@@ -168,6 +175,14 @@ namespace Slaysher.Game.GUI.Components
             var cursorTemp = Text.Length;
             Text = Extensions.HandleKeyboardInput(Text, pressedKeys, _cursorPosition);
             var cursorDelta = Text.Length - cursorTemp;
+
+            if(cursorDelta != 0)
+            {
+                if(ValueChange != null)
+                {
+                    ValueChange(this, EventArgs.Empty);
+                }
+            }
 
             if (_cursorPosition == -1) 
             {
@@ -186,6 +201,13 @@ namespace Slaysher.Game.GUI.Components
                 else if(pressedKeys.Contains(Keys.Right))
                 {
                     cursorDelta++;
+                }
+                else if(pressedKeys.Contains(Keys.Enter))
+                {
+                    if(EnterKey != null)
+                    {
+                        EnterKey(this, EventArgs.Empty);
+                    }
                 }
                 _cursorPosition += cursorDelta;
                 if(_cursorPosition > Text.Length)
@@ -242,7 +264,7 @@ namespace Slaysher.Game.GUI.Components
                 {
                     return dummyCursorPosition;
                 }
-                else if(dummyCursorPosition > Text.Length)
+                if(dummyCursorPosition > Text.Length)
                 {
                     searchingCursorPosition = false;
                 }

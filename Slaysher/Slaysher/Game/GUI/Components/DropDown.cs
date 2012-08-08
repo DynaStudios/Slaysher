@@ -16,7 +16,7 @@ namespace Slaysher.Game.GUI.Components
         public SoundEffect HoverSound { get; set; }
         public SoundEffect ClickSound { get; set; }
 
-        private Vector2 Size { get; set; }
+        public Vector2 Size { get; set; }
 
         //DropDown Properties
         public List<DropDownItem> Items { get; protected set; }
@@ -56,6 +56,7 @@ namespace Slaysher.Game.GUI.Components
         {
             SpriteBatch spriteBatch = gameScreen.ScreenManager.SpriteBatch;
             SpriteFont font = gameScreen.ScreenManager.Font;
+            SpriteFont smallFont = gameScreen.ScreenManager.SmallFont;
 
             if (_dropDownBackground == null)
             {
@@ -77,7 +78,7 @@ namespace Slaysher.Game.GUI.Components
             if(!_collapsed && Items.Count != 0)
             {
                 Vector2 position = Position;
-                _dropDownItemSize = font.MeasureString(Items[0].Label);
+                _dropDownItemSize = smallFont.MeasureString(Items[0].Label);
 
                 //Initial Position
                 position.Y += Size.Y;
@@ -148,8 +149,13 @@ namespace Slaysher.Game.GUI.Components
                         if (input.LeftMouseClicked)
                         {
                             var selectedItem = Math.Floor((mousePosition.Y - Position.Y) / _dropDownItemSize.Y);
-                            SelectedItem = Items[(int) (selectedItem - 1)];
-                            OnSelectionChanged(new EventArgs());
+
+                            if (selectedItem - 1 < Items.Count) { 
+
+                                SelectedItem = Items[(int) (selectedItem - 1)];
+                                OnSelectionChanged(new EventArgs());
+
+                            }
                             _collapsed = true;
                         }
                     }

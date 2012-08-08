@@ -61,9 +61,10 @@ namespace Slaysher.Game.GUI
                     bool numLock = keyboard.IsKeyDown(Keys.NumLock);
 
                     var inputText = TranslateChar(key, shiftPressed, capsLock, numLock);
-
-                    stringBuilder.Insert(cursorPosition + 1, inputText);
-                    cursorPosition++;
+                    if (inputText != (char)0) { 
+                        stringBuilder.Insert(cursorPosition + 1, inputText);
+                        cursorPosition++;
+                    }
 
                 }
             }

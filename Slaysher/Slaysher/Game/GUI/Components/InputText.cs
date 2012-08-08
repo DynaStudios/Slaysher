@@ -261,6 +261,14 @@ namespace Slaysher.Game.GUI.Components
             {
                 if (pressedKeys.Contains(Keys.Delete))
                 {
+                    if(_selectionStart != 0 || _selectionEnd != 0)
+                    {
+                        SelectedRemove();
+                        _cursorPosition = _selectionStart;
+                        _selectionStart = 0;
+                        _selectionEnd = 0;
+                        CheckedSelectionWrite();
+                    }
                     cursorDelta++;
                 }
                 else if (pressedKeys.Contains(Keys.Left))
@@ -311,6 +319,13 @@ namespace Slaysher.Game.GUI.Components
         {
             CheckedSelectionWrite();
             return Text.Substring(_visibleSelectionStart, _visibleSelectionEnd - 1);
+        }
+
+        private void SelectedRemove()
+        {
+            CheckedSelectionWrite();
+            var amount = _visibleSelectionEnd - _visibleSelectionStart - 1;
+            Text = Text.Remove(_visibleSelectionStart, amount);
         }
 
         private void CalculateCharWidth()

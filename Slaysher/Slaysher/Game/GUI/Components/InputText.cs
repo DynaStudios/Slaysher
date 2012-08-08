@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Diagnostics;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Graphics;
@@ -35,7 +37,8 @@ namespace Slaysher.Game.GUI.Components
         //Internal Vars
         protected float PaddingLeft { get; set; }
         private bool _hasFocus;
-        private int _cursorPosition = -1;
+        private SpriteFont _font;
+        private int _cursorPosition;
 
         public InputText()
         {
@@ -50,6 +53,7 @@ namespace Slaysher.Game.GUI.Components
             MaxChars = 15;
 
             Text = "Test";
+            _cursorPosition = Text.Length;
         }
 
         public float GetWidth(GameScreen gameScreen)
@@ -81,12 +85,13 @@ namespace Slaysher.Game.GUI.Components
 
             if (Text != string.Empty) { 
                 //Calculate Textposition
-                Vector2 textSize = font.MeasureString(Text);
+                _font = _font ?? font;
+                Vector2 textSize = _font.MeasureString(Text);
                 Vector2 textPosition = new Vector2(rec.Left + PaddingLeft, rec.Center.Y - textSize.Y / 2 + BorderThickness / 2);
 
                 var textWithCursor = Text;
-                if(_hasFocus && gameTime.TotalGameTime.Seconds % 2 == 0) {
-                    if(_cursorPosition == -1)
+                if(_hasFocus) {
+                    if(_cursorPosition == Text.Length)
                     {
                         textWithCursor += '|';
                     }
@@ -96,7 +101,7 @@ namespace Slaysher.Game.GUI.Components
                     }
                 }
 
-                spriteBatch.DrawString(font, textWithCursor, textPosition, TextColor);
+                spriteBatch.DrawString(_font, textWithCursor, textPosition, TextColor);
             }
 
             //Draw Border
@@ -123,6 +128,9 @@ namespace Slaysher.Game.GUI.Components
                 {
                     _hasFocus = true;
                 }
+                else if(input.LeftMouseClicked) {
+                    _cursorPosition = CalculateCursorPosition(input.MouseState, Text, _font.MeasureString(Text).X);
+                }
             }
             else
             {
@@ -135,8 +143,9 @@ namespace Slaysher.Game.GUI.Components
             if (_hasFocus)
             {
                 //Handle Keystrokes
-                if(MaxChars == 0 || Text.Length + input.PressedKeys.Count <= MaxChars) {
-                    Text = Extensions.HandleKeyboardInput(Text, input.PressedKeys, _cursorPosition);
+                if(MaxChars == 0 || Text.Length + input.PressedKeys.Count <= MaxChars)
+                {
+                    HandleKeyboardInput(input.PressedKeys);
                 }
                 else
                 {
@@ -144,16 +153,62 @@ namespace Slaysher.Game.GUI.Components
                     if(lenght == MaxChars) {
                         if(input.PressedKeys.Contains(Keys.Back))
                         {
-                            Text = Extensions.HandleKeyboardInput(Text, input.PressedKeys, _cursorPosition);
+                            HandleKeyboardInput(input.PressedKeys);
                             return;
                         }    
                     }
                     else 
                     {
-                        Text = Extensions.HandleKeyboardInput(Text, input.PressedKeys.GetRange(0, 1), _cursorPosition);
+                        HandleKeyboardInput(input.PressedKeys.GetRange(0, 1));
                     }
                 }
             }
+        }
+
+        private void HandleKeyboardInput(List<Keys> pressedKeys)
+        {
+            var cursorTemp = Text.Length;
+            Text = Extensions.HandleKeyboardInput(Text, pressedKeys, _cursorPosition);
+            var cursorDelta = Text.Length - cursorTemp;
+
+            if (_cursorPosition == -1) 
+            {
+                _cursorPosition = Text.Length;
+            }
+            else
+            {
+                if(pressedKeys.Contains(Keys.Delete))
+                {
+                    cursorDelta++;
+                }
+                else if(pressedKeys.Contains(Keys.Left))
+                {
+                    cursorDelta--;
+                }
+                else if(pressedKeys.Contains(Keys.Right))
+                {
+                    cursorDelta++;
+                }
+                _cursorPosition += cursorDelta;
+                if(_cursorPosition > Text.Length)
+                {
+                    _cursorPosition = Text.Length;
+                }
+                else if(_cursorPosition == -1)
+                {
+                    _cursorPosition = 0;
+                }
+            }
+        }
+
+        private int CalculateCursorPosition(MouseState mouseState, string text, float measuredWidth)
+        {
+            var xPos = 0;
+            if(text != string.Empty) {
+                xPos = (int)Math.Floor(Math.Abs(Position.X - mouseState.X - PaddingLeft) / (measuredWidth / text.Length));
+            }
+
+            return xPos - 1;
         }
     }
 }

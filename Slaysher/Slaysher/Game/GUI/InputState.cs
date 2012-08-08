@@ -21,36 +21,48 @@ namespace Slaysher.Game.GUI
 
         public static string HandleKeyboardInput(string text, List<Keys> keys, int cursorPosition = -1)
         {
-            KeyboardState keyboard = Keyboard.GetState();
             StringBuilder stringBuilder = new StringBuilder(text);
-            cursorPosition = (cursorPosition != -1) ? cursorPosition : stringBuilder.Length - 1;
+            if (keys.Count != 0) { 
+                KeyboardState keyboard = Keyboard.GetState();
+                cursorPosition = (cursorPosition != -1) ? cursorPosition - 1 : stringBuilder.Length - 1;
+                if (cursorPosition >= stringBuilder.Length)
+                    cursorPosition = stringBuilder.Length - 1;
 
-            foreach (Keys key in keys)
-            {
-                if (key == Keys.LeftShift || key == Keys.Enter || key == Keys.CapsLock || key == Keys.Left || key == Keys.Right || key == Keys.Up || key == Keys.Down)
+                foreach (Keys key in keys)
                 {
-                    continue;
-                }
-                if (key == Keys.Back)
-                {
-                    if (stringBuilder.Length != 0) { 
-                        stringBuilder.Remove(cursorPosition, 1);
-                        cursorPosition++;
+                    if (key == Keys.LeftShift || key == Keys.Enter || key == Keys.CapsLock || key == Keys.Left || key == Keys.Right || key == Keys.Up || key == Keys.Down)
+                    {
+                        continue;
                     }
-                    continue;
+                    if (key == Keys.Back)
+                    {
+                        if (stringBuilder.Length != 0) { 
+                            stringBuilder.Remove(cursorPosition, 1);
+                            cursorPosition++;
+                        }
+                        continue;
+                    }
+                    if (key == Keys.Delete)
+                    {
+                        if (stringBuilder.Length != 0 && cursorPosition != stringBuilder.Length - 1)
+                        {
+                            stringBuilder.Remove(cursorPosition + 1, 1);
+                            cursorPosition++;
+                        }
+                        continue;
+                    }
+
+                    bool shiftPressed = keyboard.IsKeyDown(Keys.LeftShift);
+                    bool capsLock = keyboard.IsKeyDown(Keys.CapsLock);
+                    bool numLock = keyboard.IsKeyDown(Keys.NumLock);
+
+                    var inputText = TranslateChar(key, shiftPressed, capsLock, numLock);
+
+                    stringBuilder.Insert(cursorPosition + 1, inputText);
+                    cursorPosition++;
+
                 }
-
-                bool shiftPressed = keyboard.IsKeyDown(Keys.LeftShift);
-                bool capsLock = keyboard.IsKeyDown(Keys.CapsLock);
-                bool numLock = keyboard.IsKeyDown(Keys.NumLock);
-
-                var inputText = TranslateChar(key, shiftPressed, capsLock, numLock);
-
-                stringBuilder.Insert(cursorPosition + 1, inputText);
-                cursorPosition++;
-
             }
-
             return stringBuilder.ToString();
         }
 

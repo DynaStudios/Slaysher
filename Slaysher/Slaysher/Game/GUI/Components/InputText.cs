@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
+using System.Globalization;
+using System.Linq;
 using System.Windows.Forms;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Audio;
@@ -123,10 +124,11 @@ namespace Slaysher.Game.GUI.Components
                 var selectionStart = _visibleSelectionStart;
 
                 Rectangle selectionRec =
-                    new Rectangle((int)(Position.X + PaddingLeft + CalculateXPositionFromCursor(selectionStart)),
-                                  (int)Position.Y + 13, CalculateXPositionFromCursor(Math.Abs(selectionStart - selectionEnd)),
+                    new Rectangle((int) (Position.X + PaddingLeft + CalculateXPositionFromCursor(selectionStart)),
+                                  (int) Position.Y + 13,
+                                  CalculateXPositionFromCursor(Math.Abs(selectionStart - selectionEnd)),
                                   (int) Size.Y - 20);
-                spriteBatch.Draw(borderTexture, selectionRec, Color.Black * 0.3f);
+                spriteBatch.Draw(borderTexture, selectionRec, Color.Black*0.3f);
             }
 
             //Draw Border
@@ -140,7 +142,6 @@ namespace Slaysher.Game.GUI.Components
             spriteBatch.Draw(borderTexture,
                              new Rectangle(rec.Left, rec.Bottom - BorderThickness, rec.Width, BorderThickness),
                              borderColor);
-
         }
 
 
@@ -172,7 +173,7 @@ namespace Slaysher.Game.GUI.Components
                 }
                 else if (input.MouseState.LeftButton == ButtonState.Released && _selectionInProgress)
                 {
-                    _selectionEnd = CalculateCursorPositionFromX((int)(Position.X + PaddingLeft), input.MouseState.X);
+                    _selectionEnd = CalculateCursorPositionFromX((int) (Position.X + PaddingLeft), input.MouseState.X);
                     _selectionInProgress = false;
                 }
             }
@@ -190,16 +191,17 @@ namespace Slaysher.Game.GUI.Components
 
             if (_hasFocus)
             {
-                if(input.KeyboardState.IsKeyDown(Keys.LeftControl) && input.KeyboardState.IsKeyDown(Keys.C))
+                if (input.KeyboardState.IsKeyDown(Keys.LeftControl) && input.KeyboardState.IsKeyDown(Keys.C))
                 {
                     Clipboard.SetText(SelectedText());
                 }
                 if (input.KeyboardState.IsKeyDown(Keys.LeftControl) && input.KeyboardState.IsKeyDown(Keys.V))
                 {
                     var insert = Clipboard.GetText();
-                    if(insert != string.Empty && !_pastedSecurity)
+                    if (insert != string.Empty && !_pastedSecurity)
                     {
-                        if(insert.Length + Text.Length <= MaxChars) {
+                        if (insert.Length + Text.Length <= MaxChars)
+                        {
                             Text = Text.Insert(_cursorPosition, insert);
                         }
                         else
@@ -261,7 +263,7 @@ namespace Slaysher.Game.GUI.Components
             {
                 if (pressedKeys.Contains(Keys.Delete))
                 {
-                    if(_selectionStart != 0 || _selectionEnd != 0)
+                    if (_selectionStart != 0 || _selectionEnd != 0)
                     {
                         SelectedRemove();
                         _cursorPosition = _selectionStart;
@@ -301,7 +303,6 @@ namespace Slaysher.Game.GUI.Components
 
         private void CheckedSelectionWrite()
         {
-
             if (_selectionStart > _selectionEnd)
             {
                 _visibleSelectionStart = _selectionEnd;
@@ -312,7 +313,6 @@ namespace Slaysher.Game.GUI.Components
                 _visibleSelectionStart = _selectionStart;
                 _visibleSelectionEnd = _selectionEnd;
             }
-
         }
 
         private string SelectedText()
@@ -332,7 +332,7 @@ namespace Slaysher.Game.GUI.Components
         {
             foreach (char c in Text)
             {
-                string capital = c.ToString();
+                string capital = c.ToString(CultureInfo.InvariantCulture);
                 if (!_charWidth.ContainsKey(capital))
                 {
                     _charWidth.Add(capital, (int) _font.MeasureString(capital).X);
@@ -349,13 +349,10 @@ namespace Slaysher.Game.GUI.Components
 
             int xLength = 0;
 
-            if(cursorPosition != -1) {
+            if (cursorPosition != -1)
+            {
                 string substring = Text.Substring(0, cursorPosition);
-                foreach (char c in substring)
-                {
-                    string myChar = c.ToString();
-                    xLength += _charWidth[myChar];
-                }
+                xLength += substring.Select(c => c.ToString(CultureInfo.InvariantCulture)).Select(myChar => _charWidth[myChar]).Sum();
             }
 
             return xLength;
@@ -364,7 +361,7 @@ namespace Slaysher.Game.GUI.Components
         private int CalculateCursorPositionFromX(int zeroXPosition, int xPosition)
         {
             int deltaX = zeroXPosition - xPosition;
-            if(deltaX > 0)
+            if (deltaX > 0)
             {
                 return 0;
             }

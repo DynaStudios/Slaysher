@@ -39,6 +39,7 @@ namespace Slaysher.Game.GUI.Components
         private bool _hasFocus;
         private SpriteFont _font;
         private int _cursorPosition;
+        private Dictionary<string, int> _charWidth; 
 
         public InputText()
         {
@@ -52,7 +53,8 @@ namespace Slaysher.Game.GUI.Components
             PaddingLeft = 10;
             MaxChars = 15;
 
-            Text = "Test";
+            Text = "";
+            _charWidth = new Dictionary<string, int>();
             _cursorPosition = Text.Length;
         }
 
@@ -75,38 +77,33 @@ namespace Slaysher.Game.GUI.Components
         {
             SpriteBatch spriteBatch = gameScreen.ScreenManager.SpriteBatch;
             SpriteFont font = gameScreen.ScreenManager.Font;
+            _font = _font ?? font;
 
             Rectangle rec = new Rectangle((int) Position.X, (int) Position.Y, (int) Size.X, (int) Size.Y);
 
             var bgTexture = BackgroundTexture ?? gameScreen.ScreenManager.BlankTexture;
+            var borderColor = (!_hasFocus) ? BorderColor : FocusColor;
+            var borderTexture = BorderTexture ?? gameScreen.ScreenManager.BlankTexture;
 
             //Draw Rectangle
             spriteBatch.Draw(bgTexture, rec, FillColor);
 
             if (Text != string.Empty) { 
                 //Calculate Textposition
-                _font = _font ?? font;
                 Vector2 textSize = _font.MeasureString(Text);
                 Vector2 textPosition = new Vector2(rec.Left + PaddingLeft, rec.Center.Y - textSize.Y / 2 + BorderThickness / 2);
 
-                var textWithCursor = Text;
-                if(_hasFocus) {
-                    if(_cursorPosition == Text.Length)
-                    {
-                        textWithCursor += '|';
-                    }
-                    else
-                    {
-                        textWithCursor = textWithCursor.Insert(_cursorPosition, "|");
-                    }
+                spriteBatch.DrawString(_font, Text, textPosition, TextColor);
+                if (_hasFocus && gameTime.TotalGameTime.Seconds % 2 == 0)
+                {
+                    //Draw Cursor
+                    var cursorX = Position.X + PaddingLeft + CalculateXPositionFromCursor(_cursorPosition);
+                    Rectangle cursorRec = new Rectangle((int)cursorX, (int)Position.Y + 13, 2, (int)Size.Y - 20);
+                    spriteBatch.Draw(borderTexture, cursorRec, Color.Red);
                 }
-
-                spriteBatch.DrawString(_font, textWithCursor, textPosition, TextColor);
             }
 
             //Draw Border
-            var borderColor = (!_hasFocus) ? BorderColor : FocusColor;
-            var borderTexture = BorderTexture ?? gameScreen.ScreenManager.BlankTexture;
             spriteBatch.Draw(borderTexture, new Rectangle(rec.Left, rec.Top, rec.Width, BorderThickness),
                              borderColor);
             spriteBatch.Draw(borderTexture, new Rectangle(rec.Left, rec.Top, BorderThickness, rec.Height),
@@ -128,8 +125,9 @@ namespace Slaysher.Game.GUI.Components
                 {
                     _hasFocus = true;
                 }
-                else if(input.LeftMouseClicked) {
-                    _cursorPosition = CalculateCursorPosition(input.MouseState, Text, _font.MeasureString(Text).X);
+                else if(input.LeftMouseClicked)
+                {
+                    _cursorPosition = CalculateCursorPositionFromX((int) (Position.X + PaddingLeft), input.MouseState.X);
                 }
             }
             else
@@ -199,16 +197,59 @@ namespace Slaysher.Game.GUI.Components
                     _cursorPosition = 0;
                 }
             }
+            CalculateCharWidth();
         }
 
-        private int CalculateCursorPosition(MouseState mouseState, string text, float measuredWidth)
+        private void CalculateCharWidth()
         {
-            var xPos = 0;
-            if(text != string.Empty) {
-                xPos = (int)Math.Floor(Math.Abs(Position.X - mouseState.X - PaddingLeft) / (measuredWidth / text.Length));
+            foreach (char c in Text)
+            {
+                string capital = c.ToString();
+                if(!_charWidth.ContainsKey(capital)) {
+                    _charWidth.Add(capital, (int) _font.MeasureString(capital).X);
+                }
+            }
+        }
+
+        private int CalculateXPositionFromCursor(int cursorPosition)
+        {
+            if(cursorPosition > Text.Length)
+            {
+                cursorPosition = Text.Length - 1;
             }
 
-            return xPos - 1;
+            int xLength = 0;
+            string substring = Text.Substring(0, cursorPosition);
+            foreach (char c in substring)
+            {
+                string myChar = c.ToString();
+                xLength += _charWidth[myChar];
+            }
+
+            return xLength;
+        }
+
+        private int CalculateCursorPositionFromX(int zeroXPosition, int xPosition)
+        {
+            int deltaX = Math.Abs(zeroXPosition - xPosition);
+            int dummyCursorPosition = 1;
+            bool searchingCursorPosition = true;
+            while (searchingCursorPosition)
+            {
+                var calculation = CalculateXPositionFromCursor(dummyCursorPosition);
+                
+                if( calculation >= deltaX)
+                {
+                    return dummyCursorPosition;
+                }
+                else if(dummyCursorPosition > Text.Length)
+                {
+                    searchingCursorPosition = false;
+                }
+
+                dummyCursorPosition++;
+            }
+            return Text.Length;
         }
     }
 }

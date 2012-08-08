@@ -21,14 +21,14 @@ namespace Slaysher.Game.GUI.Models
 
         public void Draw(GameScreen gameScreen, Vector2 position, Vector2 dropdownSize, bool odd = true)
         {
-            Vector2 labelSize = gameScreen.ScreenManager.Font.MeasureString(Label);
+            Vector2 labelSize = gameScreen.ScreenManager.SmallFont.MeasureString(Label);
             labelSize.X = dropdownSize.X;
 
             Rectangle rec = new Rectangle((int) position.X, (int) position.Y, (int) labelSize.X, (int) labelSize.Y);
             //Draw Rectangle
             gameScreen.ScreenManager.SpriteBatch.Draw(gameScreen.ScreenManager.BlankTexture, rec, Color.Black);
             //Draw Font
-            gameScreen.ScreenManager.SpriteBatch.DrawString(gameScreen.ScreenManager.Font, Label, position, Color.White);
+            gameScreen.ScreenManager.SpriteBatch.DrawString(gameScreen.ScreenManager.SmallFont, Label, position, Color.White);
         }
     }
 }

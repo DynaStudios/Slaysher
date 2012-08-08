@@ -9,6 +9,7 @@ namespace Slaysher.Game.GUI.Components
     public class Label : IGuiItem
     {
         public Vector2 Position { get; set; }
+        public Vector2 Size { get; set; }
         public int ZIndex { get; set; }
         public SoundEffect HoverSound { get; set; }
         public SoundEffect ClickSound { get; set; }
@@ -16,25 +17,23 @@ namespace Slaysher.Game.GUI.Components
         public string Text { get; set; }
         public Color Color { get; set; }
 
-        private Vector2 _size;
-
         public Label(string text)
         {
             Text = text;
 
             //Defaul Values
-            _size = new Vector2(150f,0);
+            Size = new Vector2(150f,0);
             Color = Color.White;
         }
 
         public float GetWidth(GameScreen gameScreen)
         {
-            return _size.X;
+            return Size.X;
         }
 
         public float GetHeight(GameScreen gameScreen)
         {
-            return _size.Y;
+            return Size.Y;
         }
 
         public void Update(GameScreen gameScreen, GameTime gameTime)
@@ -47,9 +46,9 @@ namespace Slaysher.Game.GUI.Components
             SpriteBatch spriteBatch = gameScreen.ScreenManager.SpriteBatch;
             SpriteFont font = gameScreen.ScreenManager.Font;
 
-            if (_size.X == 150f)
+            if (Size.X == 150f)
             {
-                _size = font.MeasureString(Text);
+                Size = font.MeasureString(Text);
             }
 
             spriteBatch.DrawString(font, Text, Position, Color);

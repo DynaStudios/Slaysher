@@ -114,6 +114,7 @@
     <Compile Include="Game\GUI\Components\CheckBox.cs" />
     <Compile Include="Game\GUI\Components\DropDown.cs" />
     <Compile Include="Game\GUI\Components\IGuiItem.cs" />
+    <Compile Include="Game\GUI\Components\InputText.cs" />
     <Compile Include="Game\GUI\Components\Label.cs" />
     <Compile Include="Game\GUI\GUIManager.cs" />
     <Compile Include="Game\GUI\InputState.cs" />

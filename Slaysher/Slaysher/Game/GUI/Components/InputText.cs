@@ -35,6 +35,7 @@ namespace Slaysher.Game.GUI.Components
         //Internal Vars
         protected float PaddingLeft { get; set; }
         private bool _hasFocus;
+        private int _cursorPosition = -1;
 
         public InputText()
         {
@@ -46,6 +47,7 @@ namespace Slaysher.Game.GUI.Components
             BorderColor = Color.White;
             FocusColor = Color.Yellow;
             PaddingLeft = 10;
+            MaxChars = 15;
 
             Text = "Test";
         }
@@ -77,12 +79,24 @@ namespace Slaysher.Game.GUI.Components
             //Draw Rectangle
             spriteBatch.Draw(bgTexture, rec, FillColor);
 
-            if (Text != "") { 
+            if (Text != string.Empty) { 
                 //Calculate Textposition
                 Vector2 textSize = font.MeasureString(Text);
                 Vector2 textPosition = new Vector2(rec.Left + PaddingLeft, rec.Center.Y - textSize.Y / 2 + BorderThickness / 2);
 
-                spriteBatch.DrawString(font, Text, textPosition, TextColor);
+                var textWithCursor = Text;
+                if(_hasFocus && gameTime.TotalGameTime.Seconds % 2 == 0) {
+                    if(_cursorPosition == -1)
+                    {
+                        textWithCursor += '|';
+                    }
+                    else
+                    {
+                        textWithCursor = textWithCursor.Insert(_cursorPosition, "|");
+                    }
+                }
+
+                spriteBatch.DrawString(font, textWithCursor, textPosition, TextColor);
             }
 
             //Draw Border
@@ -121,7 +135,24 @@ namespace Slaysher.Game.GUI.Components
             if (_hasFocus)
             {
                 //Handle Keystrokes
-                Text = Extensions.HandleKeyboardInput(Text, input.PressedKeys);
+                if(MaxChars == 0 || Text.Length + input.PressedKeys.Count <= MaxChars) {
+                    Text = Extensions.HandleKeyboardInput(Text, input.PressedKeys, _cursorPosition);
+                }
+                else
+                {
+                    var lenght = Text.Length;
+                    if(lenght == MaxChars) {
+                        if(input.PressedKeys.Contains(Keys.Back))
+                        {
+                            Text = Extensions.HandleKeyboardInput(Text, input.PressedKeys, _cursorPosition);
+                            return;
+                        }    
+                    }
+                    else 
+                    {
+                        Text = Extensions.HandleKeyboardInput(Text, input.PressedKeys.GetRange(0, 1), _cursorPosition);
+                    }
+                }
             }
         }
     }

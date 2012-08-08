@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Windows.Forms;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Graphics;
-using Microsoft.Xna.Framework.Input;
 using Slaysher.Game.GUI.Screens;
+using ButtonState = Microsoft.Xna.Framework.Input.ButtonState;
+using Keys = Microsoft.Xna.Framework.Input.Keys;
 
 namespace Slaysher.Game.GUI.Components
 {
@@ -39,7 +41,16 @@ namespace Slaysher.Game.GUI.Components
         private bool _hasFocus;
         private SpriteFont _font;
         private int _cursorPosition;
-        private readonly Dictionary<string, int> _charWidth; 
+        private readonly Dictionary<string, int> _charWidth;
+
+        //Vars for Text Selection
+        private bool _selectionInProgress;
+        private int _selectionStart;
+        private int _selectionEnd;
+
+        private int _visibleSelectionStart;
+        private int _visibleSelectionEnd;
+        private bool _pastedSecurity;
 
         public InputText()
         {
@@ -70,7 +81,6 @@ namespace Slaysher.Game.GUI.Components
 
         public void Update(GameScreen gameScreen, GameTime gameTime)
         {
-            
         }
 
         public void Draw(GameScreen gameScreen, GameTime gameTime)
@@ -88,19 +98,35 @@ namespace Slaysher.Game.GUI.Components
             //Draw Rectangle
             spriteBatch.Draw(bgTexture, rec, FillColor);
 
-            if (Text != string.Empty) { 
+            if (Text != string.Empty)
+            {
                 //Calculate Textposition
                 Vector2 textSize = _font.MeasureString(Text);
-                Vector2 textPosition = new Vector2(rec.Left + PaddingLeft, rec.Center.Y - textSize.Y / 2 + BorderThickness / 2);
+                Vector2 textPosition = new Vector2(rec.Left + PaddingLeft,
+                                                   rec.Center.Y - textSize.Y/2 + BorderThickness/2);
 
                 spriteBatch.DrawString(_font, Text, textPosition, TextColor);
-                if (_hasFocus && gameTime.TotalGameTime.Seconds % 2 == 0)
+                if (_hasFocus && gameTime.TotalGameTime.Seconds%2 == 0)
                 {
                     //Draw Cursor
                     var cursorX = Position.X + PaddingLeft + CalculateXPositionFromCursor(_cursorPosition);
-                    Rectangle cursorRec = new Rectangle((int)cursorX, (int)Position.Y + 13, 2, (int)Size.Y - 20);
+                    Rectangle cursorRec = new Rectangle((int) cursorX, (int) Position.Y + 13, 2, (int) Size.Y - 20);
                     spriteBatch.Draw(borderTexture, cursorRec, Color.Red);
                 }
+            }
+
+            //Draw Selection Rectangle
+            if (_selectionInProgress || (_selectionStart != 0 || _selectionEnd != 0))
+            {
+                CheckedSelectionWrite();
+                var selectionEnd = _visibleSelectionEnd;
+                var selectionStart = _visibleSelectionStart;
+
+                Rectangle selectionRec =
+                    new Rectangle((int)(Position.X + PaddingLeft + CalculateXPositionFromCursor(selectionStart)),
+                                  (int)Position.Y + 13, CalculateXPositionFromCursor(Math.Abs(selectionStart - selectionEnd)),
+                                  (int) Size.Y - 20);
+                spriteBatch.Draw(borderTexture, selectionRec, Color.Black * 0.3f);
             }
 
             //Draw Border
@@ -114,6 +140,7 @@ namespace Slaysher.Game.GUI.Components
             spriteBatch.Draw(borderTexture,
                              new Rectangle(rec.Left, rec.Bottom - BorderThickness, rec.Width, BorderThickness),
                              borderColor);
+
         }
 
 
@@ -129,9 +156,24 @@ namespace Slaysher.Game.GUI.Components
                         FocusChanged(this, EventArgs.Empty);
                     }
                 }
-                else if(input.LeftMouseClicked)
+                else if (input.MouseState.LeftButton == ButtonState.Pressed)
                 {
                     _cursorPosition = CalculateCursorPositionFromX((int) (Position.X + PaddingLeft), input.MouseState.X);
+                    if (!_selectionInProgress)
+                    {
+                        _selectionInProgress = true;
+                        _selectionEnd = 0;
+                        _selectionStart = _cursorPosition;
+                    }
+                    else
+                    {
+                        _selectionEnd = _cursorPosition;
+                    }
+                }
+                else if (input.MouseState.LeftButton == ButtonState.Released && _selectionInProgress)
+                {
+                    _selectionEnd = CalculateCursorPositionFromX((int)(Position.X + PaddingLeft), input.MouseState.X);
+                    _selectionInProgress = false;
                 }
             }
             else
@@ -139,7 +181,7 @@ namespace Slaysher.Game.GUI.Components
                 if (input.LeftMouseClicked && _hasFocus)
                 {
                     _hasFocus = false;
-                    if(FocusChanged != null)
+                    if (FocusChanged != null)
                     {
                         FocusChanged(this, EventArgs.Empty);
                     }
@@ -148,21 +190,48 @@ namespace Slaysher.Game.GUI.Components
 
             if (_hasFocus)
             {
+                if(input.KeyboardState.IsKeyDown(Keys.LeftControl) && input.KeyboardState.IsKeyDown(Keys.C))
+                {
+                    Clipboard.SetText(SelectedText());
+                }
+                if (input.KeyboardState.IsKeyDown(Keys.LeftControl) && input.KeyboardState.IsKeyDown(Keys.V))
+                {
+                    var insert = Clipboard.GetText();
+                    if(insert != string.Empty && !_pastedSecurity)
+                    {
+                        if(insert.Length + Text.Length <= MaxChars) {
+                            Text = Text.Insert(_cursorPosition, insert);
+                        }
+                        else
+                        {
+                            //Cut Insertion or forbid
+                            var available = MaxChars - Text.Length;
+                            Text = Text.Insert(_cursorPosition, insert.Substring(0, available));
+                        }
+                    }
+                    _pastedSecurity = true;
+                }
+                else
+                {
+                    _pastedSecurity = false;
+                }
+
                 //Handle Keystrokes
-                if(MaxChars == 0 || Text.Length + input.PressedKeys.Count <= MaxChars)
+                if (MaxChars == 0 || Text.Length + input.PressedKeys.Count <= MaxChars)
                 {
                     HandleKeyboardInput(input.PressedKeys);
                 }
                 else
                 {
                     var lenght = Text.Length;
-                    if(lenght == MaxChars) {
-                        if(input.PressedKeys.Contains(Keys.Back))
+                    if (lenght == MaxChars)
+                    {
+                        if (input.PressedKeys.Contains(Keys.Back))
                         {
                             HandleKeyboardInput(input.PressedKeys);
-                        }    
+                        }
                     }
-                    else 
+                    else
                     {
                         HandleKeyboardInput(input.PressedKeys.GetRange(0, 1));
                     }
@@ -176,45 +245,45 @@ namespace Slaysher.Game.GUI.Components
             Text = Extensions.HandleKeyboardInput(Text, pressedKeys, _cursorPosition);
             var cursorDelta = Text.Length - cursorTemp;
 
-            if(cursorDelta != 0)
+            if (cursorDelta != 0)
             {
-                if(ValueChange != null)
+                if (ValueChange != null)
                 {
                     ValueChange(this, EventArgs.Empty);
                 }
             }
 
-            if (_cursorPosition == -1) 
+            if (_cursorPosition == -1)
             {
                 _cursorPosition = Text.Length;
             }
             else
             {
-                if(pressedKeys.Contains(Keys.Delete))
+                if (pressedKeys.Contains(Keys.Delete))
                 {
                     cursorDelta++;
                 }
-                else if(pressedKeys.Contains(Keys.Left))
+                else if (pressedKeys.Contains(Keys.Left))
                 {
                     cursorDelta--;
                 }
-                else if(pressedKeys.Contains(Keys.Right))
+                else if (pressedKeys.Contains(Keys.Right))
                 {
                     cursorDelta++;
                 }
-                else if(pressedKeys.Contains(Keys.Enter))
+                else if (pressedKeys.Contains(Keys.Enter))
                 {
-                    if(EnterKey != null)
+                    if (EnterKey != null)
                     {
                         EnterKey(this, EventArgs.Empty);
                     }
                 }
                 _cursorPosition += cursorDelta;
-                if(_cursorPosition > Text.Length)
+                if (_cursorPosition > Text.Length)
                 {
                     _cursorPosition = Text.Length;
                 }
-                else if(_cursorPosition == -1)
+                else if (_cursorPosition == -1)
                 {
                     _cursorPosition = 0;
                 }
@@ -222,12 +291,35 @@ namespace Slaysher.Game.GUI.Components
             CalculateCharWidth();
         }
 
+        private void CheckedSelectionWrite()
+        {
+
+            if (_selectionStart > _selectionEnd)
+            {
+                _visibleSelectionStart = _selectionEnd;
+                _visibleSelectionEnd = _selectionStart;
+            }
+            else
+            {
+                _visibleSelectionStart = _selectionStart;
+                _visibleSelectionEnd = _selectionEnd;
+            }
+
+        }
+
+        private string SelectedText()
+        {
+            CheckedSelectionWrite();
+            return Text.Substring(_visibleSelectionStart, _visibleSelectionEnd - 1);
+        }
+
         private void CalculateCharWidth()
         {
             foreach (char c in Text)
             {
                 string capital = c.ToString();
-                if(!_charWidth.ContainsKey(capital)) {
+                if (!_charWidth.ContainsKey(capital))
+                {
                     _charWidth.Add(capital, (int) _font.MeasureString(capital).X);
                 }
             }
@@ -235,17 +327,20 @@ namespace Slaysher.Game.GUI.Components
 
         private int CalculateXPositionFromCursor(int cursorPosition)
         {
-            if(cursorPosition > Text.Length)
+            if (cursorPosition > Text.Length)
             {
                 cursorPosition = Text.Length - 1;
             }
 
             int xLength = 0;
-            string substring = Text.Substring(0, cursorPosition);
-            foreach (char c in substring)
-            {
-                string myChar = c.ToString();
-                xLength += _charWidth[myChar];
+
+            if(cursorPosition != -1) {
+                string substring = Text.Substring(0, cursorPosition);
+                foreach (char c in substring)
+                {
+                    string myChar = c.ToString();
+                    xLength += _charWidth[myChar];
+                }
             }
 
             return xLength;
@@ -253,18 +348,23 @@ namespace Slaysher.Game.GUI.Components
 
         private int CalculateCursorPositionFromX(int zeroXPosition, int xPosition)
         {
-            int deltaX = Math.Abs(zeroXPosition - xPosition);
-            int dummyCursorPosition = 1;
+            int deltaX = zeroXPosition - xPosition;
+            if(deltaX > 0)
+            {
+                return 0;
+            }
+            deltaX = Math.Abs(deltaX);
+            int dummyCursorPosition = 0;
             bool searchingCursorPosition = true;
             while (searchingCursorPosition)
             {
                 var calculation = CalculateXPositionFromCursor(dummyCursorPosition);
-                
-                if( calculation >= deltaX)
+
+                if (calculation >= deltaX)
                 {
                     return dummyCursorPosition;
                 }
-                if(dummyCursorPosition > Text.Length)
+                if (dummyCursorPosition > Text.Length)
                 {
                     searchingCursorPosition = false;
                 }

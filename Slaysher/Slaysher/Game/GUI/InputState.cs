@@ -30,7 +30,7 @@ namespace Slaysher.Game.GUI
 
                 foreach (Keys key in keys)
                 {
-                    if (key == Keys.LeftShift || key == Keys.Enter || key == Keys.CapsLock || key == Keys.Left || key == Keys.Right || key == Keys.Up || key == Keys.Down)
+                    if (key == Keys.LeftShift || key == Keys.Enter || key == Keys.CapsLock || key == Keys.Left || key == Keys.Right || key == Keys.Up || key == Keys.Down || key == Keys.LeftControl)
                     {
                         continue;
                     }
@@ -52,6 +52,10 @@ namespace Slaysher.Game.GUI
                         continue;
                     }
 
+                    if (keyboard.IsKeyDown(Keys.LeftControl))
+                    {
+                        continue;
+                    }
                     bool shiftPressed = keyboard.IsKeyDown(Keys.LeftShift);
                     bool capsLock = keyboard.IsKeyDown(Keys.CapsLock);
                     bool numLock = keyboard.IsKeyDown(Keys.NumLock);

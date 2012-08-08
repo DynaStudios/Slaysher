@@ -1,3 +1,5 @@
+using System;
+
 namespace Slaysher
 {
 #if WINDOWS || XBOX
@@ -7,6 +9,7 @@ namespace Slaysher
         /// <summary>
         /// The main entry point for the application.
         /// </summary>
+        [STAThread]
         private static void Main(string[] args)
         {
             using (Engine game = new Engine())

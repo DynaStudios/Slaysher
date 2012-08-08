@@ -193,7 +193,9 @@ namespace Slaysher.Game.GUI.Components
             {
                 if (input.KeyboardState.IsKeyDown(Keys.LeftControl) && input.KeyboardState.IsKeyDown(Keys.C))
                 {
-                    Clipboard.SetText(SelectedText());
+                    string text = SelectedText();
+                    if(!string.IsNullOrEmpty(text))
+                        Clipboard.SetText(text);
                 }
                 if (input.KeyboardState.IsKeyDown(Keys.LeftControl) && input.KeyboardState.IsKeyDown(Keys.V))
                 {
@@ -318,7 +320,9 @@ namespace Slaysher.Game.GUI.Components
         private string SelectedText()
         {
             CheckedSelectionWrite();
-            return Text.Substring(_visibleSelectionStart, _visibleSelectionEnd - 1);
+            var end = Math.Abs(_visibleSelectionEnd - _visibleSelectionStart);
+            var returnText = Text.Substring(_visibleSelectionStart, end);
+            return returnText;
         }
 
         private void SelectedRemove()

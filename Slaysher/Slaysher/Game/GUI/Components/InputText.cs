@@ -22,6 +22,7 @@ namespace Slaysher.Game.GUI.Components
 
         public string Text { get; set; }
         public int MaxChars { get; set; }
+        public bool IsPasswordInput { get; set; }
 
         public Color TextColor { get; set; }
         public Color FillColor { get; set; }
@@ -64,6 +65,7 @@ namespace Slaysher.Game.GUI.Components
             FocusColor = Color.Yellow;
             PaddingLeft = 10;
             MaxChars = 15;
+            IsPasswordInput = false;
 
             Text = "";
             _charWidth = new Dictionary<string, int>();
@@ -106,7 +108,17 @@ namespace Slaysher.Game.GUI.Components
                 Vector2 textPosition = new Vector2(rec.Left + PaddingLeft,
                                                    rec.Center.Y - textSize.Y/2 + BorderThickness/2);
 
-                spriteBatch.DrawString(_font, Text, textPosition, TextColor);
+                string modifiedText = Text;
+                if (IsPasswordInput)
+                {
+                    modifiedText = "";
+                    for (int i = 0; i < Text.Length; i++)
+                    {
+                        modifiedText += "*";
+                    }
+                }
+
+                spriteBatch.DrawString(_font, modifiedText, textPosition, TextColor);
                 if (_hasFocus && gameTime.TotalGameTime.Seconds%2 == 0)
                 {
                     //Draw Cursor
@@ -191,7 +203,7 @@ namespace Slaysher.Game.GUI.Components
 
             if (_hasFocus)
             {
-                if (input.KeyboardState.IsKeyDown(Keys.LeftControl) && input.KeyboardState.IsKeyDown(Keys.C))
+                if (input.KeyboardState.IsKeyDown(Keys.LeftControl) && input.KeyboardState.IsKeyDown(Keys.C) && !IsPasswordInput)
                 {
                     string text = SelectedText();
                     if(!string.IsNullOrEmpty(text))
@@ -334,12 +346,20 @@ namespace Slaysher.Game.GUI.Components
 
         private void CalculateCharWidth()
         {
-            foreach (char c in Text)
+            if (IsPasswordInput)
             {
-                string capital = c.ToString(CultureInfo.InvariantCulture);
-                if (!_charWidth.ContainsKey(capital))
+                if(!_charWidth.ContainsKey("*"))
+                    _charWidth.Add("*", (int)_font.MeasureString("*").X);
+            }
+            else
+            {
+                foreach (char c in Text)
                 {
-                    _charWidth.Add(capital, (int) _font.MeasureString(capital).X);
+                    string capital = c.ToString(CultureInfo.InvariantCulture);
+                    if (!_charWidth.ContainsKey(capital))
+                    {
+                        _charWidth.Add(capital, (int) _font.MeasureString(capital).X);
+                    }
                 }
             }
         }
@@ -356,7 +376,15 @@ namespace Slaysher.Game.GUI.Components
             if (cursorPosition != -1)
             {
                 string substring = Text.Substring(0, cursorPosition);
-                xLength += substring.Select(c => c.ToString(CultureInfo.InvariantCulture)).Select(myChar => _charWidth[myChar]).Sum();
+                if (IsPasswordInput)
+                {
+                    if(Text.Length != 0)
+                        xLength = _charWidth["*"]*cursorPosition;
+                }
+                else
+                {
+                    xLength += substring.Select(c => c.ToString(CultureInfo.InvariantCulture)).Select(myChar => _charWidth[myChar]).Sum();
+                }
             }
 
             return xLength;

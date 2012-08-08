@@ -22,6 +22,9 @@ namespace Slaysher.Game.GUI.Screens
         {
             PanelEntries = new List<IGuiItem>();
 
+            TransitionOnTime = TimeSpan.FromSeconds(0.5);
+            TransitionOffTime = TimeSpan.FromSeconds(0.5);
+
             //A Panel is always on top of other screens
             IsPopup = true;
         }
@@ -54,11 +57,13 @@ namespace Slaysher.Game.GUI.Screens
             SpriteBatch spriteBatch = ScreenManager.SpriteBatch;
             spriteBatch.Begin();
 
-            //Draw Rectangle
-            Rectangle rec = new Rectangle((int) PresentationOffset.X, (int) PresentationOffset.Y,
-                                          (int) size.X + ItemPadding*2, (int) size.Y + ItemPadding*3);
+            //Draw Rectangle only of Tranition finished
+            if (ScreenState == ScreenState.Active) { 
+                Rectangle rec = new Rectangle((int) PresentationOffset.X, (int) PresentationOffset.Y,
+                                              (int) size.X + ItemPadding*2, (int) size.Y + ItemPadding*3);
 
-            spriteBatch.Draw(_windowBackground, rec, Color.Black*0.3f);
+                spriteBatch.Draw(_windowBackground, rec, Color.Black*0.3f);
+            }
 
             var zSortedList = (from a in PanelEntries orderby a.ZIndex ascending select a).ToArray();
 

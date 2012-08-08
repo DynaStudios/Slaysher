@@ -138,9 +138,7 @@ namespace Slaysher.Game.GUI.Components
 
         public virtual void HandleInput(InputState input)
         {
-            var mousePosition = new Vector2(input.MouseState.X, input.MouseState.Y);
-
-            if (input.MouseState.IsMuseIn(Position, Size))
+            if (input.MouseState.IsMouseIn(Position, Size))
             {
                 _isHovered = true;
 

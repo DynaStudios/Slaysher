@@ -18,6 +18,7 @@ namespace Slaysher.Game.GUI
 
         public SpriteBatch SpriteBatch { get; protected set; }
         public SpriteFont Font { get; protected set; }
+        public SpriteFont SmallFont { get; protected set; }
         public Texture2D BlankTexture { get; protected set; }
 
         public bool TraceEnabled { get; set; }
@@ -46,6 +47,7 @@ namespace Slaysher.Game.GUI
             SpriteBatch = new SpriteBatch(GraphicsDevice);
 
             Font = content.Load<SpriteFont>("Fonts/menu");
+            SmallFont = content.Load<SpriteFont>("Fonts/menu_small");
             BlankTexture = content.Load<Texture2D>("Images/Game/dyna_splash");
 
             //Let all screens load their content

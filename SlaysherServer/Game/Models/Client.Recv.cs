@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Net.Sockets;
 using System.Threading;
 
@@ -105,11 +106,11 @@ namespace SlaysherServer.Game.Models
             }
         }
 
-        public static void HandleHandshake(Client client, HandshakePacket packet)
+        public void HandleHandshake(HandshakePacket packet)
         {
-            if (packet.Username != null && !client.IsLoggingIn)
+            if (packet.Username != null && !IsLoggingIn)
             {
-                client.IsLoggingIn = true;
+                IsLoggingIn = true;
                 // check for baned users
                 // if (banlist.Contains(client)) {
                 //    client.SendPacket(new KickPacket() { message = "You'r BANNED!!!! Get lost!" };
@@ -119,31 +120,38 @@ namespace SlaysherServer.Game.Models
                 Console.WriteLine("Received Login for User " + packet.Username);
 
                 Console.WriteLine("Send Handshake back!");
-                client.SendPacket(new HandshakePacket(packet.Username));
+                SendPacket(new HandshakePacket(packet.Username));
 
                 Console.WriteLine("Send Player Information");
-                client.LoadPlayer();
-                client.SendPlayerInfo();
+                LoadPlayer();
+                SendPlayerInfo();
 
-                client.SendPattern();
+                SendPattern();
 
-                client.LastSendKeepAliveStamp = DateTime.Now.Ticks;
+                LastSendKeepAliveStamp = DateTime.Now.Ticks;
 
                 Console.WriteLine("Finished Init. Send KeepAlive");
-                KeepAlivePacket keepAlive = new KeepAlivePacket {TimeStamp = client.LastSendKeepAliveStamp};
-                client.SendPacket(keepAlive);
+                KeepAlivePacket keepAlive = new KeepAlivePacket {TimeStamp = LastSendKeepAliveStamp};
+                SendPacket(keepAlive);
             }
         }
 
-        private void SendPlayerInfo()
+        public void SendPlayerInfo()
         {
-            SendPacket(new PlayerInfoPacket(Player));
-            SendPacket(new PlayerPositionPacket(Player));
+            SendPlayerInfo(Player);
+        }
+
+        private void SendPlayerInfo(Player player)
+        {
+            SendPacket(new PlayerInfoPacket(player));
+            //SendPacket(new PlayerPositionPacket(Player));
         }
 
         private void LoadPlayer()
         {
             Player = Load();
+            IEnumerable<Client> clients = Server.GetNearbyPlayers(Player.Position);
+            informClients(clients);
         }
 
         public static void HandleKeepAlive(Client client, KeepAlivePacket ap)

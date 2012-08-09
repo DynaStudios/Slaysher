@@ -39,7 +39,7 @@ namespace SlaysherServer.Network.Handler
 
             if (!reader.Failed)
             {
-                Client.HandleHandshake(client, hp);
+                client.HandleHandshake(hp);
             }
         }
 

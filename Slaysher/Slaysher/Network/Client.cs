@@ -382,14 +382,30 @@ namespace Slaysher.Network
             client.GameScene.Pattern.Add(pp.PatternId, newPattern);
         }
 
-        public static void HandleEntitySpawn(Client client, EntitySpawnPacket esp)
+        public void HandleEntitySpawn(EntitySpawnPacket esp)
         {
-            throw new NotImplementedException();
+            //FIXME: Entities must have more details
+            Entity entety;
+            if (!GameScene.Enteties.TryGetValue(esp.EntityId, out entety))
+            {
+                entety = new ClientPlayer(this)
+                {
+                    Id = esp.EntityId,
+                    Health = esp.Health,
+                    Nickname = esp.Nickname,
+                    Position = new WorldPosition(esp.X, esp.Y)
+                };
+                GameScene.Enteties.Add(entety.Id, entety);
+            }
+            else
+            {
+                // FIXME: update the entetie here
+            }
         }
 
-        public static void HandleEntityDespawn(Client client, EntityDespawnPacket edp)
+        public void HandleEntityDespawn(EntityDespawnPacket edp)
         {
-            throw new NotImplementedException();
+            GameScene.Enteties.Remove(edp.EntityId);
         }
 
         public void Move(int entityId, WorldPosition position, float direction, float speed)
@@ -411,7 +427,7 @@ namespace Slaysher.Network
         public void HandlePlayerInfo(PlayerInfoPacket pip)
         {
             Console.WriteLine("Received Player Info Packet");
-            if (GameScene.Player == null && pip.PlayerId == 0)
+            if (GameScene.Player == null)
             {
                 ClientPlayer player = new ClientPlayer(this) {
                     Id = pip.PlayerId,

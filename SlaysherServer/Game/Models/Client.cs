@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.Concurrent;
 using System.Linq;
 using System.Net.Sockets;
 using System.Threading.Tasks;
@@ -15,6 +16,7 @@ namespace SlaysherServer.Game.Models
 {
     public partial class Client
     {
+        private ConcurrentDictionary<Client, byte> _awareCloseClients = new ConcurrentDictionary<Client, byte>();
         public volatile bool Running = true;
 
         //Network Buffers
@@ -107,18 +109,7 @@ namespace SlaysherServer.Game.Models
 
                 Server.RemoveClient(this);
 
-                Client[] nearbyClients = Server.GetNearbyPlayers(Player.Position).ToArray();
-
-                foreach (var client in nearbyClients)
-                {
-                    if (client != this)
-                    {
-                        EntityDespawnPacket dp = new EntityDespawnPacket {EntityId = client.ClientId};
-                        dp.Write();
-                        byte[] data = dp.GetBuffer();
-                        client.SendSync(data);
-                    }
-                }
+                uninformAllClients();
 
                 Running = false;
             }
@@ -188,8 +179,62 @@ namespace SlaysherServer.Game.Models
                 MovePacket mp = Player.CreatePreperedMovePacket(totalTime);
                 if (mp != null)
                 {
-                    SendPacket(mp);
+                    ConcurrentDictionary<Client, byte> lostClients = new ConcurrentDictionary<Client, byte>(_awareCloseClients);
+                    IEnumerable<Client> clients = this.Server.GetNearbyPlayers(Player.Position);
+                    Parallel.ForEach<Client>(clients, (client) =>
+                    {
+                        byte dummy;
+                        lostClients.TryRemove(client, out dummy);
+                        informClient(client);
+                        client.SendPacket(mp);
+                    });
+
+                    Parallel.ForEach<Client>(clients, (client) =>
+                    {
+                        uninfomClient(client);
+                    });
                 }
+            }
+        }
+
+        internal void informClients(IEnumerable<Client> clients)
+        {
+            foreach (Client client in clients)
+            {
+                informClient(client);
+            }
+        }
+
+        internal void informClient(Client client) {
+            if (!_awareCloseClients.ContainsKey(client))
+            {
+                if (_awareCloseClients.TryAdd(client, 0))
+                {
+                    client.SendPlayerInfo(Player);
+                }
+            }
+        }
+
+        internal void uninfomClient(Client client)
+        {
+            if (client != this)
+            {
+                EntityDespawnPacket dp = new EntityDespawnPacket { EntityId = client.ClientId };
+                dp.Write();
+                byte[] data = dp.GetBuffer();
+                client.SendSync(data);
+            }
+            byte dummy;
+            _awareCloseClients.TryRemove(client, out dummy);
+        }
+
+        internal void uninformAllClients()
+        {
+            ICollection<Client> nearbyClients = _awareCloseClients.Keys;
+
+            foreach (var client in nearbyClients)
+            {
+                uninfomClient(client);
             }
         }
     }

@@ -76,7 +76,7 @@ namespace Slaysher.Network
 
             if (!reader.Failed)
             {
-                Client.HandleEntitySpawn(client, esp);
+                client.HandleEntitySpawn(esp);
             }
         }
 
@@ -87,7 +87,7 @@ namespace Slaysher.Network
 
             if (!reader.Failed)
             {
-                Client.HandleEntityDespawn(client, edp);
+                client.HandleEntityDespawn(edp);
             }
         }
 

@@ -62,7 +62,7 @@ namespace Slaysher.Game.GUI.Screens
                 Rectangle rec = new Rectangle((int) PresentationOffset.X, (int) PresentationOffset.Y,
                                               (int) size.X + ItemPadding*2, (int) size.Y + ItemPadding*3);
 
-                spriteBatch.Draw(_windowBackground, rec, Color.Black*0.3f);
+                spriteBatch.Draw(_windowBackground, rec, Color.Black*0.5f);
             }
 
             var zSortedList = (from a in PanelEntries orderby a.ZIndex ascending select a).ToArray();

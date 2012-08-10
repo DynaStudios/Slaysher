@@ -199,18 +199,34 @@ namespace SlaysherServer.Game.Models
 
         internal void informClients(IEnumerable<Client> clients)
         {
+            PlayerInfoPacket pip = new PlayerInfoPacket(Player);
+            pip.SetShared(clients.Count());
+
             foreach (Client client in clients)
             {
-                informClient(client);
+                if (client == this)
+                {
+                    informClient(client, pip);
+                }
             }
         }
 
-        internal void informClient(Client client) {
+
+        internal void informClient(Client client)
+        {
+            informClient(client, new PlayerInfoPacket(Player));
+        }
+
+        internal void informClient(Client client, PlayerInfoPacket pip) {
             if (!_awareCloseClients.ContainsKey(client))
             {
                 if (_awareCloseClients.TryAdd(client, 0))
                 {
-                    client.SendPlayerInfo(Player);
+                    SendPacket(pip);
+                }
+                else
+                {
+                    pip.Release();
                 }
             }
         }

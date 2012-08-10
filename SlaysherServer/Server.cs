@@ -420,6 +420,27 @@ namespace SlaysherServer
             Parallel.ForEach(clients, client => client.SendPacket(packet));
         }
 
+        internal void SendPacketToClientList(Packet packet, Client[] targetList, Client excludedClient = null)
+        {
+            if (targetList.Length == 0)
+                return;
+
+            packet.SetShared(targetList.Length);
+
+            Parallel.ForEach(targetList, client =>
+            {
+                if (excludedClient != client)
+                {
+                    client.SendPacket(packet);
+                }
+                else
+                {
+                    packet.Release();
+                }
+            });
+
+        }
+
         internal void SendPacketToNearbyPlayers(WorldPosition pos, Packet packet, Client excludedClient = null)
         {
             Client[] nearbyClients = GetNearbyPlayers(pos).ToArray();

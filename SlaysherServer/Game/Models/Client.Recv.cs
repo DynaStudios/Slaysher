@@ -151,7 +151,7 @@ namespace SlaysherServer.Game.Models
         {
             Player = Load();
             IEnumerable<Client> clients = Server.GetNearbyPlayers(Player.Position);
-            informClients(clients);
+            InformClients(clients);
         }
 
         public static void HandleKeepAlive(Client client, KeepAlivePacket ap)

@@ -11,7 +11,7 @@ namespace SlaysherServer.Game.Entities
     {
         public string Nickname { get; set; }
 
-        public MovePacket CreatePreperedMovePacket(TimeSpan totalTime)
+        public MovePacket CreatePreparedMovePacket(TimeSpan totalTime)
         {
             if (this.ExecutePreparedMove(totalTime))
             {

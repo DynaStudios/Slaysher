@@ -176,59 +176,36 @@ namespace SlaysherServer.Game.Models
         {
             if (Player != null)
             {
-                MovePacket mp = Player.CreatePreperedMovePacket(totalTime);
+                MovePacket mp = Player.CreatePreparedMovePacket(totalTime);
                 if (mp != null)
                 {
-                    ConcurrentDictionary<Client, byte> lostClients = new ConcurrentDictionary<Client, byte>(_awareCloseClients);
-                    IEnumerable<Client> clients = this.Server.GetNearbyPlayers(Player.Position);
-                    Parallel.ForEach<Client>(clients, (client) =>
-                    {
-                        byte dummy;
-                        lostClients.TryRemove(client, out dummy);
-                        informClient(client);
-                        client.SendPacket(mp);
-                    });
+                    //Nearby players
+                    Client[] nearbyClients = Server.GetNearbyPlayers(Player.Position).ToArray();
 
-                    Parallel.ForEach<Client>(clients, (client) =>
-                    {
-                        uninfomClient(client);
-                    });
+                    var lostClientList = (from awareCloseClient in _awareCloseClients
+                                          where !nearbyClients.Contains(awareCloseClient.Key)
+                                          select awareCloseClient.Key).ToList();
+                    var newPlayerList = nearbyClients.Where(nearbyClient => !_awareCloseClients.ContainsKey(nearbyClient)).ToList();
+
+                    //Inform new Players
+                    InformClients(newPlayerList);
+
+                    //Send Packet
+                    Server.SendPacketToClientList(mp, nearbyClients, this);
+
+                    //Uninform gone players
+                    Parallel.ForEach(lostClientList, UninfomClient);
                 }
             }
         }
 
-        internal void informClients(IEnumerable<Client> clients)
+        internal void InformClients(IEnumerable<Client> clients)
         {
             PlayerInfoPacket pip = new PlayerInfoPacket(Player);
-            pip.SetShared(clients.Count());
-
-            foreach (Client client in clients)
-            {
-                if (client == this)
-                {
-                    informClient(client, pip);
-                }
-            }
+            Server.SendPacketToClientList(pip, clients.ToArray(), this);
         }
 
-
-        internal void informClient(Client client)
-        {
-            informClient(client, new PlayerInfoPacket(Player));
-        }
-
-        internal void informClient(Client client, PlayerInfoPacket pip) {
-            if (client != this && _awareCloseClients.TryAdd(client, 0))
-            {
-                SendPacket(pip);
-            }
-            else
-            {
-                pip.Release();
-            }
-        }
-
-        internal void uninfomClient(Client client)
+        internal void UninfomClient(Client client)
         {
             if (client != this)
             {
@@ -247,7 +224,7 @@ namespace SlaysherServer.Game.Models
 
             foreach (var client in nearbyClients)
             {
-                uninfomClient(client);
+                UninfomClient(client);
             }
         }
     }

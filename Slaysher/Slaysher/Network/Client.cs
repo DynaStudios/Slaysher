@@ -385,7 +385,7 @@ namespace Slaysher.Network
         public void HandleEntitySpawn(EntitySpawnPacket esp)
         {
             //FIXME: Entities must have more details
-            Entity entety;
+            IEntity entety;
             if (!GameScene.Enteties.TryGetValue(esp.EntityId, out entety))
             {
                 entety = new ClientPlayer(this)
@@ -410,7 +410,7 @@ namespace Slaysher.Network
 
         public void Move(int entityId, WorldPosition position, float direction, float speed)
         {
-            Entity entity;
+            IEntity entity;
             if (!GameScene.Enteties.TryGetValue(entityId, out entity))
             {
                 return;
@@ -427,21 +427,20 @@ namespace Slaysher.Network
         public void HandlePlayerInfo(PlayerInfoPacket pip)
         {
             Console.WriteLine("Received Player Info Packet");
+            ClientPlayer player = new ClientPlayer(this) {
+                Id = pip.PlayerId,
+                Nickname = pip.Nickname,
+                Health = pip.Health,
+                Position = new WorldPosition(pip.X, pip.Y)
+            };
+            // FIXME: ModelScaling should be dynamic, model depending and influencable by the server
+            player.ModelScaling = 1f / 512f;
+
+            GameScene.Enteties.Add(player.Id, player);
+            // first PlayerInfoPacket is the Player
             if (GameScene.Player == null)
             {
-                ClientPlayer player = new ClientPlayer(this) {
-                    Id = pip.PlayerId,
-                    Nickname = pip.Nickname,
-                    Health = pip.Health,
-                    Position = new WorldPosition(pip.X, pip.Y)
-                };
-                // FIXME: ModelScaling should be dynamic, model depending and influencable by the server
-                player.ModelScaling = 1f / 512f;
                 GameScene.Player = player;
-            }
-            else
-            {
-                Console.WriteLine("Error! There is no way a Player Object should already exist!");
             }
         }
 

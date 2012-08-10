@@ -22,7 +22,7 @@ namespace SlaysherNetworking.Packets
         {
         }
 
-        public PlayerPositionPacket(Player player)
+        public PlayerPositionPacket(IPlayer player)
         {
             PlayerId = player.Id;
             X = player.Position.X;

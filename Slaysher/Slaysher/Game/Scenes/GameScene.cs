@@ -30,7 +30,7 @@ namespace Slaysher.Game.Scenes
 
         public Dictionary<int, Pattern> Pattern;
         public Dictionary<int, GameObject> GameObjects;
-        public Dictionary<int, Entity> Enteties { get; protected set; }
+        public Dictionary<int, IEntity> Enteties { get; protected set; }
         private ClientPlayer _player;
         public ClientPlayer Player {
             get { return _player; }
@@ -64,7 +64,7 @@ namespace Slaysher.Game.Scenes
             Pattern = new Dictionary<int, Pattern>();
             _patternTextures = new Dictionary<int, Texture2D>();
             GameObjects = new Dictionary<int, GameObject>();
-            Enteties = new Dictionary<int, Entity>();
+            Enteties = new Dictionary<int, IEntity>();
         }
 
         #region Overrides of GameScreen
@@ -120,8 +120,11 @@ namespace Slaysher.Game.Scenes
 
         public override void Draw(GameTime gameTime)
         {
-            if (_contentLoaded) { 
-                Player.Tick(gameTime);
+            if (_contentLoaded) {
+                Parallel.ForEach<IEntity>(Enteties.Values, (entity) =>
+                {
+                    entity.Tick(gameTime.TotalGameTime);
+                });
                 TickWorld(gameTime);
 
                 foreach (KeyValuePair<int, Pattern> key in Pattern)
@@ -142,7 +145,7 @@ namespace Slaysher.Game.Scenes
             IPAddress address;
 
 #if DEBUG
-            NetworkUtils.Resolve("127.0.0.1", out address);
+            NetworkUtils.Resolve("87.79.65.116", out address);
 #else
             NetworkUtils.Resolve("slaysher.dyna-studios.com", out address);
 #endif

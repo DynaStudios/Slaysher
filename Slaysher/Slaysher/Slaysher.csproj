@@ -109,6 +109,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Game\Database\Database.cs" />
+    <Compile Include="Game\Entities\ClientEntity.cs" />
     <Compile Include="Game\GameState.cs" />
     <Compile Include="Game\GUI\Components\Button.cs" />
     <Compile Include="Game\GUI\Components\CheckBox.cs" />

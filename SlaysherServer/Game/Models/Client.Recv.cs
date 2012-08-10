@@ -141,7 +141,7 @@ namespace SlaysherServer.Game.Models
             SendPlayerInfo(Player);
         }
 
-        private void SendPlayerInfo(Player player)
+        private void SendPlayerInfo(IPlayer player)
         {
             SendPacket(new PlayerInfoPacket(player));
             //SendPacket(new PlayerPositionPacket(Player));

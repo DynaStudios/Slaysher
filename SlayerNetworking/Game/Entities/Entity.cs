@@ -4,109 +4,122 @@ using SlaysherNetworking.Game.World;
 
 namespace SlaysherNetworking.Game.Entities
 {
-    public abstract class Entity
+    public static class EntetyExtensions
     {
-        public int Id { get; set; }
 
-        public float ModelScaling { get; set; }
-
-        public int ModelId { get; set; }
-
-        public int TextureId { get; set; }
-
-        public int Health { get; set; }
-
-        /// <summary>
-        /// Speed in meter per second
-        /// </summary>
-        public float Speed
+        public static void PrepareToMove(this IEntity entity, float direction, float speed)
         {
-            get { return SpeedMeeterPerMillisecond * 1000; }
-            set { SpeedMeeterPerMillisecond = value / 1000; }
-        }
-        public float SpeedMeeterPerMillisecond { get; set; }
-
-        public virtual WorldPosition Position { get; set; }
-
-        // position where a movement has started
-        private WorldPosition _startPosition = null;
-
-        protected TimeSpan? _movemetStarted = null;
-
-        private float _direction;
-        public float Direction { get { return _direction; } }
-        public bool IsMoving { get { return _movemetStarted != null; } }
-
-        private float? _preparedDirection;
-        private float? _preparedSpeed;
-
-        public Entity()
-        {
-            Speed = 2.0f;
+            entity._preparedDirection = direction;
+            entity._preparedSpeed = speed;
         }
 
-        public void PrepareToMove(float direction, float speed)
-        {
-            _preparedDirection = direction;
-            _preparedSpeed = speed;
-        }
 
-        public bool ExecutePreparedMove(TimeSpan totalTime)
+
+        public static bool ExecutePreparedMove(this IEntity entity, TimeSpan totalTime)
         {
-            if (_preparedDirection == null || _preparedSpeed == null)
+            if (entity._preparedDirection == null || entity._preparedSpeed == null)
             {
                 return false;
             }
 
-            StopMoving(totalTime);
-            if (_preparedSpeed > 0)
+            entity.StopMoving(totalTime);
+            if (entity._preparedSpeed > 0)
             {
-                Speed = (float)_preparedSpeed;
-                Move(totalTime, (float)_preparedDirection);
+                entity.SetSeed((float)entity._preparedSpeed);
+                entity.Move(totalTime, (float)entity._preparedDirection);
             }
-            _preparedDirection = null;
-            _preparedSpeed = null;
+            entity._preparedDirection = null;
+            entity._preparedSpeed = null;
             return true;
         }
 
-        public void Move(TimeSpan totalTime, float direction)
+        public static void Move(this IEntity entity, TimeSpan totalTime, float direction)
         {
-            ExecuteMovement(totalTime);
+            entity.ExecuteMovement(totalTime);
             // using now position for the next movement
-            _startPosition = new WorldPosition(Position);
-            _movemetStarted = totalTime;
-            Turn(direction);
+            entity._startPosition = new WorldPosition(entity.Position);
+            entity._movemetStarted = totalTime;
+            entity.Turn(direction);
         }
 
-        public void Turn(float direction)
+        public static void Turn(this IEntity entity, float direction)
         {
             // XXX: smothered turnning would be nice
-            this._direction = direction;
+            entity.Direction = direction;
         }
 
-        public void StopMoving(TimeSpan? totalTime)
+        public static void StopMoving(this IEntity entity, TimeSpan? totalTime)
         {
 
             // direction should stay as it is
             if (totalTime != null)
             {
-                ExecuteMovement((TimeSpan)totalTime);
+                entity.ExecuteMovement((TimeSpan)totalTime);
             }
-            _startPosition = null;
-            _movemetStarted = null;
+            entity._startPosition = null;
+            entity._movemetStarted = null;
         }
 
-        public void ExecuteMovement(TimeSpan current)
+        public static void ExecuteMovement(this IEntity entity, TimeSpan current)
         {
-            if (_movemetStarted == null || _startPosition == null)
+            if (entity._movemetStarted == null || entity._startPosition == null)
             {
                 return;
             }
-            TimeSpan movedTime = current - (TimeSpan)_movemetStarted;
-            float distance = (float) (movedTime.TotalMilliseconds * SpeedMeeterPerMillisecond);
+            TimeSpan movedTime = current - (TimeSpan)entity._movemetStarted;
+            float distance = (float)(movedTime.TotalMilliseconds * entity.SpeedMeeterPerMillisecond);
 
-            Position.X = _startPosition.X + (float)(Math.Sin(_direction * Math.PI / 180) * distance);
-            Position.Y = _startPosition.Y - (float)(Math.Cos(_direction * Math.PI / 180) * distance);
+            entity.Position.X = entity._startPosition.X + (float)(Math.Sin(entity.Direction * Math.PI / 180) * distance);
+            entity.Position.Y = entity._startPosition.Y - (float)(Math.Cos(entity.Direction * Math.PI / 180) * distance);
         }
+
+        /// <summary>
+        /// Speed in meter per second
+        /// </summary>
+        public static float GetSpeed(this IEntity entity)
+        {
+            return entity.SpeedMeeterPerMillisecond * 1000;
+        }
+
+        public static void SetSeed(this IEntity entity, float value)
+        {
+            entity.SpeedMeeterPerMillisecond = value / 1000;
+        }
+
+        public static bool IsMoving(this IEntity entity)
+        {
+            return entity._movemetStarted != null;
+        }
+    }
+
+    public interface IEntity
+    {
+        int Id { get; set; }
+
+        float ModelScaling { get; set; }
+
+        int ModelId { get; set; }
+
+        int TextureId { get; set; }
+
+        int Health { get; set; }
+
+        float SpeedMeeterPerMillisecond { get; set; }
+
+        WorldPosition Position { get; set; }
+
+        // position where a movement has started
+        // should be null at init
+        WorldPosition _startPosition { get; set;}
+
+        // should be null at init
+        TimeSpan? _movemetStarted { get; set; }
+
+        float Direction { get; set; }
+
+        float? _preparedDirection { get; set; }
+        float? _preparedSpeed { get; set; }
+
+        void Tick(TimeSpan totalRunTime);
     }
 }

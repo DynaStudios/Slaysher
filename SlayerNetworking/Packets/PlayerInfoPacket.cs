@@ -18,7 +18,7 @@ namespace SlaysherNetworking.Packets
         {
         }
 
-        public PlayerInfoPacket(Player player)
+        public PlayerInfoPacket(IPlayer player)
         {
             PlayerId = player.Id;
             Nickname = player.Nickname;

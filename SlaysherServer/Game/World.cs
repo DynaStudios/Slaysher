@@ -9,13 +9,13 @@ namespace SlaysherServer.Game
 
         public List<Pattern> Patterns { get; private set; }
 
-        public List<Entity> Entities { get; private set; }
+        public List<IEntity> Entities { get; private set; }
 
         public World(Server server)
         {
             Server = server;
             Patterns = new PatternGenerator(server.DAO).GetPatterns();
-            Entities = new List<Entity>();
+            Entities = new List<IEntity>();
         }
 
         public void Start()

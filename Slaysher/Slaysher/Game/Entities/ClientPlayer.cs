@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
@@ -28,23 +29,25 @@ namespace Slaysher.Game.Entities
         public const float UpLeft = 315.0f;
     }
 
-    public class ClientPlayer : Player
+    public class ClientPlayer : ClientEntity, IPlayer
     {
+        public string Nickname { get; set; }
         private Client _client;
-        public override WorldPosition Position
+        private WorldPosition _position;
+        public WorldPosition Position
         {
-            get { return base.Position; }
+            get { return _position; }
             set
             {
-                if (base.Position == null)
+                if (_position == null)
                 {
-                    base.Position = new WorldPosition();
+                    _position = new WorldPosition();
                 }
-                base.Position.X = value.X;
-                base.Position.Y = value.Y;
+                _position.X = value.X;
+                _position.Y = value.Y;
                 if (VisualPosition == null)
                 {
-                    VisualPosition = new WorldPosition(base.Position);
+                    VisualPosition = new WorldPosition(_position);
                 }
             }
         }
@@ -156,10 +159,10 @@ namespace Slaysher.Game.Entities
             Model = content.Load<Model>("Models/Pattern/Player/goblin_fbx");
         }
 
-        public void Tick(GameTime time)
+        public override void Tick(TimeSpan totalTime)
         {
-            ExecutePreparedMove(time.TotalGameTime);
-            ExecuteMovement(time.TotalGameTime);
+            this.ExecutePreparedMove(totalTime);
+            this.ExecuteMovement(totalTime);
 
             smoothMove();
             HandleInput();

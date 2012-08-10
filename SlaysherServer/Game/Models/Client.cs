@@ -191,7 +191,7 @@ namespace SlaysherServer.Game.Models
                     InformClients(newPlayerList);
 
                     //Send Packet
-                    Server.SendPacketToClientList(mp, nearbyClients, this);
+                    Server.SendPacketToClientList(mp, nearbyClients);
 
                     //Uninform gone players
                     Parallel.ForEach(lostClientList, UninfomClient);

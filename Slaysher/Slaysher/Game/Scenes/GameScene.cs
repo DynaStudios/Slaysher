@@ -30,7 +30,7 @@ namespace Slaysher.Game.Scenes
 
         public Dictionary<int, Pattern> Pattern;
         public Dictionary<int, GameObject> GameObjects;
-        public Dictionary<int, IEntity> Enteties { get; protected set; }
+        public Dictionary<int, IEntity> Entities { get; protected set; }
         private ClientPlayer _player;
         public ClientPlayer Player { get; set; }
 
@@ -53,7 +53,7 @@ namespace Slaysher.Game.Scenes
             Pattern = new Dictionary<int, Pattern>();
             _patternTextures = new Dictionary<int, Texture2D>();
             GameObjects = new Dictionary<int, GameObject>();
-            Enteties = new Dictionary<int, IEntity>();
+            Entities = new Dictionary<int, IEntity>();
         }
 
         #region Overrides of GameScreen
@@ -110,7 +110,7 @@ namespace Slaysher.Game.Scenes
         public override void Draw(GameTime gameTime)
         {
             if (_contentLoaded) {
-                Parallel.ForEach<IEntity>(Enteties.Values, (entity) =>
+                Parallel.ForEach<IEntity>(Entities.Values, (entity) =>
                 {
                     entity.Tick(gameTime.TotalGameTime);
                 });

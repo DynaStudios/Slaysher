@@ -386,7 +386,7 @@ namespace Slaysher.Network
         {
             //FIXME: Entities must have more details
             IEntity entety;
-            if (!GameScene.Enteties.TryGetValue(esp.EntityId, out entety))
+            if (!GameScene.Entities.TryGetValue(esp.EntityId, out entety))
             {
                 entety = new ClientPlayer(this)
                 {
@@ -395,7 +395,7 @@ namespace Slaysher.Network
                     Nickname = esp.Nickname,
                     Position = new WorldPosition(esp.X, esp.Y)
                 };
-                GameScene.Enteties.Add(entety.Id, entety);
+                GameScene.Entities.Add(entety.Id, entety);
             }
             else
             {
@@ -405,13 +405,13 @@ namespace Slaysher.Network
 
         public void HandleEntityDespawn(EntityDespawnPacket edp)
         {
-            GameScene.Enteties.Remove(edp.EntityId);
+            GameScene.Entities.Remove(edp.EntityId);
         }
 
         public void Move(int entityId, WorldPosition position, float direction, float speed)
         {
             IEntity entity;
-            if (!GameScene.Enteties.TryGetValue(entityId, out entity))
+            if (!GameScene.Entities.TryGetValue(entityId, out entity))
             {
                 return;
             }
@@ -436,7 +436,11 @@ namespace Slaysher.Network
             // FIXME: ModelScaling should be dynamic, model depending and influencable by the server
             player.ModelScaling = 1f / 512f;
 
-            GameScene.Enteties.Add(player.Id, player);
+            if (GameScene.Entities.ContainsKey(player.Id))
+            {
+                Console.WriteLine("Tried to add new Player to Entity List, but already exists!");
+            }
+            GameScene.Entities.Add(player.Id, player);
             // first PlayerInfoPacket is the Player
             if (GameScene.Player == null)
             {

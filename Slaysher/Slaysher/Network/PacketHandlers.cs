@@ -1,4 +1,5 @@
-﻿using SlaysherNetworking.Packets;
+﻿using System;
+using SlaysherNetworking.Packets;
 using SlaysherNetworking.Packets.Utils;
 
 namespace Slaysher.Network
@@ -120,15 +121,12 @@ namespace Slaysher.Network
 
             if (!reader.Failed)
             {
+                Console.WriteLine("Received Move Packet");
                 client.Move(
                     mp.EntityId,
                     mp.Position,
                     mp.Direction,
                     mp.Speed);
-            }
-            else
-            {
-                System.Console.WriteLine("Error reading MovePacket");
             }
         }
     }

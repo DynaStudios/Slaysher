@@ -413,6 +413,7 @@ namespace Slaysher.Network
             IEntity entity;
             if (!GameScene.Entities.TryGetValue(entityId, out entity))
             {
+                Console.WriteLine("Couldn't find entity with id" + entityId);
                 return;
             }
 

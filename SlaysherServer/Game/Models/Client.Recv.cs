@@ -14,17 +14,6 @@ namespace SlaysherServer.Game.Models
         public int TimesEnqueuedForRecv;
         private readonly object _queueSwapLock = new object();
 
-        public void PlayerRequestsToMove(int playerId, float direction, float speed)
-        {
-            if (Player.Id != playerId)
-            {
-                Console.WriteLine("player({0}) send MoveRequest with wrong id({1})", Player.Id, playerId);
-                return;
-            }
-
-            Player.PrepareToMove(direction, speed);
-        }
-
         private void RecvStart()
         {
             if (!Running)
@@ -166,6 +155,11 @@ namespace SlaysherServer.Game.Models
                 //Keep Alive Response came within time
                 Console.WriteLine("Timeout Check is okey.");
             }
+        }
+
+        public static void HandleMovePacket(Client client, MovePacket mp)
+        {
+            client.Player.PrepareToMove(mp.Direction, mp.Speed);
         }
     }
 }

@@ -4,32 +4,30 @@ using SlaysherNetworking.Game.World;
 
 namespace SlaysherNetworking.Game.Entities
 {
-    public static class EntetyExtensions
+    public static class EntityExtensions
     {
 
         public static void PrepareToMove(this IEntity entity, float direction, float speed)
         {
-            entity._preparedDirection = direction;
-            entity._preparedSpeed = speed;
+            entity.PreparedDirection = direction;
+            entity.PreparedSpeed = speed;
         }
-
-
 
         public static bool ExecutePreparedMove(this IEntity entity, TimeSpan totalTime)
         {
-            if (entity._preparedDirection == null || entity._preparedSpeed == null)
+            if (entity.PreparedDirection == null || entity.PreparedSpeed == null)
             {
                 return false;
             }
 
             entity.StopMoving(totalTime);
-            if (entity._preparedSpeed > 0)
+            if (entity.PreparedSpeed > 0)
             {
-                entity.SetSeed((float)entity._preparedSpeed);
-                entity.Move(totalTime, (float)entity._preparedDirection);
+                entity.SetSpeed((float)entity.PreparedSpeed);
+                entity.Move(totalTime, (float)entity.PreparedDirection);
             }
-            entity._preparedDirection = null;
-            entity._preparedSpeed = null;
+            entity.PreparedDirection = null;
+            entity.PreparedSpeed = null;
             return true;
         }
 
@@ -37,8 +35,8 @@ namespace SlaysherNetworking.Game.Entities
         {
             entity.ExecuteMovement(totalTime);
             // using now position for the next movement
-            entity._startPosition = new WorldPosition(entity.Position);
-            entity._movemetStarted = totalTime;
+            entity.StartPosition = new WorldPosition(entity.Position);
+            entity.MovementStarted = totalTime;
             entity.Turn(direction);
         }
 
@@ -56,21 +54,21 @@ namespace SlaysherNetworking.Game.Entities
             {
                 entity.ExecuteMovement((TimeSpan)totalTime);
             }
-            entity._startPosition = null;
-            entity._movemetStarted = null;
+            entity.StartPosition = null;
+            entity.MovementStarted = null;
         }
 
         public static void ExecuteMovement(this IEntity entity, TimeSpan current)
         {
-            if (entity._movemetStarted == null || entity._startPosition == null)
+            if (entity.MovementStarted == null || entity.StartPosition == null)
             {
                 return;
             }
-            TimeSpan movedTime = current - (TimeSpan)entity._movemetStarted;
-            float distance = (float)(movedTime.TotalMilliseconds * entity.SpeedMeeterPerMillisecond);
+            TimeSpan movedTime = current - (TimeSpan)entity.MovementStarted;
+            float distance = (float)(movedTime.TotalMilliseconds * entity.SpeedMeterPerMillisecond);
 
-            entity.Position.X = entity._startPosition.X + (float)(Math.Sin(entity.Direction * Math.PI / 180) * distance);
-            entity.Position.Y = entity._startPosition.Y - (float)(Math.Cos(entity.Direction * Math.PI / 180) * distance);
+            entity.Position.X = entity.StartPosition.X + (float)(Math.Sin(entity.Direction * Math.PI / 180) * distance);
+            entity.Position.Y = entity.StartPosition.Y - (float)(Math.Cos(entity.Direction * Math.PI / 180) * distance);
         }
 
         /// <summary>
@@ -78,17 +76,17 @@ namespace SlaysherNetworking.Game.Entities
         /// </summary>
         public static float GetSpeed(this IEntity entity)
         {
-            return entity.SpeedMeeterPerMillisecond * 1000;
+            return entity.SpeedMeterPerMillisecond * 1000;
         }
 
-        public static void SetSeed(this IEntity entity, float value)
+        public static void SetSpeed(this IEntity entity, float value)
         {
-            entity.SpeedMeeterPerMillisecond = value / 1000;
+            entity.SpeedMeterPerMillisecond = value / 1000;
         }
 
         public static bool IsMoving(this IEntity entity)
         {
-            return entity._movemetStarted != null;
+            return entity.MovementStarted != null;
         }
     }
 
@@ -104,21 +102,21 @@ namespace SlaysherNetworking.Game.Entities
 
         int Health { get; set; }
 
-        float SpeedMeeterPerMillisecond { get; set; }
+        float SpeedMeterPerMillisecond { get; set; }
 
         WorldPosition Position { get; set; }
 
         // position where a movement has started
         // should be null at init
-        WorldPosition _startPosition { get; set;}
+        WorldPosition StartPosition { get; set;}
 
         // should be null at init
-        TimeSpan? _movemetStarted { get; set; }
+        TimeSpan? MovementStarted { get; set; }
 
         float Direction { get; set; }
 
-        float? _preparedDirection { get; set; }
-        float? _preparedSpeed { get; set; }
+        float? PreparedDirection { get; set; }
+        float? PreparedSpeed { get; set; }
 
         void Tick(TimeSpan totalRunTime);
     }

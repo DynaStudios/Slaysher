@@ -109,7 +109,7 @@ namespace SlaysherServer.Game.Models
 
                 Server.RemoveClient(this);
 
-                uninformAllClients();
+                UninformAllClients();
 
                 Running = false;
             }
@@ -218,7 +218,7 @@ namespace SlaysherServer.Game.Models
             _awareCloseClients.TryRemove(client, out dummy);
         }
 
-        internal void uninformAllClients()
+        internal void UninformAllClients()
         {
             ICollection<Client> nearbyClients = _awareCloseClients.Keys;
 

@@ -59,10 +59,10 @@ namespace SlaysherServer.Network.Handler
             MovePacket mp = new MovePacket();
             mp.Read(reader);
 
-            client.PlayerRequestsToMove(
-                mp.EntityId,
-                mp.Direction,
-                mp.Speed);
+            if (!reader.Failed)
+            {
+                Client.HandleMovePacket(client, mp);
+            }
         }
     }
 }

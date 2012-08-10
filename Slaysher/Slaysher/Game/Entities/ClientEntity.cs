@@ -17,26 +17,26 @@ namespace Slaysher.Game.Entities
 
         public int Health { get; set; }
 
-        public float SpeedMeeterPerMillisecond { get; set; }
+        public float SpeedMeterPerMillisecond { get; set; }
         public float Speed
         {
             get { return this.GetSpeed(); }
-            set { this.SetSeed(value); }
+            set { this.SetSpeed(value); }
         }
 
         public WorldPosition Position { get; set; }
 
         // position where a movement has started
         // should be null at init
-        public WorldPosition _startPosition { get; set; }
+        public WorldPosition StartPosition { get; set; }
 
         // should be null at init
-        public TimeSpan? _movemetStarted { get; set; }
+        public TimeSpan? MovementStarted { get; set; }
 
         public float Direction { get; set; }
 
-        public float? _preparedDirection { get; set; }
-        public float? _preparedSpeed { get; set; }
+        public float? PreparedDirection { get; set; }
+        public float? PreparedSpeed { get; set; }
 
         public abstract void Tick(TimeSpan timeSpan);
     }

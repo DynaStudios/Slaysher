@@ -124,7 +124,7 @@ namespace Slaysher.Game.Entities
             }
         }
 
-        private void smoothMove()
+        private void SmoothMove()
         {
             //VisualPosition.MoveASmoothStepTo(Position, 0.025f);
             VisualPosition.X = MathHelper.SmoothStep(VisualPosition.X, Position.X, 0.35f);
@@ -164,7 +164,7 @@ namespace Slaysher.Game.Entities
             this.ExecutePreparedMove(totalTime);
             this.ExecuteMovement(totalTime);
 
-            smoothMove();
+            SmoothMove();
             HandleInput();
         }
 

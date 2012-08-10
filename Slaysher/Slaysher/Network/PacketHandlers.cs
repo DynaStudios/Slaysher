@@ -21,9 +21,9 @@ namespace Slaysher.Network
             Register(PacketType.Pattern, 17, 0, ReadPattern);
             Register(PacketType.EntitySpawn, 0, 17, ReadEntitySpawn);
             Register(PacketType.EntityDespawn, 5, 0, ReadEntityDespawn);
-            Register(PacketType.PlayerInfo, 0, 9, ReadPlayerInfo);
+            Register(PacketType.PlayerInfo, 0, 17, ReadPlayerInfo);
             Register(PacketType.PlayerPosition, 17, 0, ReadPlayerPosition);
-            Register(PacketType.Movement, 25, 0, ReadMovement);
+            Register(PacketType.Movement, 21, 0, ReadMovement);
         }
 
         public static void Register(PacketType packetId, int length, int minimumLength, OnPacketReceive onReceive)
@@ -121,7 +121,7 @@ namespace Slaysher.Network
             if (!reader.Failed)
             {
                 client.Move(
-                    mp.EntetyId,
+                    mp.EntityId,
                     mp.Position,
                     mp.Direction,
                     mp.Speed);

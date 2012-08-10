@@ -126,6 +126,7 @@ namespace SlaysherServer.Game.Models
                 LoadPlayer();
                 SendPlayerInfo();
 
+                Console.WriteLine("Send Pattern");
                 SendPattern();
 
                 LastSendKeepAliveStamp = DateTime.Now.Ticks;

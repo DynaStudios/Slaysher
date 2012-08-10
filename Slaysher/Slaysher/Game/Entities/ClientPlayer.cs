@@ -177,7 +177,7 @@ namespace Slaysher.Game.Entities
             _lastMovementDirection = direction;
             MovePacket movePacket = new MovePacket
             {
-                EntetyId = Id,
+                EntityId = Id,
                 Direction = direction,
                 Speed = Speed
             };
@@ -193,7 +193,7 @@ namespace Slaysher.Game.Entities
             _lastMovementDirection = null;
             MovePacket movePacket = new MovePacket
             {
-                EntetyId = Id,
+                EntityId = Id,
                 Direction = 0,
                 Speed = 0
             };

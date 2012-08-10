@@ -425,19 +425,28 @@ namespace SlaysherServer
             if (targetList.Length == 0)
                 return;
 
-            packet.SetShared(targetList.Length);
-
-            Parallel.ForEach(targetList, client =>
+            if (targetList.Length == 1)
             {
-                if (excludedClient != client)
-                {
-                    client.SendPacket(packet);
-                }
-                else
-                {
-                    packet.Release();
-                }
-            });
+                if (targetList[0] == excludedClient)
+                    return;
+                targetList[0].SendPacket(packet);
+            }
+            else
+            {
+                packet.SetShared(targetList.Length);
+
+                Parallel.ForEach(targetList, client =>
+                    {
+                        if (excludedClient != client)
+                        {
+                            client.SendPacket(packet);
+                        }
+                        else
+                        {
+                            packet.Release();
+                        }
+                    });
+            }
 
         }
 

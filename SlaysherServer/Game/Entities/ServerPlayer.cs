@@ -17,7 +17,7 @@ namespace SlaysherServer.Game.Entities
             {
                 MovePacket mp = new MovePacket
                 {
-                    EntetyId = Id,
+                    EntityId = Id,
                     Direction = Direction,
                     Position = Position,
                     Speed = IsMoving ? Speed : 0.0f,

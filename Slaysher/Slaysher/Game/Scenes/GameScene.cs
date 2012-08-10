@@ -32,18 +32,7 @@ namespace Slaysher.Game.Scenes
         public Dictionary<int, GameObject> GameObjects;
         public Dictionary<int, IEntity> Enteties { get; protected set; }
         private ClientPlayer _player;
-        public ClientPlayer Player {
-            get { return _player; }
-            set
-            {
-                if (_player != null && Enteties.ContainsKey(_player.Id))
-                {
-                    Enteties.Remove(_player.Id);
-                }
-                _player = value;
-                Enteties.Add(_player.Id, _player);
-            }
-        }
+        public ClientPlayer Player { get; set; }
 
         private Matrix _worldMatrix;
 

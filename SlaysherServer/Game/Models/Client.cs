@@ -218,16 +218,13 @@ namespace SlaysherServer.Game.Models
         }
 
         internal void informClient(Client client, PlayerInfoPacket pip) {
-            if (!_awareCloseClients.ContainsKey(client))
+            if (client != this && _awareCloseClients.TryAdd(client, 0))
             {
-                if (_awareCloseClients.TryAdd(client, 0))
-                {
-                    SendPacket(pip);
-                }
-                else
-                {
-                    pip.Release();
-                }
+                SendPacket(pip);
+            }
+            else
+            {
+                pip.Release();
             }
         }
 

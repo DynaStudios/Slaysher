@@ -440,7 +440,9 @@ namespace Slaysher.Network
             {
                 Console.WriteLine("Tried to add new Player to Entity List, but already exists!");
             }
-            GameScene.Entities.Add(player.Id, player);
+            else { 
+                GameScene.Entities.Add(player.Id, player);
+            }
             // first PlayerInfoPacket is the Player
             if (GameScene.Player == null)
             {

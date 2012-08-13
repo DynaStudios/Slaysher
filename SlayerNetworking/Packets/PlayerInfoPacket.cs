@@ -15,6 +15,8 @@ namespace SlaysherNetworking.Packets
         public float X { get; set; }
         public float Y { get; set; }
 
+        public float Speed { get; set; }
+
         public PlayerInfoPacket()
         {
         }
@@ -24,6 +26,7 @@ namespace SlaysherNetworking.Packets
             PlayerId = player.Id;
             Nickname = player.Nickname;
             Health = player.Health;
+            Speed = player.SpeedMeterPerMillisecond;
         }
 
         public override void Read(PacketReader reader)
@@ -31,6 +34,7 @@ namespace SlaysherNetworking.Packets
             PlayerId = reader.ReadInt();
             Nickname = reader.ReadString16(12);
             Health = reader.ReadInt();
+            Speed = reader.ReadFloat();
 #if DEBUG
             Console.WriteLine(ToString());
 #endif
@@ -38,10 +42,11 @@ namespace SlaysherNetworking.Packets
 
         public override void Write()
         {
-            SetCapacity(17, Nickname);
+            SetCapacity(21, Nickname);
             Writer.Write(PlayerId);
             Writer.Write(Nickname);
             Writer.Write(Health);
+            Writer.Write(Speed);
 #if DEBUG
             Console.WriteLine(ToString());
 #endif

@@ -432,7 +432,8 @@ namespace Slaysher.Network
                 Id = pip.PlayerId,
                 Nickname = pip.Nickname,
                 Health = pip.Health,
-                Position = new WorldPosition(pip.X, pip.Y)
+                Position = new WorldPosition(pip.X, pip.Y),
+                SpeedMeterPerMillisecond = pip.Speed
             };
             // FIXME: ModelScaling should be dynamic, model depending and influencable by the server
             player.ModelScaling = 1f / 512f;

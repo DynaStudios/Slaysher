@@ -22,7 +22,7 @@ namespace Slaysher.Network
             Register(PacketType.Pattern, 17, 0, ReadPattern);
             Register(PacketType.EntitySpawn, 0, 17, ReadEntitySpawn);
             Register(PacketType.EntityDespawn, 5, 0, ReadEntityDespawn);
-            Register(PacketType.PlayerInfo, 0, 17, ReadPlayerInfo);
+            Register(PacketType.PlayerInfo, 0, 21, ReadPlayerInfo);
             Register(PacketType.PlayerPosition, 17, 0, ReadPlayerPosition);
             Register(PacketType.Movement, 21, 0, ReadMovement);
         }

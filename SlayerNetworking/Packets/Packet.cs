@@ -133,16 +133,13 @@ namespace SlaysherNetworking.Packets
             StringBuilder sb = new StringBuilder();
 
             Type t = this.GetType();
+            sb.AppendFormat("Packet: {0}\n", t.Name);
             PropertyInfo[] pis = t.GetProperties();
             for (int i = 0; i < pis.Length; i++)
             {
                 try
                 {
                     PropertyInfo pi = (PropertyInfo)pis.GetValue(i);
-                    Console.WriteLine(
-                        "{0}: {1}",
-                        pi.Name,
-                        pi.GetValue(this, new object[] { }));
                     sb.AppendFormat("{0}: {1}" + Environment.NewLine, pi.Name, pi.GetValue(this, new object[] { }));
                 }
                 catch (Exception)

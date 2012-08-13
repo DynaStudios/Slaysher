@@ -1,4 +1,5 @@
-﻿using SlaysherNetworking.Packets.Utils;
+﻿using System;
+using SlaysherNetworking.Packets.Utils;
 using SlaysherNetworking.Game.World;
 
 namespace SlaysherNetworking.Packets
@@ -25,6 +26,9 @@ namespace SlaysherNetworking.Packets
             };
             Direction = reader.ReadFloat();
             Speed = reader.ReadFloat();
+#if DEBUG
+            Console.WriteLine(ToString());
+#endif
         }
 
         public override void Write() {
@@ -34,6 +38,9 @@ namespace SlaysherNetworking.Packets
             Writer.Write(Position.Y);
             Writer.Write(Direction);
             Writer.Write(Speed);
+#if DEBUG
+            Console.WriteLine(ToString());
+#endif
         }
     }
 }

@@ -1,4 +1,5 @@
-﻿using SlaysherNetworking.Game.Entities;
+﻿using System;
+using SlaysherNetworking.Game.Entities;
 using SlaysherNetworking.Packets.Utils;
 
 namespace SlaysherNetworking.Packets
@@ -30,6 +31,9 @@ namespace SlaysherNetworking.Packets
             PlayerId = reader.ReadInt();
             Nickname = reader.ReadString16(12);
             Health = reader.ReadInt();
+#if DEBUG
+            Console.WriteLine(ToString());
+#endif
         }
 
         public override void Write()
@@ -38,6 +42,9 @@ namespace SlaysherNetworking.Packets
             Writer.Write(PlayerId);
             Writer.Write(Nickname);
             Writer.Write(Health);
+#if DEBUG
+            Console.WriteLine(ToString());
+#endif
         }
     }
 }

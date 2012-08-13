@@ -6,7 +6,6 @@ namespace SlaysherNetworking.Game.Entities
 {
     public static class EntityExtensions
     {
-
         public static void PrepareToMove(this IEntity entity, float direction, float speed)
         {
             entity.PreparedDirection = direction;

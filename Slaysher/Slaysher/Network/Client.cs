@@ -2,6 +2,7 @@
 using System.Collections.Concurrent;
 using System.Net;
 using System.Net.Sockets;
+using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -210,11 +211,10 @@ namespace Slaysher.Network
             if (e.BytesTransferred > 0)
             {
                 lock (_queueLock)
-                {
                     _receiveBufferQueue.Enqueue(e.Buffer, 0, e.BytesTransferred);
-                    _recv.Set();
-                    RecvPacket();
-                }
+                _recv.Set();
+                RecvPacket();
+
             }
         }
 
@@ -243,12 +243,15 @@ namespace Slaysher.Network
 
                     if (handler == null)
                     {
-                        Console.WriteLine("Received unknown packet!");
+                        byte[] unhandled = GetBufferToBeRead(length);
+                        Console.WriteLine("Received unknown packet! Id:{0}", packetType);
+                        Console.WriteLine("Fehler {0}", BitConverter.ToString(unhandled));
                         length = 0;
                     }
                     else if (handler.Length == 0)
                     {
                         byte[] data = GetBufferToBeRead(length);
+                        Console.WriteLine("Klappt {0}", BitConverter.ToString(data));
 
                         if (length >= handler.MinimumLength)
                         {

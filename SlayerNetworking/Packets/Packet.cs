@@ -37,10 +37,14 @@ namespace SlaysherNetworking.Packets
             return PacketMap.GetPacketType(GetType());
         }
 
+        protected Packet()
+        {
+        }
+
         public void SetCapacity()
         {
             Writer = PacketWriter.CreateInstance(Length);
-            Writer.Write((byte) GetPacketType());
+            Writer.Write((byte)GetPacketType());
         }
 
         public void SetCapacity(int fixedLength)
@@ -51,18 +55,19 @@ namespace SlaysherNetworking.Packets
 
         public void SetCapacity(int fixedLength, params string[] args)
         {
-            if (args == null) throw new ArgumentNullException("args");
+            byte[] bytes;
+
             _length = fixedLength;
             Queue<byte[]> strings = new Queue<byte[]>();
-            foreach (string argument in args)
+            for (int i = 0; i < args.Length; ++i)
             {
-                byte[] bytes = Encoding.BigEndianUnicode.GetBytes(argument);
+                bytes = ASCIIEncoding.BigEndianUnicode.GetBytes(args[i]);
                 _length += bytes.Length;
                 strings.Enqueue(bytes);
             }
 
             Writer = PacketWriter.CreateInstance(Length, strings);
-            Writer.Write((byte) GetPacketType());
+            Writer.Write((byte)GetPacketType());
         }
 
         public void SetShared(int num)
@@ -87,7 +92,6 @@ namespace SlaysherNetworking.Packets
             }
         }
 
-        //Add Release Methods
         public void Release()
         {
             if (!Shared)
@@ -119,8 +123,7 @@ namespace SlaysherNetworking.Packets
                 }
                 catch (Exception e)
                 {
-                    throw new Exception(String.Format("Writer {0}, Request {1} \r\n{2}", underlyingBuffer.Length, Length,
-                                                      e));
+                    throw new Exception(String.Format("Writer {0}, Request {1} \r\n{2}", underlyingBuffer.Length, Length, e));
                 }
             }
 

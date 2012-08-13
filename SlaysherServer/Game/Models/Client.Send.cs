@@ -27,8 +27,13 @@ namespace SlaysherServer.Game.Models
             }
 
             Server.NetworkSignal.Set();
+        }
 
-            //Logger.Log(Chraft.LogLevel.Info, "Sending packet: {0}", packet.GetPacketType().ToString());
+        internal void SendSyncPacket(Packet packet)
+        {
+            packet.Write();
+            SendSync(packet.GetBuffer());
+            packet.Release();
         }
 
         private void SendCompleted(object sender, SocketAsyncEventArgs e)
@@ -143,20 +148,6 @@ namespace SlaysherServer.Game.Models
 
                 // TODO: log something?
             }
-        }
-
-        private void SendAsync(byte[] data)
-        {
-            if (!Running || !_socket.Connected)
-            {
-                DisposeSendSystem();
-                return;
-            }
-
-            _sendSocketEvent.SetBuffer(data, 0, data.Length);
-            bool pending = _socket.SendAsync(_sendSocketEvent);
-            if (!pending)
-                SendCompleted(null, _sendSocketEvent);
         }
     }
 }

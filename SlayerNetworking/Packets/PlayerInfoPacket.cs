@@ -32,7 +32,7 @@ namespace SlaysherNetworking.Packets
         public override void Read(PacketReader reader)
         {
             PlayerId = reader.ReadInt();
-            Nickname = reader.ReadString16(12);
+            Nickname = reader.ReadString16(9);
             Health = reader.ReadInt();
             Speed = reader.ReadFloat();
 #if DEBUG
@@ -42,7 +42,7 @@ namespace SlaysherNetworking.Packets
 
         public override void Write()
         {
-            SetCapacity(21, Nickname);
+            SetCapacity(23, Nickname);
             Writer.Write(PlayerId);
             Writer.Write(Nickname);
             Writer.Write(Health);

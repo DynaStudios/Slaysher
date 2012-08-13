@@ -134,7 +134,7 @@ namespace Slaysher.Game.Scenes
             IPAddress address;
 
 #if DEBUG
-            NetworkUtils.Resolve("87.79.65.116", out address);
+            NetworkUtils.Resolve("192.168.0.108", out address);
 #else
             NetworkUtils.Resolve("slaysher.dyna-studios.com", out address);
 #endif

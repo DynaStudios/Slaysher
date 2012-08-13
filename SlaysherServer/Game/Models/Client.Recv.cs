@@ -44,7 +44,14 @@ namespace SlaysherServer.Game.Models
 
         private void RecvCompleted(object sender, SocketAsyncEventArgs e)
         {
-            if (Running)
+            if (!Running)
+                DisposeRecvSystem();
+            else if (e.SocketError != SocketError.Success || e.BytesTransferred == 0)
+            {
+                Client client;
+                _nextActivityCheck = DateTime.MinValue;
+            }
+            else
             {
                 if (DateTime.Now + TimeSpan.FromSeconds(5) > _nextActivityCheck)
                     _nextActivityCheck = DateTime.Now + TimeSpan.FromSeconds(5);
@@ -91,7 +98,8 @@ namespace SlaysherServer.Game.Models
                         Y = pattern.Y
                     };
 
-                SendPacket(packet);
+                SendSyncPacket(packet);
+                
             }
         }
 

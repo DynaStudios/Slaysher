@@ -2,7 +2,7 @@
 {
     public enum PacketType : byte
     {
-        Handshake = 0x00,
+        Handshake = 0x09,
         Kick = 0x01,
         KeepAlive = 0x02,
         PlayerPosition = 0x03,

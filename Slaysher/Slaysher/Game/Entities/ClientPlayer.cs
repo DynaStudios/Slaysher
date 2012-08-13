@@ -64,55 +64,64 @@ namespace Slaysher.Game.Entities
         {
         }
 
+        private float? HandleInputMovingUp(KeyboardState keyboardState)
+        {
+            if (keyboardState.IsKeyDown(Keys.S))
+            {
+                return null;
+            }
+            if (keyboardState.IsKeyDown(Keys.A))
+            {
+                return Directions.UpLeft;
+            }
+
+            if (keyboardState.IsKeyDown(Keys.D))
+            {
+                return Directions.UpRight;
+            }
+            return Directions.Up;
+        }
+
+        private float? HandleInputMovingDown(KeyboardState keyboardState)
+        {
+            if (keyboardState.IsKeyDown(Keys.A))
+            {
+                return Directions.DownLeft;
+            }
+            if (keyboardState.IsKeyDown(Keys.D))
+            {
+                return Directions.DownRight;
+            }
+            return Directions.Down;
+        }
+
+        private float? HandleInputMoving(KeyboardState keyboardState)
+        {
+            if (keyboardState.IsKeyDown(Keys.W))
+            {
+                return HandleInputMovingUp(keyboardState);
+            }
+            if (keyboardState.IsKeyDown(Keys.S))
+            {
+                return HandleInputMovingDown(keyboardState);
+            }
+            if (keyboardState.IsKeyDown(Keys.A))
+            {
+                return Directions.Left;
+            }
+            if (keyboardState.IsKeyDown(Keys.D))
+            {
+                return Directions.Right;
+            }
+            return null;
+        }
+
         private void HandleInput()
         {
             KeyboardState keyboardState = Keyboard.GetState();
             float? direction = null;
 
-            if (keyboardState.IsKeyDown(Keys.W))
-            {
-                if (!keyboardState.IsKeyDown(Keys.S))
-                {
-                    if (keyboardState.IsKeyDown(Keys.A))
-                    {
-                        direction = Directions.UpLeft;
-                    }
-                    else if (keyboardState.IsKeyDown(Keys.D))
-                    {
-                        direction = Directions.UpRight;
-                    }
-                    else
-                    {
-                        direction = Directions.Up;
-                    }
-                }
-            }
-            else if (keyboardState.IsKeyDown(Keys.S))
-            {
-                if (keyboardState.IsKeyDown(Keys.A))
-                {
-                    direction = Directions.DownLeft;
-                }
-                else if (keyboardState.IsKeyDown(Keys.D))
-                {
-                    direction = Directions.DownRight;
-                }
-                else
-                {
-                    direction = Directions.Down;
-                }
-            }
-            else
-            {
-                if (keyboardState.IsKeyDown(Keys.A))
-                {
-                    direction = Directions.Left;
-                }
-                else if (keyboardState.IsKeyDown(Keys.D))
-                {
-                    direction = Directions.Right;
-                }
-            }
+            direction = HandleInputMoving(keyboardState);
 
             if (direction != null)
             {

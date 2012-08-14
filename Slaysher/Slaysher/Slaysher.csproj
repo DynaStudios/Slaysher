@@ -143,6 +143,8 @@
     <Compile Include="Game\Scenes\MainMenuScene.cs" />
     <Compile Include="Game\Scenes\TestPanelScreen.cs" />
     <Compile Include="Game\Entities\ClientPlayer.cs" />
+    <Compile Include="Game\Scenes\WorldGenTest.cs" />
+    <Compile Include="Game\Scenes\WorldGen\WorldGenMenu.cs" />
     <Compile Include="Game\World\Objects\Pattern.cs" />
     <Compile Include="Graphics\Camera\Camera.cs" />
     <Compile Include="Graphics\Extensions.cs" />

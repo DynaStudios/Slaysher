@@ -11,7 +11,7 @@ namespace Slaysher.Game.Scenes.WorldGen
         public override void Activate(bool instancePreserved)
         {
             base.Activate(instancePreserved);
-            PresentationOffset = new Vector2((ScreenManager.GraphicsDevice.Viewport.Width / 4) * 3f, (ScreenManager.GraphicsDevice.Viewport.Height / 4) * 3f);
+            PresentationOffset = new Vector2((ScreenManager.GraphicsDevice.Viewport.Width / 4) * 3.05f, (ScreenManager.GraphicsDevice.Viewport.Height / 4) * 3.5f);
         }
 
         #endregion

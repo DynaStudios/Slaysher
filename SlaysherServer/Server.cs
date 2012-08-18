@@ -200,95 +200,92 @@ namespace SlaysherServer
         {
             int count = RecvClientQueue.Count;
 
-            Parallel.For(0, count, ProcessSingelRead);
-        }
-
-        private static void ProcessSingelRead(int i)
-        {
-            Client client;
-            if (!RecvClientQueue.TryDequeue(out client))
+            Parallel.For(0, count, i =>
             {
-                return;
-            }
+                Client client;
+                if (!RecvClientQueue.TryDequeue(out client))
+                    return;
 
-            if (!client.Running)
-            {
-                return;
-            }
+                if (!client.Running)
+                    return;
 
-            Interlocked.Exchange(ref client.TimesEnqueuedForRecv, 0);
-            ByteQueue bufferToProcess = client.GetBufferToProcess();
+                Interlocked.Exchange(ref client.TimesEnqueuedForRecv, 0);
+                ByteQueue bufferToProcess = client.GetBufferToProcess();
 
-            int length = client.FragPackets.Size + bufferToProcess.Size;
-            while (length > 0)
-            {
-                byte packetType = client.FragPackets.Size > 0
-                                      ? client.FragPackets.GetPacketId()
-                                      : bufferToProcess.GetPacketId();
-
-                //client.Logger.Log(Chraft.LogLevel.Info, "Reading packet {0}", ((PacketType)packetType).ToString());
-
-                Console.WriteLine("Try to resolve packet with id: " + packetType);
-                PacketHandler handler = PacketHandlers.GetHandler((PacketType) packetType);
-
-                if (handler == null)
+                int length = client.FragPackets.Size + bufferToProcess.Size;
+                while (length > 0)
                 {
-                    byte[] unhandledPacketData = GetBufferToBeRead(bufferToProcess, client, length);
+                    byte packetType = 0;
 
-                    length = 0;
-                }
-                else if (handler.Length == 0)
-                {
-                    byte[] data = GetBufferToBeRead(bufferToProcess, client, length);
+                    if (client.FragPackets.Size > 0)
+                        packetType = client.FragPackets.GetPacketId();
+                    else
+                        packetType = bufferToProcess.GetPacketId();
 
-                    if (length >= handler.MinimumLength)
+                    PacketHandler handler = PacketHandlers.GetHandler((PacketType)packetType);
+
+                    if (handler == null)
                     {
-                        PacketReader reader = new PacketReader(data, length);
+                        byte[] unhandledPacketData = GetBufferToBeRead(bufferToProcess, client, length);
+                        Console.WriteLine("Unhandled packet arrived, id: {0}", unhandledPacketData[0]);
+                        Console.WriteLine("Data:\r\n {0}", BitConverter.ToString(unhandledPacketData, 1));
 
-                        handler.OnReceive(client, reader);
+                        length = 0;
+                    }
+                    else if (handler.Length == 0)
+                    {
+                        byte[] data = GetBufferToBeRead(bufferToProcess, client, length);
 
-                        // If we failed it's because the packet isn't complete
-                        if (reader.Failed)
+                        if (length >= handler.MinimumLength)
+                        {
+                            PacketReader reader = new PacketReader(data, length);
+
+                            handler.OnReceive(client, reader);
+
+                            // If we failed it's because the packet isn't complete
+                            if (reader.Failed)
+                            {
+                                EnqueueFragment(client, data);
+                                length = 0;
+                            }
+                            else
+                            {
+                                bufferToProcess.Enqueue(data, reader.Index, data.Length - reader.Index);
+                                length = bufferToProcess.Length;
+                            }
+                        }
+                        else
                         {
                             EnqueueFragment(client, data);
                             length = 0;
                         }
-                        else
+
+                    }
+                    else if (length >= handler.Length)
+                    {
+                        byte[] data = GetBufferToBeRead(bufferToProcess, client, handler.Length);
+
+                        PacketReader reader = new PacketReader(data, handler.Length);
+
+                        handler.OnReceive(client, reader);
+
+                        // If we failed it's because the packet is wrong
+                        if (reader.Failed)
                         {
-                            bufferToProcess.Enqueue(data, reader.Index, data.Length - reader.Index);
-                            length = bufferToProcess.Length;
+                            client.MarkToDispose();
+                            length = 0;
                         }
+                        else
+                            length = bufferToProcess.Length;
                     }
                     else
                     {
+                        byte[] data = GetBufferToBeRead(bufferToProcess, client, length);
                         EnqueueFragment(client, data);
                         length = 0;
                     }
                 }
-                else if (length >= handler.Length)
-                {
-                    byte[] data = GetBufferToBeRead(bufferToProcess, client, handler.Length);
-
-                    PacketReader reader = new PacketReader(data, handler.Length);
-
-                    handler.OnReceive(client, reader);
-
-                    // If we failed it's because the packet is wrong
-                    if (reader.Failed)
-                    {
-                        client.MarkToDispose();
-                        length = 0;
-                    }
-                    else
-                        length = bufferToProcess.Length;
-                }
-                else
-                {
-                    byte[] data = GetBufferToBeRead(bufferToProcess, client, length);
-                    EnqueueFragment(client, data);
-                    length = 0;
-                }
-            }
+            });
         }
 
         private static void EnqueueFragment(Client client, byte[] data)
@@ -312,9 +309,14 @@ namespace SlaysherServer
             if (length > availableData)
                 return null;
 
+            int fromFrag;
+
             byte[] data = new byte[length];
 
-            int fromFrag = length >= client.FragPackets.Size ? client.FragPackets.Size : length;
+            if (length >= client.FragPackets.Size)
+                fromFrag = client.FragPackets.Size;
+            else
+                fromFrag = length;
 
             client.FragPackets.Dequeue(data, 0, fromFrag);
 
@@ -418,6 +420,36 @@ namespace SlaysherServer
             packet.SetShared(clients.Length);
 
             Parallel.ForEach(clients, client => client.SendPacket(packet));
+        }
+
+        internal void SendPacketToClientList(Packet packet, Client[] targetList, Client excludedClient = null)
+        {
+            if (targetList.Length == 0)
+                return;
+
+            if (targetList.Length == 1)
+            {
+                if (targetList[0] == excludedClient)
+                    return;
+                targetList[0].SendPacket(packet);
+            }
+            else
+            {
+                packet.SetShared(targetList.Length);
+
+                Parallel.ForEach(targetList, client =>
+                    {
+                        if (excludedClient != client)
+                        {
+                            client.SendPacket(packet);
+                        }
+                        else
+                        {
+                            packet.Release();
+                        }
+                    });
+            }
+
         }
 
         internal void SendPacketToNearbyPlayers(WorldPosition pos, Packet packet, Client excludedClient = null)

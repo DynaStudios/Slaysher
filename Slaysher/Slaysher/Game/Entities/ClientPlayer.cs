@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
@@ -28,23 +29,25 @@ namespace Slaysher.Game.Entities
         public const float UpLeft = 315.0f;
     }
 
-    public class ClientPlayer : Player
+    public class ClientPlayer : ClientEntity, IPlayer
     {
+        public string Nickname { get; set; }
         private Client _client;
-        public override WorldPosition Position
+        private WorldPosition _position;
+        public WorldPosition Position
         {
-            get { return base.Position; }
+            get { return _position; }
             set
             {
-                if (base.Position == null)
+                if (_position == null)
                 {
-                    base.Position = new WorldPosition();
+                    _position = new WorldPosition();
                 }
-                base.Position.X = value.X;
-                base.Position.Y = value.Y;
+                _position.X = value.X;
+                _position.Y = value.Y;
                 if (VisualPosition == null)
                 {
-                    VisualPosition = new WorldPosition(base.Position);
+                    VisualPosition = new WorldPosition(_position);
                 }
             }
         }
@@ -61,55 +64,64 @@ namespace Slaysher.Game.Entities
         {
         }
 
+        private float? HandleInputMovingUp(KeyboardState keyboardState)
+        {
+            if (keyboardState.IsKeyDown(Keys.S))
+            {
+                return null;
+            }
+            if (keyboardState.IsKeyDown(Keys.A))
+            {
+                return Directions.UpLeft;
+            }
+
+            if (keyboardState.IsKeyDown(Keys.D))
+            {
+                return Directions.UpRight;
+            }
+            return Directions.Up;
+        }
+
+        private float? HandleInputMovingDown(KeyboardState keyboardState)
+        {
+            if (keyboardState.IsKeyDown(Keys.A))
+            {
+                return Directions.DownLeft;
+            }
+            if (keyboardState.IsKeyDown(Keys.D))
+            {
+                return Directions.DownRight;
+            }
+            return Directions.Down;
+        }
+
+        private float? HandleInputMoving(KeyboardState keyboardState)
+        {
+            if (keyboardState.IsKeyDown(Keys.W))
+            {
+                return HandleInputMovingUp(keyboardState);
+            }
+            if (keyboardState.IsKeyDown(Keys.S))
+            {
+                return HandleInputMovingDown(keyboardState);
+            }
+            if (keyboardState.IsKeyDown(Keys.A))
+            {
+                return Directions.Left;
+            }
+            if (keyboardState.IsKeyDown(Keys.D))
+            {
+                return Directions.Right;
+            }
+            return null;
+        }
+
         private void HandleInput()
         {
             KeyboardState keyboardState = Keyboard.GetState();
             float? direction = null;
 
-            if (keyboardState.IsKeyDown(Keys.W))
-            {
-                if (!keyboardState.IsKeyDown(Keys.S))
-                {
-                    if (keyboardState.IsKeyDown(Keys.A))
-                    {
-                        direction = Directions.UpLeft;
-                    }
-                    else if (keyboardState.IsKeyDown(Keys.D))
-                    {
-                        direction = Directions.UpRight;
-                    }
-                    else
-                    {
-                        direction = Directions.Up;
-                    }
-                }
-            }
-            else if (keyboardState.IsKeyDown(Keys.S))
-            {
-                if (keyboardState.IsKeyDown(Keys.A))
-                {
-                    direction = Directions.DownLeft;
-                }
-                else if (keyboardState.IsKeyDown(Keys.D))
-                {
-                    direction = Directions.DownRight;
-                }
-                else
-                {
-                    direction = Directions.Down;
-                }
-            }
-            else
-            {
-                if (keyboardState.IsKeyDown(Keys.A))
-                {
-                    direction = Directions.Left;
-                }
-                else if (keyboardState.IsKeyDown(Keys.D))
-                {
-                    direction = Directions.Right;
-                }
-            }
+            direction = HandleInputMoving(keyboardState);
 
             if (direction != null)
             {
@@ -121,7 +133,7 @@ namespace Slaysher.Game.Entities
             }
         }
 
-        private void smoothMove()
+        private void SmoothMove()
         {
             //VisualPosition.MoveASmoothStepTo(Position, 0.025f);
             VisualPosition.X = MathHelper.SmoothStep(VisualPosition.X, Position.X, 0.35f);
@@ -156,12 +168,12 @@ namespace Slaysher.Game.Entities
             Model = content.Load<Model>("Models/Pattern/Player/goblin_fbx");
         }
 
-        public void Tick(GameTime time)
+        public override void Tick(TimeSpan totalTime)
         {
-            ExecutePreparedMove(time.TotalGameTime);
-            ExecuteMovement(time.TotalGameTime);
+            this.ExecutePreparedMove(totalTime);
+            this.ExecuteMovement(totalTime);
 
-            smoothMove();
+            SmoothMove();
             HandleInput();
         }
 
@@ -174,7 +186,7 @@ namespace Slaysher.Game.Entities
             _lastMovementDirection = direction;
             MovePacket movePacket = new MovePacket
             {
-                EntetyId = Id,
+                EntityId = Id,
                 Direction = direction,
                 Speed = Speed
             };
@@ -190,7 +202,7 @@ namespace Slaysher.Game.Entities
             _lastMovementDirection = null;
             MovePacket movePacket = new MovePacket
             {
-                EntetyId = Id,
+                EntityId = Id,
                 Direction = 0,
                 Speed = 0
             };

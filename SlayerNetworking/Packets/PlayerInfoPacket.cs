@@ -1,4 +1,5 @@
-﻿using SlaysherNetworking.Game.Entities;
+﻿using System;
+using SlaysherNetworking.Game.Entities;
 using SlaysherNetworking.Packets.Utils;
 
 namespace SlaysherNetworking.Packets
@@ -14,30 +15,41 @@ namespace SlaysherNetworking.Packets
         public float X { get; set; }
         public float Y { get; set; }
 
+        public float Speed { get; set; }
+
         public PlayerInfoPacket()
         {
         }
 
-        public PlayerInfoPacket(Player player)
+        public PlayerInfoPacket(IPlayer player)
         {
             PlayerId = player.Id;
             Nickname = player.Nickname;
             Health = player.Health;
+            Speed = player.SpeedMeterPerMillisecond;
         }
 
         public override void Read(PacketReader reader)
         {
             PlayerId = reader.ReadInt();
-            Nickname = reader.ReadString16(12);
+            Nickname = reader.ReadString16(9);
             Health = reader.ReadInt();
+            Speed = reader.ReadFloat();
+#if DEBUG
+            Console.WriteLine(ToString());
+#endif
         }
 
         public override void Write()
         {
-            SetCapacity(17, Nickname);
+            SetCapacity(23, Nickname);
             Writer.Write(PlayerId);
             Writer.Write(Nickname);
             Writer.Write(Health);
+            Writer.Write(Speed);
+#if DEBUG
+            Console.WriteLine(ToString());
+#endif
         }
     }
 }

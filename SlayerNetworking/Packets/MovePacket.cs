@@ -1,4 +1,5 @@
-﻿using SlaysherNetworking.Packets.Utils;
+﻿using System;
+using SlaysherNetworking.Packets.Utils;
 using SlaysherNetworking.Game.World;
 
 namespace SlaysherNetworking.Packets
@@ -6,10 +7,10 @@ namespace SlaysherNetworking.Packets
     public class MovePacket : Packet
     {
         public WorldPosition Position { get; set; }
-        public int EntetyId { get; set; }
+        public int EntityId { get; set; }
         public float Direction { get; set; }
         public float Speed { get; set; }
-        protected override int Length { get { return 25; } }
+        protected override int Length { get { return 21; } }
 
         public MovePacket()
         {
@@ -17,7 +18,7 @@ namespace SlaysherNetworking.Packets
         }
 
         public override void Read(PacketReader reader) {
-            EntetyId = reader.ReadInt();
+            EntityId = reader.ReadInt();
             Position = new WorldPosition
             {
                 X = reader.ReadFloat(),
@@ -25,15 +26,21 @@ namespace SlaysherNetworking.Packets
             };
             Direction = reader.ReadFloat();
             Speed = reader.ReadFloat();
+#if DEBUG
+            Console.WriteLine(ToString());
+#endif
         }
 
         public override void Write() {
             SetCapacity();
-            Writer.Write(EntetyId);
+            Writer.Write(EntityId);
             Writer.Write(Position.X);
             Writer.Write(Position.Y);
             Writer.Write(Direction);
             Writer.Write(Speed);
+#if DEBUG
+            Console.WriteLine(ToString());
+#endif
         }
     }
 }

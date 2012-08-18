@@ -1,15 +1,15 @@
 ﻿using System.Collections.Generic;
-using MySql.Data.MySqlClient;
+using Npgsql;
 using SlaysherServer.Game;
 
 namespace SlaysherServer.Database
 {
     public class PatternTypeDAO
     {
-        private readonly MySqlConnection _db;
-        private MySqlCommand _allPatternTypes;
+        private readonly NpgsqlConnection _db;
+        private NpgsqlCommand _allPatternTypes;
 
-        internal PatternTypeDAO(MySqlConnection db)
+        internal PatternTypeDAO(NpgsqlConnection db)
         {
             _db = db;
         }
@@ -18,13 +18,13 @@ namespace SlaysherServer.Database
         {
             if (_allPatternTypes == null)
             {
-                _allPatternTypes = new MySqlCommand(
+                _allPatternTypes = new NpgsqlCommand(
                     "SELECT id, north, south, west, east, textureid"
                     + " FROM patterntype",
                     _db);
             }
 
-            MySqlDataReader reader = _allPatternTypes.ExecuteReader();
+            var reader = _allPatternTypes.ExecuteReader();
             List<PatternType> patternTypes = new List<PatternType>();
 
             while (reader.Read())

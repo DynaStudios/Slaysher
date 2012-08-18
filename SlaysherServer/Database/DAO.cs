@@ -1,4 +1,4 @@
-﻿using MySql.Data.MySqlClient;
+﻿using Npgsql;
 
 namespace SlaysherServer.Database
 {
@@ -7,12 +7,11 @@ namespace SlaysherServer.Database
         // TODO: login handling is missing! using static login information for now
         private const string ConnectionString =
             "server=direct.dyna-studios.com;"
-            + "uid=slaysher;"
-            + "pwd=start123;"
-            + "database=slaysher;"
-            + "port=3306";
+            + "User ID=postgres;"
+            + "Password=start123;"
+			+ "Database=slaysher;";
 
-        private readonly MySqlConnection _db;
+		private readonly NpgsqlConnection _dbcon;
 
         public GameObjectDAO GameObjectDAO { get; private set; }
 
@@ -20,11 +19,11 @@ namespace SlaysherServer.Database
 
         public DAO()
         {
-            _db = new MySqlConnection(ConnectionString);
-            _db.Open();
+            _dbcon = new NpgsqlConnection(ConnectionString);
+            _dbcon.Open();
 
-            GameObjectDAO = new GameObjectDAO(_db);
-            PatternTypeDAO = new PatternTypeDAO(_db);
+            GameObjectDAO = new GameObjectDAO(_dbcon);
+            PatternTypeDAO = new PatternTypeDAO(_dbcon);
         }
     }
 }

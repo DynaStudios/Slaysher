@@ -102,7 +102,7 @@ namespace Slaysher.Game.Scenes
         {
             int width = 512;
             int height = 512;
-            int octaveCount = 7;
+            int octaveCount = 8;
 
             Color gradientStart = Color.Green;
             Color gradiendEnd = Color.Brown;

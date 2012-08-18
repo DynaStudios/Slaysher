@@ -1,46 +1,67 @@
-﻿using System.Collections.Generic;
+using System;
+using System.Collections.Generic;
+
 using Npgsql;
+
 using SlaysherNetworking.Game.World.Objects;
 
 namespace SlaysherServer.Database
 {
-    public class GameObjectDAO
+    public class GameObjectDAO : IDisposable
     {
-        private readonly NpgsqlConnection _db;
-		private NpgsqlCommand _allGameObjectsCommand;
-
-        internal GameObjectDAO(NpgsqlConnection db)
+        private DAO dao;
+        private NpgsqlConnection Db { get { return dao.DBConnection; } }
+        private NpgsqlCommand _allGameObjectsCommand;
+        private NpgsqlCommand AllGameObjectsCommand
         {
-            _db = db;
+            get
+            {
+                if (_allGameObjectsCommand == null)
+                {
+                    _allGameObjectsCommand = new NpgsqlCommand(
+                        "SELECT id, posx, posy, posz, direction, model"
+                        + " FROM gameobjects",
+                        Db);
+                }
+                return _allGameObjectsCommand;
+            }
+        }
+        
+        internal GameObjectDAO(DAO dao)
+        {
+            this.dao = dao;
         }
 
-        public List<GameObject> GetAllGameObjects()
+        internal List<GameObject> GetAllGameObjects()
         {
-            if (_allGameObjectsCommand == null)
+            using (var reader = _allGameObjectsCommand.ExecuteReader())
             {
-                _allGameObjectsCommand = new NpgsqlCommand(
-                    "SELECT id, posx, posy, posz, direction, model"
-                    + " FROM gameobjects",
-                    _db);
-            }
 
-            var reader = _allGameObjectsCommand.ExecuteReader();
-            List<GameObject> gameObjects = new List<GameObject>();
+                List<GameObject> gameObjects = new List<GameObject>();
 
-            while (reader.Read())
-            {
-                GameObject obj = new GameObject
+                while (reader.Read())
+                {
+                    GameObject obj = new GameObject
                     {
-                        Id = (int) reader["id"],
-                        PosX = (float) reader["posx"],
-                        PosY = (float) reader["posy"],
-                        PosZ = (float) reader["posz"],
-                        Model = (string) reader["model"]
+                        Id = (int)reader["id"],
+                        PosX = (float)reader["posx"],
+                        PosY = (float)reader["posy"],
+                        PosZ = (float)reader["posz"],
+                        Model = (string)reader["model"]
                     };
-                gameObjects.Add(obj);
-            }
+                    gameObjects.Add(obj);
 
-            return gameObjects;
+                }
+                return gameObjects;
+            }
+        }
+
+        public void Dispose()
+        {
+            if (_allGameObjectsCommand != null)
+            {
+                _allGameObjectsCommand.Dispose();
+            }
         }
     }
 }

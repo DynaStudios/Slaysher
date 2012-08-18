@@ -46,6 +46,7 @@
     <Compile Include="Database\GameObjectDAO.cs" />
     <Compile Include="Database\PatternTypeDAO.cs" />
     <Compile Include="Game\Entities\ServerEntity.cs" />
+    <Compile Include="Database\PlayerDAO.cs" />
     <Compile Include="Game\Entities\ServerPlayer.cs" />
     <Compile Include="Game\Models\Client.cs" />
     <Compile Include="Game\Models\Client.Persistence.cs" />
@@ -69,7 +70,7 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="libs\mysql.data.dll" />
+    <Folder Include="libs\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

@@ -6,9 +6,11 @@ using System.Net;
 using System.Net.Sockets;
 using System.Threading;
 using System.Threading.Tasks;
+
 using SlaysherNetworking.Game.World;
 using SlaysherNetworking.Packets;
 using SlaysherNetworking.Packets.Utils;
+
 using SlaysherServer.Database;
 using SlaysherServer.Game;
 using SlaysherServer.Game.Models;
@@ -17,7 +19,7 @@ using SlaysherServer.Network.Handler;
 
 namespace SlaysherServer
 {
-    public class Server
+    public class Server : IDisposable
     {
         public const int TICK_TIME = 50;
         public static int SightRadius = 10;
@@ -353,7 +355,8 @@ namespace SlaysherServer
             {
                 Console.WriteLine("Incoming Connection");
                 int clientId = Interlocked.Increment(ref _nextClientId);
-                Client c = new Client(clientId, this, e.AcceptSocket);
+                // FIXME: client muss noch aus datenbank geladen werden
+                Client c = new Client(clientId, clientId, this, e.AcceptSocket);
 
                 c.Start();
 
@@ -483,6 +486,14 @@ namespace SlaysherServer
                 int playerPatternY = (int) Math.Floor(c.Player.Position.Y) >> 5;
                 if (Math.Abs(pos.X - playerPatternX) <= radius && Math.Abs(pos.Y - playerPatternY) <= radius)
                     yield return c;
+            }
+        }
+
+        public void Dispose()
+        {
+            if (DAO != null)
+            {
+                DAO.Dispose();
             }
         }
     }

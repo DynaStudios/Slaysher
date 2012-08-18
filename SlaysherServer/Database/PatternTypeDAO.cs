@@ -1,47 +1,68 @@
-﻿using System.Collections.Generic;
+using System;
+using System.Collections.Generic;
+
 using Npgsql;
+//using MySql.Data.MySqlClient;
+
 using SlaysherServer.Game;
 
 namespace SlaysherServer.Database
 {
-    public class PatternTypeDAO
+    public class PatternTypeDAO : IDisposable
     {
-        private readonly NpgsqlConnection _db;
+        private DAO dao;
+        private NpgsqlConnection Db { get { return dao.DBConnection; } }
         private NpgsqlCommand _allPatternTypes;
-
-        internal PatternTypeDAO(NpgsqlConnection db)
+        private NpgsqlCommand AllPatternTypes
         {
-            _db = db;
+            get
+            {
+                if (_allPatternTypes == null)
+                {
+                    _allPatternTypes = new NpgsqlCommand(
+                        "SELECT id, north, south, west, east, textureid"
+                        + " FROM patterntype",
+                        Db);
+                }
+                return _allPatternTypes;
+            }
+        }
+
+        internal PatternTypeDAO(DAO dao)
+        {
+            this.dao = dao;
         }
 
         public List<PatternType> GetAllPatternTypes()
         {
-            if (_allPatternTypes == null)
+            using (NpgsqlDataReader reader = AllPatternTypes.ExecuteReader())
             {
-                _allPatternTypes = new NpgsqlCommand(
-                    "SELECT id, north, south, west, east, textureid"
-                    + " FROM patterntype",
-                    _db);
-            }
+                List<PatternType> patternTypes = new List<PatternType>();
 
-            var reader = _allPatternTypes.ExecuteReader();
-            List<PatternType> patternTypes = new List<PatternType>();
-
-            while (reader.Read())
-            {
-                PatternType patternType = new PatternType
+                while (reader.Read())
+                {
+                    PatternType patternType = new PatternType
                     {
-                        DbId = (int) reader["id"],
-                        North = (int) reader["north"],
-                        South = (int) reader["south"],
-                        West = (int) reader["west"],
-                        East = (int) reader["east"],
-                        TextureId = (int) reader["textureid"]
+                        DbId = (int)reader["id"],
+                        North = (int)reader["north"],
+                        South = (int)reader["south"],
+                        West = (int)reader["west"],
+                        East = (int)reader["east"],
+                        TextureId = (int)reader["textureid"]
                     };
-                patternTypes.Add(patternType);
-            }
+                    patternTypes.Add(patternType);
+                }
 
-            return patternTypes;
+                return patternTypes;
+            }
+        }
+
+        public void Dispose()
+        {
+            if (_allPatternTypes != null)
+            {
+                _allPatternTypes.Dispose();
+            }
         }
     }
 }

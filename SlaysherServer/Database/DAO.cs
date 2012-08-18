@@ -1,8 +1,11 @@
-﻿using Npgsql;
+using Npgsql;
+using System;
+
+//using MySql.Data.MySqlClient;
 
 namespace SlaysherServer.Database
 {
-    public class DAO
+    public class DAO : IDisposable
     {
         // TODO: login handling is missing! using static login information for now
         private const string ConnectionString =
@@ -11,19 +14,30 @@ namespace SlaysherServer.Database
             + "Password=start123;"
 			+ "Database=slaysher;";
 
-		private readonly NpgsqlConnection _dbcon;
+        public NpgsqlConnection DBConnection { get; private set; }
 
         public GameObjectDAO GameObjectDAO { get; private set; }
 
         public PatternTypeDAO PatternTypeDAO { get; private set; }
 
+        public PlayerDAO Player { get; private set; }
+
         public DAO()
         {
-            _dbcon = new NpgsqlConnection(ConnectionString);
-            _dbcon.Open();
+            DBConnection = new NpgsqlConnection(ConnectionString);
+            DBConnection.Open();
 
-            GameObjectDAO = new GameObjectDAO(_dbcon);
-            PatternTypeDAO = new PatternTypeDAO(_dbcon);
+            GameObjectDAO = new GameObjectDAO(this);
+            PatternTypeDAO = new PatternTypeDAO(this);
+            Player = new PlayerDAO(this);
+        }
+
+        public void Dispose()
+        {
+            GameObjectDAO.Dispose();
+            PatternTypeDAO.Dispose();
+            Player.Dispose();
+            DBConnection.Dispose();
         }
     }
 }

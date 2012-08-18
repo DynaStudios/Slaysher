@@ -57,7 +57,7 @@ namespace Slaysher
             Components.Add(_screenManager);
             AddInitialScreens();
 
-            InitGraphicsMode(1024, 768, false);
+            InitGraphicsMode(Settings.GameSettings.ScreenWidth, Settings.GameSettings.ScreenHeight, Settings.GameSettings.Fullscreen);
 
             _keyboardHandler = new KeyboardHandler();
 
@@ -65,8 +65,8 @@ namespace Slaysher
             ClientDatabase = new Database();
 
             //Set Master Volumes. Replace later with user options
-            SoundEffect.MasterVolume = 0.3f;
-            MediaPlayer.Volume = 0.3f;
+            SoundEffect.MasterVolume = Settings.GameSettings.MasterVolume / 100;
+            MediaPlayer.Volume = Settings.GameSettings.MusicVolume / 100;
 
         }
 
@@ -143,6 +143,12 @@ namespace Slaysher
                 }
             }
             return false;
+        }
+
+        protected override void OnExiting(object sender, EventArgs args)
+        {
+            Settings.ForceSave();
+            base.OnExiting(sender, args);
         }
     }
 }

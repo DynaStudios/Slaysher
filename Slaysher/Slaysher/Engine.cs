@@ -9,6 +9,7 @@ using Slaysher.Game.Database;
 using Slaysher.Game.GUI;
 using Slaysher.Game.IO;
 using Slaysher.Game.Scenes;
+using Slaysher.Game.Settings;
 
 namespace Slaysher
 {
@@ -23,6 +24,8 @@ namespace Slaysher
         public GameState GameState { get; set; }
 
         public GUIManager GUIManager { get; set; }
+
+        public SettingsManager Settings { get; set; }
 
         private readonly ScreenManager _screenManager;
         private readonly ScreenFactory _screenFactory;
@@ -43,6 +46,8 @@ namespace Slaysher
 
             Content.RootDirectory = "Content";
             TargetElapsedTime = TimeSpan.FromTicks(333333);
+
+            Settings = new SettingsManager();
 
             _screenFactory = new ScreenFactory();
             Services.AddService(typeof(IScreenFactory), _screenFactory);

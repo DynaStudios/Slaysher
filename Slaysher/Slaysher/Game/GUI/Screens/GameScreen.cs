@@ -52,6 +52,11 @@ namespace Slaysher.Game.GUI.Screens
         public bool IsExiting { get; protected internal set; }
 
         /// <summary>
+        /// Sets Draw Ordering
+        /// </summary>
+        public int ZIndex { get; set; }
+
+        /// <summary>
         /// Checks if Screen is visible and able to handle user input
         /// </summary>
         public bool IsActive
@@ -73,6 +78,7 @@ namespace Slaysher.Game.GUI.Screens
         protected GameScreen()
         {
             TransitionPosition = 1;
+            ZIndex = 0;
             ScreenState = ScreenState.TransitionOn;
         }
 

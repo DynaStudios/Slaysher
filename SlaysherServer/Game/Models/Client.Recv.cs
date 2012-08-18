@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Net.Sockets;
 using System.Threading;
 
@@ -12,17 +13,6 @@ namespace SlaysherServer.Game.Models
     {
         public int TimesEnqueuedForRecv;
         private readonly object _queueSwapLock = new object();
-
-        public void PlayerRequestsToMove(int playerId, float direction, float speed)
-        {
-            if (Player.Id != playerId)
-            {
-                Console.WriteLine("player({0}) send MoveRequest with wrong id({1})", Player.Id, playerId);
-                return;
-            }
-
-            Player.PrepareToMove(direction, speed);
-        }
 
         private void RecvStart()
         {
@@ -54,7 +44,14 @@ namespace SlaysherServer.Game.Models
 
         private void RecvCompleted(object sender, SocketAsyncEventArgs e)
         {
-            if (Running)
+            if (!Running)
+                DisposeRecvSystem();
+            else if (e.SocketError != SocketError.Success || e.BytesTransferred == 0)
+            {
+                Client client;
+                _nextActivityCheck = DateTime.MinValue;
+            }
+            else
             {
                 if (DateTime.Now + TimeSpan.FromSeconds(5) > _nextActivityCheck)
                     _nextActivityCheck = DateTime.Now + TimeSpan.FromSeconds(5);
@@ -101,15 +98,16 @@ namespace SlaysherServer.Game.Models
                         Y = pattern.Y
                     };
 
-                SendPacket(packet);
+                SendSyncPacket(packet);
+                
             }
         }
 
-        public static void HandleHandshake(Client client, HandshakePacket packet)
+        public void HandleHandshake(HandshakePacket packet)
         {
-            if (packet.Username != null && !client.IsLoggingIn)
+            if (packet.Username != null && !IsLoggingIn)
             {
-                client.IsLoggingIn = true;
+                IsLoggingIn = true;
                 // check for baned users
                 // if (banlist.Contains(client)) {
                 //    client.SendPacket(new KickPacket() { message = "You'r BANNED!!!! Get lost!" };
@@ -119,31 +117,39 @@ namespace SlaysherServer.Game.Models
                 Console.WriteLine("Received Login for User " + packet.Username);
 
                 Console.WriteLine("Send Handshake back!");
-                client.SendPacket(new HandshakePacket(packet.Username));
+                SendPacket(new HandshakePacket(packet.Username));
 
                 Console.WriteLine("Send Player Information");
-                client.LoadPlayer();
-                client.SendPlayerInfo();
+                LoadPlayer();
+                SendPlayerInfo();
 
-                client.SendPattern();
+                Console.WriteLine("Send Pattern");
+                SendPattern();
 
-                client.LastSendKeepAliveStamp = DateTime.Now.Ticks;
+                LastSendKeepAliveStamp = DateTime.Now.Ticks;
 
                 Console.WriteLine("Finished Init. Send KeepAlive");
-                KeepAlivePacket keepAlive = new KeepAlivePacket {TimeStamp = client.LastSendKeepAliveStamp};
-                client.SendPacket(keepAlive);
+                KeepAlivePacket keepAlive = new KeepAlivePacket {TimeStamp = LastSendKeepAliveStamp};
+                SendPacket(keepAlive);
             }
         }
 
-        private void SendPlayerInfo()
+        public void SendPlayerInfo()
         {
-            SendPacket(new PlayerInfoPacket(Player));
-            SendPacket(new PlayerPositionPacket(Player));
+            SendPlayerInfo(Player);
+        }
+
+        private void SendPlayerInfo(IPlayer player)
+        {
+            SendPacket(new PlayerInfoPacket(player));
+            //SendPacket(new PlayerPositionPacket(Player));
         }
 
         private void LoadPlayer()
         {
             Player = Load();
+            IEnumerable<Client> clients = Server.GetNearbyPlayers(Player.Position);
+            InformClients(clients);
         }
 
         public static void HandleKeepAlive(Client client, KeepAlivePacket ap)
@@ -157,6 +163,11 @@ namespace SlaysherServer.Game.Models
                 //Keep Alive Response came within time
                 Console.WriteLine("Timeout Check is okey.");
             }
+        }
+
+        public static void HandleMovePacket(Client client, MovePacket mp)
+        {
+            client.Player.PrepareToMove(mp.Direction, mp.Speed);
         }
     }
 }

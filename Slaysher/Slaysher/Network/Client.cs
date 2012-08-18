@@ -2,6 +2,7 @@
 using System.Collections.Concurrent;
 using System.Net;
 using System.Net.Sockets;
+using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -210,11 +211,10 @@ namespace Slaysher.Network
             if (e.BytesTransferred > 0)
             {
                 lock (_queueLock)
-                {
                     _receiveBufferQueue.Enqueue(e.Buffer, 0, e.BytesTransferred);
-                    _recv.Set();
-                    RecvPacket();
-                }
+                _recv.Set();
+                RecvPacket();
+
             }
         }
 
@@ -243,12 +243,15 @@ namespace Slaysher.Network
 
                     if (handler == null)
                     {
-                        Console.WriteLine("Received unknown packet!");
+                        byte[] unhandled = GetBufferToBeRead(length);
+                        Console.WriteLine("Received unknown packet! Id:{0}", packetType);
+                        Console.WriteLine("Fehler {0}", BitConverter.ToString(unhandled));
                         length = 0;
                     }
                     else if (handler.Length == 0)
                     {
                         byte[] data = GetBufferToBeRead(length);
+                        Console.WriteLine("Klappt {0}", BitConverter.ToString(data));
 
                         if (length >= handler.MinimumLength)
                         {
@@ -382,21 +385,38 @@ namespace Slaysher.Network
             client.GameScene.Pattern.Add(pp.PatternId, newPattern);
         }
 
-        public static void HandleEntitySpawn(Client client, EntitySpawnPacket esp)
+        public void HandleEntitySpawn(EntitySpawnPacket esp)
         {
-            throw new NotImplementedException();
+            //FIXME: Entities must have more details
+            IEntity entety;
+            if (!GameScene.Entities.TryGetValue(esp.EntityId, out entety))
+            {
+                entety = new ClientPlayer(this)
+                {
+                    Id = esp.EntityId,
+                    Health = esp.Health,
+                    Nickname = esp.Nickname,
+                    Position = new WorldPosition(esp.X, esp.Y)
+                };
+                GameScene.Entities.Add(entety.Id, entety);
+            }
+            else
+            {
+                // FIXME: update the entetie here
+            }
         }
 
-        public static void HandleEntityDespawn(Client client, EntityDespawnPacket edp)
+        public void HandleEntityDespawn(EntityDespawnPacket edp)
         {
-            throw new NotImplementedException();
+            GameScene.Entities.Remove(edp.EntityId);
         }
 
         public void Move(int entityId, WorldPosition position, float direction, float speed)
         {
-            Entity entity;
-            if (!GameScene.Enteties.TryGetValue(entityId, out entity))
+            IEntity entity;
+            if (!GameScene.Entities.TryGetValue(entityId, out entity))
             {
+                Console.WriteLine("Couldn't find entity with id" + entityId);
                 return;
             }
 
@@ -411,21 +431,27 @@ namespace Slaysher.Network
         public void HandlePlayerInfo(PlayerInfoPacket pip)
         {
             Console.WriteLine("Received Player Info Packet");
-            if (GameScene.Player == null && pip.PlayerId == 0)
+            ClientPlayer player = new ClientPlayer(this) {
+                Id = pip.PlayerId,
+                Nickname = pip.Nickname,
+                Health = pip.Health,
+                Position = new WorldPosition(pip.X, pip.Y),
+                SpeedMeterPerMillisecond = pip.Speed
+            };
+            // FIXME: ModelScaling should be dynamic, model depending and influencable by the server
+            player.ModelScaling = 1f / 512f;
+
+            if (GameScene.Entities.ContainsKey(player.Id))
             {
-                ClientPlayer player = new ClientPlayer(this) {
-                    Id = pip.PlayerId,
-                    Nickname = pip.Nickname,
-                    Health = pip.Health,
-                    Position = new WorldPosition(pip.X, pip.Y)
-                };
-                // FIXME: ModelScaling should be dynamic, model depending and influencable by the server
-                player.ModelScaling = 1f / 512f;
-                GameScene.Player = player;
+                Console.WriteLine("Tried to add new Player to Entity List, but already exists!");
             }
-            else
+            else { 
+                GameScene.Entities.Add(player.Id, player);
+            }
+            // first PlayerInfoPacket is the Player
+            if (GameScene.Player == null)
             {
-                Console.WriteLine("Error! There is no way a Player Object should already exist!");
+                GameScene.Player = player;
             }
         }
 

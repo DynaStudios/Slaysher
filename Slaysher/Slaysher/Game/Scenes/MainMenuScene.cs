@@ -24,14 +24,17 @@ namespace Slaysher.Game.Scenes
 
             Button playButton = new Button("Start Game") { HoverSound = hoverSound, ClickSound = clickSound};
             Button panelButton = new Button("Panel Test") { HoverSound = hoverSound, ClickSound = clickSound };
+            Button worldgenButton = new Button("World Generator") { HoverSound = hoverSound, ClickSound = clickSound };
             Button exitButton = new Button("Exit Game") { HoverSound = hoverSound, ClickSound = clickSound };
 
             playButton.Clicked += StartGameButtonClicked;
             panelButton.Clicked += PanelButtonClicked;
+            worldgenButton.Clicked += WorldGenButtonClicked;
             exitButton.Clicked += ExitGameButtonClicked;
 
             MenuEntries.Add(playButton);
             MenuEntries.Add(panelButton);
+            MenuEntries.Add(worldgenButton);
             MenuEntries.Add(exitButton);
         }
 
@@ -39,12 +42,17 @@ namespace Slaysher.Game.Scenes
 
         private void StartGameButtonClicked(object sender, EventArgs e)
         {
-            LoadingScreen.Load(ScreenManager, true, new GameScene());
+            LoadingScreen.Load(ScreenManager, true, "Loading...", new GameScene());
         }
 
         private void PanelButtonClicked(object sender, EventArgs e)
         {
             ScreenManager.AddScreen(new TestPanelScreen {Title = "Panel Test"});
+        }
+
+        private void WorldGenButtonClicked(object sender, EventArgs e)
+        {
+            LoadingScreen.Load(ScreenManager, true, "Generating Terrain...", new WorldGenTest());
         }
 
         private void ExitGameButtonClicked(object sender, EventArgs e)

@@ -1,4 +1,5 @@
-﻿using SlaysherNetworking.Packets.Utils;
+﻿using System;
+using SlaysherNetworking.Packets.Utils;
 
 namespace SlaysherNetworking.Packets
 {
@@ -21,6 +22,9 @@ namespace SlaysherNetworking.Packets
             Health = reader.ReadInt();
             X = reader.ReadFloat();
             Y = reader.ReadFloat();
+#if DEBUG
+            Console.WriteLine(ToString());
+#endif
         }
 
         public override void Write()
@@ -31,6 +35,9 @@ namespace SlaysherNetworking.Packets
             Writer.Write(Health);
             Writer.Write(X);
             Writer.Write(Y);
+#if DEBUG
+            Console.WriteLine(ToString());
+#endif
         }
     }
 }

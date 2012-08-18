@@ -1,15 +1,15 @@
 ﻿using System.Collections.Generic;
-using MySql.Data.MySqlClient;
+using Npgsql;
 using SlaysherNetworking.Game.World.Objects;
 
 namespace SlaysherServer.Database
 {
     public class GameObjectDAO
     {
-        private readonly MySqlConnection _db;
-        private MySqlCommand _allGameObjectsCommand;
+        private readonly NpgsqlConnection _db;
+		private NpgsqlCommand _allGameObjectsCommand;
 
-        internal GameObjectDAO(MySqlConnection db)
+        internal GameObjectDAO(NpgsqlConnection db)
         {
             _db = db;
         }
@@ -18,13 +18,13 @@ namespace SlaysherServer.Database
         {
             if (_allGameObjectsCommand == null)
             {
-                _allGameObjectsCommand = new MySqlCommand(
+                _allGameObjectsCommand = new NpgsqlCommand(
                     "SELECT id, posx, posy, posz, direction, model"
                     + " FROM gameobjects",
                     _db);
             }
 
-            MySqlDataReader reader = _allGameObjectsCommand.ExecuteReader();
+            var reader = _allGameObjectsCommand.ExecuteReader();
             List<GameObject> gameObjects = new List<GameObject>();
 
             while (reader.Read())

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.Concurrent;
 using System.Linq;
 using System.Net.Sockets;
 using System.Threading.Tasks;
@@ -15,6 +16,7 @@ namespace SlaysherServer.Game.Models
 {
     public partial class Client
     {
+        private ConcurrentDictionary<Client, byte> _awareCloseClients = new ConcurrentDictionary<Client, byte>();
         public volatile bool Running = true;
 
         //Network Buffers
@@ -107,18 +109,7 @@ namespace SlaysherServer.Game.Models
 
                 Server.RemoveClient(this);
 
-                Client[] nearbyClients = Server.GetNearbyPlayers(Player.Position).ToArray();
-
-                foreach (var client in nearbyClients)
-                {
-                    if (client != this)
-                    {
-                        EntityDespawnPacket dp = new EntityDespawnPacket {EntityId = client.ClientId};
-                        dp.Write();
-                        byte[] data = dp.GetBuffer();
-                        client.SendSync(data);
-                    }
-                }
+                UninformAllClients();
 
                 Running = false;
             }
@@ -185,11 +176,55 @@ namespace SlaysherServer.Game.Models
         {
             if (Player != null)
             {
-                MovePacket mp = Player.CreatePreperedMovePacket(totalTime);
+                MovePacket mp = Player.CreatePreparedMovePacket(totalTime);
                 if (mp != null)
                 {
-                    SendPacket(mp);
+                    //Nearby players
+                    Client[] nearbyClients = Server.GetNearbyPlayers(Player.Position).ToArray();
+
+                    var lostClientList = (from awareCloseClient in _awareCloseClients
+                                          where !nearbyClients.Contains(awareCloseClient.Key)
+                                          select awareCloseClient.Key).ToList();
+                    var newPlayerList = nearbyClients.Where(nearbyClient => !_awareCloseClients.ContainsKey(nearbyClient)).ToList();
+
+                    //Inform new Players
+                    InformClients(newPlayerList);
+
+                    //Send Packet
+                    Server.SendPacketToClientList(mp, nearbyClients);
+
+                    //Uninform gone players
+                    Parallel.ForEach(lostClientList, UninfomClient);
                 }
+            }
+        }
+
+        internal void InformClients(IEnumerable<Client> clients)
+        {
+            PlayerInfoPacket pip = new PlayerInfoPacket(Player);
+            Server.SendPacketToClientList(pip, clients.ToArray(), this);
+        }
+
+        internal void UninfomClient(Client client)
+        {
+            if (client != this)
+            {
+                EntityDespawnPacket dp = new EntityDespawnPacket { EntityId = client.ClientId };
+                dp.Write();
+                byte[] data = dp.GetBuffer();
+                client.SendSync(data);
+            }
+            byte dummy;
+            _awareCloseClients.TryRemove(client, out dummy);
+        }
+
+        internal void UninformAllClients()
+        {
+            ICollection<Client> nearbyClients = _awareCloseClients.Keys;
+
+            foreach (var client in nearbyClients)
+            {
+                UninfomClient(client);
             }
         }
     }

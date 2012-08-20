@@ -11,17 +11,20 @@ namespace Slaysher.Game.Scenes
         private readonly bool _loadingIsSlow;
         private bool _otherScreensAreGone;
 
+        public string Message { get; set; }
+
         private readonly GameScreen[] _screensToLoad;
 
         private LoadingScreen(ScreenManager screenManager, bool loadingIsSlow, GameScreen[] screensToLoad)
         {
             _loadingIsSlow = loadingIsSlow;
             _screensToLoad = screensToLoad;
+            Message = "Loading...";
 
             TransitionOnTime = TimeSpan.FromSeconds(0.5);
         }
 
-        public static void Load(ScreenManager screenManager, bool loadingIsSlow, params GameScreen[] screensToLoad)
+        public static void Load(ScreenManager screenManager, bool loadingIsSlow, string message = "Loading...", params GameScreen[] screensToLoad)
         {
             foreach (GameScreen gameScreen in screenManager.GetScreens())
             {
@@ -29,7 +32,7 @@ namespace Slaysher.Game.Scenes
 
             }
 
-            LoadingScreen loadingScreen = new LoadingScreen(screenManager, loadingIsSlow, screensToLoad);
+            LoadingScreen loadingScreen = new LoadingScreen(screenManager, loadingIsSlow, screensToLoad) {Message = message};
             screenManager.AddScreen(loadingScreen);
         }
 
@@ -74,17 +77,15 @@ namespace Slaysher.Game.Scenes
                 SpriteBatch spriteBatch = ScreenManager.SpriteBatch;
                 SpriteFont font = ScreenManager.Font;
 
-                const string message = "Loading...";
-
                 Viewport viewport = ScreenManager.GraphicsDevice.Viewport;
                 Vector2 viewportSize = new Vector2(viewport.Width, viewport.Height);
-                Vector2 textSize = font.MeasureString(message);
+                Vector2 textSize = font.MeasureString(Message);
                 Vector2 textPosition = (viewportSize - textSize)/2;
 
                 Color color = Color.White*TransitionAlpha;
 
                 spriteBatch.Begin();
-                spriteBatch.DrawString(font, message, textPosition, color);
+                spriteBatch.DrawString(font, Message, textPosition, color);
                 spriteBatch.End();
             }
 

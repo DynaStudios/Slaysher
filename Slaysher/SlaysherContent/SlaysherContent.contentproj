@@ -161,6 +161,21 @@
       <Importer>TextureImporter</Importer>
       <Processor>TextureProcessor</Processor>
     </Compile>
+    <Compile Include="Images\Game\Textures\dirt_512.png">
+      <Name>dirt_512</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+    <Compile Include="Images\Game\Textures\grass_512.png">
+      <Name>grass_512</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+    <Compile Include="Images\Game\Textures\dirt_512_j.jpg">
+      <Name>dirt_512_j</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
     <None Include="Data\patternTextures.xml">
       <Name>patternTextures</Name>
       <Importer>XmlImporter</Importer>

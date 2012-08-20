@@ -7,15 +7,17 @@ using SlaysherServer.Network;
 
 namespace SlaysherServer.Game.Entities
 {
-    public class ServerPlayer : Player
+    public class ServerPlayer : ServerEntity, IPlayer
     {
-        public MovePacket CreatePreperedMovePacket(TimeSpan totalTime)
+        public string Nickname { get; set; }
+
+        public MovePacket CreatePreparedMovePacket(TimeSpan totalTime)
         {
-            if (ExecutePreparedMove(totalTime))
+            if (this.ExecutePreparedMove(totalTime))
             {
                 MovePacket mp = new MovePacket
                 {
-                    EntetyId = Id,
+                    EntityId = Id,
                     Direction = Direction,
                     Position = Position,
                     Speed = IsMoving ? Speed : 0.0f,
@@ -24,6 +26,11 @@ namespace SlaysherServer.Game.Entities
                 return mp;
             }
             return null;
+        }
+
+        public override void Tick(TimeSpan timeSpan)
+        {
+            throw new NotImplementedException();
         }
     }
 }

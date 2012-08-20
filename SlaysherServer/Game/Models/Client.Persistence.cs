@@ -17,6 +17,7 @@ namespace SlaysherServer.Game.Models
             //TODO: DAO is missing atm
             ServerPlayer newInstance = new ServerPlayer
                 {
+                    Id = ClientId,
                     Health = 100,
                     Nickname = "TestUser" + ClientId,
                     Position = new WorldPosition(0, 0),

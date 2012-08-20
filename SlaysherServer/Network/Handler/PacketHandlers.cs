@@ -19,7 +19,7 @@ namespace SlaysherServer.Network.Handler
 
             Register(PacketType.Handshake, 0, 3, ReadHandshake);
             Register(PacketType.KeepAlive, 9, 0, ReadKeepAlive);
-            Register(PacketType.Movement, 25, 0, ReadMovement);
+            Register(PacketType.Movement, 21, 0, ReadMovement);
         }
 
         public static void Register(PacketType packetId, int length, int minimumLength, OnPacketReceive onReceive)
@@ -39,7 +39,7 @@ namespace SlaysherServer.Network.Handler
 
             if (!reader.Failed)
             {
-                Client.HandleHandshake(client, hp);
+                client.HandleHandshake(hp);
             }
         }
 
@@ -59,10 +59,10 @@ namespace SlaysherServer.Network.Handler
             MovePacket mp = new MovePacket();
             mp.Read(reader);
 
-            client.PlayerRequestsToMove(
-                mp.EntetyId,
-                mp.Direction,
-                mp.Speed);
+            if (!reader.Failed)
+            {
+                Client.HandleMovePacket(client, mp);
+            }
         }
     }
 }

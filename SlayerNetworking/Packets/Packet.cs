@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Reflection;
 using System.Text;
 using System.Threading;
+
 using SlaysherNetworking.Packets.Utils;
 
 namespace SlaysherNetworking.Packets
@@ -35,10 +37,14 @@ namespace SlaysherNetworking.Packets
             return PacketMap.GetPacketType(GetType());
         }
 
+        protected Packet()
+        {
+        }
+
         public void SetCapacity()
         {
             Writer = PacketWriter.CreateInstance(Length);
-            Writer.Write((byte) GetPacketType());
+            Writer.Write((byte)GetPacketType());
         }
 
         public void SetCapacity(int fixedLength)
@@ -49,18 +55,19 @@ namespace SlaysherNetworking.Packets
 
         public void SetCapacity(int fixedLength, params string[] args)
         {
-            if (args == null) throw new ArgumentNullException("args");
+            byte[] bytes;
+
             _length = fixedLength;
             Queue<byte[]> strings = new Queue<byte[]>();
-            foreach (string argument in args)
+            for (int i = 0; i < args.Length; ++i)
             {
-                byte[] bytes = Encoding.BigEndianUnicode.GetBytes(argument);
+                bytes = ASCIIEncoding.BigEndianUnicode.GetBytes(args[i]);
                 _length += bytes.Length;
                 strings.Enqueue(bytes);
             }
 
             Writer = PacketWriter.CreateInstance(Length, strings);
-            Writer.Write((byte) GetPacketType());
+            Writer.Write((byte)GetPacketType());
         }
 
         public void SetShared(int num)
@@ -85,7 +92,6 @@ namespace SlaysherNetworking.Packets
             }
         }
 
-        //Add Release Methods
         public void Release()
         {
             if (!Shared)
@@ -117,12 +123,39 @@ namespace SlaysherNetworking.Packets
                 }
                 catch (Exception e)
                 {
-                    throw new Exception(String.Format("Writer {0}, Request {1} \r\n{2}", underlyingBuffer.Length, Length,
-                                                      e));
+                    throw new Exception(String.Format("Writer {0}, Request {1} \r\n{2}", underlyingBuffer.Length, Length, e));
                 }
             }
 
             return _buffer;
         }
+
+#if DEBUG
+        public override string ToString()
+        {
+            StringBuilder sb = new StringBuilder();
+
+            Type t = this.GetType();
+            sb.AppendFormat("Packet: {0}\n", t.Name);
+            PropertyInfo[] pis = t.GetProperties();
+            for (int i = 0; i < pis.Length; i++)
+            {
+                try
+                {
+                    PropertyInfo pi = (PropertyInfo)pis.GetValue(i);
+                    sb.AppendFormat("{0}: {1}" + Environment.NewLine, pi.Name, pi.GetValue(this, new object[] { }));
+                }
+                catch (Exception)
+                {}
+            }
+
+            return sb.ToString();
+        }
     }
+#else
+    public override string ToString()
+    {
+        return base.ToString();
+    }
+#endif
 }

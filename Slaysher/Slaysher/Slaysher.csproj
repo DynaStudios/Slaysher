@@ -93,6 +93,7 @@
     <Reference Include="System">
       <Private>False</Private>
     </Reference>
+    <Reference Include="System.Drawing" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml">
       <Private>False</Private>
@@ -109,6 +110,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Game\Database\Database.cs" />
+    <Compile Include="Game\Entities\ClientEntity.cs" />
     <Compile Include="Game\GameState.cs" />
     <Compile Include="Game\GUI\Components\Button.cs" />
     <Compile Include="Game\GUI\Components\CheckBox.cs" />
@@ -142,6 +144,10 @@
     <Compile Include="Game\Scenes\MainMenuScene.cs" />
     <Compile Include="Game\Scenes\TestPanelScreen.cs" />
     <Compile Include="Game\Entities\ClientPlayer.cs" />
+    <Compile Include="Game\Scenes\WorldGenTest.cs" />
+    <Compile Include="Game\Scenes\WorldGen\WorldGenMenu.cs" />
+    <Compile Include="Game\Settings\Options\GameSettings.cs" />
+    <Compile Include="Game\Settings\SettingsManager.cs" />
     <Compile Include="Game\World\Objects\Pattern.cs" />
     <Compile Include="Graphics\Camera\Camera.cs" />
     <Compile Include="Graphics\Extensions.cs" />

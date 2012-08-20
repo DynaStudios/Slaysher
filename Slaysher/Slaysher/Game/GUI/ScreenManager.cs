@@ -69,7 +69,8 @@ namespace Slaysher.Game.GUI
         public override void Draw(GameTime gameTime)
         {
             //Let all screens draw their content
-            foreach (GameScreen screen in _screens)
+            var zSortedList = (from a in _screens orderby a.ZIndex ascending select a).ToArray();
+            foreach (GameScreen screen in zSortedList)
             {
                 if(screen.ScreenState == ScreenState.Hidden)
                     continue;

@@ -1,4 +1,5 @@
-﻿using SlaysherNetworking.Game.Entities;
+﻿using System;
+using SlaysherNetworking.Game.Entities;
 using SlaysherNetworking.Packets.Utils;
 
 namespace SlaysherNetworking.Packets
@@ -22,7 +23,7 @@ namespace SlaysherNetworking.Packets
         {
         }
 
-        public PlayerPositionPacket(Player player)
+        public PlayerPositionPacket(IPlayer player)
         {
             PlayerId = player.Id;
             X = player.Position.X;
@@ -36,6 +37,9 @@ namespace SlaysherNetworking.Packets
             X = reader.ReadFloat();
             Y = reader.ReadFloat();
             Z = reader.ReadFloat();
+#if DEBUG
+            Console.WriteLine(ToString());
+#endif
         }
 
         public override void Write()
@@ -45,6 +49,9 @@ namespace SlaysherNetworking.Packets
             Writer.Write(X);
             Writer.Write(Y);
             Writer.Write(Z);
+#if DEBUG
+            Console.WriteLine(ToString());
+#endif
         }
     }
 }

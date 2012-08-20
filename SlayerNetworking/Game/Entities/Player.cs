@@ -1,11 +1,7 @@
 ﻿namespace SlaysherNetworking.Game.Entities
 {
-    public class Player : Entity
+    public interface IPlayer : IEntity
     {
-        public string Nickname { get; set; }
-
-        public Player()
-        {
-        }
+        string Nickname { get; set; }
     }
 }

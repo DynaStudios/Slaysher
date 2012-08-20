@@ -5,5 +5,7 @@ obj
 # mstest test results
 TestResults
 *.suo
+*.userprefs
 **.cachefile
+*~
 _ReSharper*

@@ -35,7 +35,8 @@ namespace Slaysher.Graphics.Camera
         public Camera(WorldPosition target)
         {
             _target = target;
-            _offsetDistance = new Vector3(0, 15, 5);
+            //todo: Change back to 0, 15, 5
+            _offsetDistance = new Vector3(0, 40, 5);
             ResetCamera();
         }
 

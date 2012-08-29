@@ -43,6 +43,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Database\DAO.cs" />
+    <Compile Include="Database\DatabaseExtensions.cs" />
     <Compile Include="Database\GameObjectDAO.cs" />
     <Compile Include="Database\PatternTypeDAO.cs" />
     <Compile Include="Game\Entities\ServerEntity.cs" />

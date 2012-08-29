@@ -1,4 +1,4 @@
-﻿using Npgsql;
+﻿using System.Data.Common;
 
 using SlaysherNetworking.Game.World;
 
@@ -10,27 +10,17 @@ namespace SlaysherServer.Database
     public class PlayerDAO
     {
         private DAO dao;
-        private NpgsqlConnection Db { get { return dao.DBConnection; } }
-        private NpgsqlCommand _getForClientCommand = null;
-        private NpgsqlCommand GetForClientCommand
-        {
-            get
-            {
-                if (_getForClientCommand == null)
-                {
-                    _getForClientCommand = new NpgsqlCommand(
-                            "SELECT id, nickname, hp, model, modelScaling, posX, posY, speed, texture"
-                            + " FROM Player"
-                            + " WHERE client=@client"
-                            , Db);
-                }
-                return _getForClientCommand;
-            }
-        }
+        private DbConnection Db { get { return dao.DBConnection; } }
+        private DbCommand GetForClientCommand { get; set; }
 
         public PlayerDAO(DAO dao)
         {
             this.dao = dao;
+            GetForClientCommand = Db.CreateCommand();
+            GetForClientCommand.CommandText =
+                    "SELECT id, nickname, hp, model, modelScaling, posX, posY, speed, texture"
+                    + " FROM Player"
+                    + " WHERE client=@client";
         }
 
         public ServerPlayer getForClient(Client client)
@@ -38,7 +28,7 @@ namespace SlaysherServer.Database
             return getForClient(client.ClientId);
         }
 
-        private WorldPosition readPosition(NpgsqlDataReader reader)
+        private WorldPosition readPosition(DbDataReader reader)
         {
             return new WorldPosition((float)reader["posX"], (float)reader["posY"]);
         }
@@ -47,8 +37,10 @@ namespace SlaysherServer.Database
         {
             lock (GetForClientCommand)
             {
-                GetForClientCommand.Parameters.AddWithValue("client", clientId);
-                using (NpgsqlDataReader reader = GetForClientCommand.ExecuteReader())
+                GetForClientCommand.Parameters.Clear();
+                GetForClientCommand.SetParameter("client", clientId);
+
+                using (DbDataReader reader = GetForClientCommand.ExecuteReader())
                 {
                     return new ServerPlayer
                     {
@@ -72,9 +64,9 @@ namespace SlaysherServer.Database
 
         public void Dispose()
         {
-            if (_getForClientCommand != null)
+            if (GetForClientCommand != null)
             {
-                _getForClientCommand.Dispose();
+                GetForClientCommand.Dispose();
             }
         }
     }

@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
-
-using Npgsql;
+using System.Data.Common;
 
 using SlaysherNetworking.Game.World.Objects;
 
@@ -10,31 +9,22 @@ namespace SlaysherServer.Database
     public class GameObjectDAO : IDisposable
     {
         private DAO dao;
-        private NpgsqlConnection Db { get { return dao.DBConnection; } }
-        private NpgsqlCommand _allGameObjectsCommand;
-        private NpgsqlCommand AllGameObjectsCommand
-        {
-            get
-            {
-                if (_allGameObjectsCommand == null)
-                {
-                    _allGameObjectsCommand = new NpgsqlCommand(
-                        "SELECT id, posx, posy, posz, direction, model"
-                        + " FROM gameobjects",
-                        Db);
-                }
-                return _allGameObjectsCommand;
-            }
-        }
+        private DbConnection Db { get { return dao.DBConnection; } }
+        private DbCommand AllGameObjectsCommand { get; set; }
         
         internal GameObjectDAO(DAO dao)
         {
             this.dao = dao;
+
+            AllGameObjectsCommand = Db.CreateCommand();
+            AllGameObjectsCommand.CommandText =
+                "SELECT id, posx, posy, posz, direction, model"
+                + " FROM gameobjects";
         }
 
         internal List<GameObject> GetAllGameObjects()
         {
-            using (var reader = _allGameObjectsCommand.ExecuteReader())
+            using (var reader = AllGameObjectsCommand.ExecuteReader())
             {
 
                 List<GameObject> gameObjects = new List<GameObject>();
@@ -50,7 +40,6 @@ namespace SlaysherServer.Database
                         Model = (string)reader["model"]
                     };
                     gameObjects.Add(obj);
-
                 }
                 return gameObjects;
             }
@@ -58,9 +47,9 @@ namespace SlaysherServer.Database
 
         public void Dispose()
         {
-            if (_allGameObjectsCommand != null)
+            if (AllGameObjectsCommand != null)
             {
-                _allGameObjectsCommand.Dispose();
+                AllGameObjectsCommand.Dispose();
             }
         }
     }

@@ -1,8 +1,6 @@
 using System;
 using System.Collections.Generic;
-
-using Npgsql;
-//using MySql.Data.MySqlClient;
+using System.Data.Common;
 
 using SlaysherServer.Game;
 
@@ -11,31 +9,21 @@ namespace SlaysherServer.Database
     public class PatternTypeDAO : IDisposable
     {
         private DAO dao;
-        private NpgsqlConnection Db { get { return dao.DBConnection; } }
-        private NpgsqlCommand _allPatternTypes;
-        private NpgsqlCommand AllPatternTypes
-        {
-            get
-            {
-                if (_allPatternTypes == null)
-                {
-                    _allPatternTypes = new NpgsqlCommand(
-                        "SELECT id, north, south, west, east, textureid"
-                        + " FROM patterntype",
-                        Db);
-                }
-                return _allPatternTypes;
-            }
-        }
+        private DbConnection Db { get { return dao.DBConnection; } }
+        private DbCommand AllPatternTypes { get; set; }
 
         internal PatternTypeDAO(DAO dao)
         {
             this.dao = dao;
+
+            AllPatternTypes = Db.CreateCommand();
+            AllPatternTypes.CommandText = "SELECT id, north, south, west, east, textureid"
+                                        + " FROM patterntype";
         }
 
         public List<PatternType> GetAllPatternTypes()
         {
-            using (NpgsqlDataReader reader = AllPatternTypes.ExecuteReader())
+            using (DbDataReader reader = AllPatternTypes.ExecuteReader())
             {
                 List<PatternType> patternTypes = new List<PatternType>();
 
@@ -59,9 +47,9 @@ namespace SlaysherServer.Database
 
         public void Dispose()
         {
-            if (_allPatternTypes != null)
+            if (AllPatternTypes != null)
             {
-                _allPatternTypes.Dispose();
+                AllPatternTypes.Dispose();
             }
         }
     }

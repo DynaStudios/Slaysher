@@ -33,24 +33,6 @@ namespace Slaysher.Game.Entities
     {
         public string Nickname { get; set; }
         private Client _client;
-        private WorldPosition _position;
-        public WorldPosition Position
-        {
-            get { return _position; }
-            set
-            {
-                if (_position == null)
-                {
-                    _position = new WorldPosition();
-                }
-                _position.X = value.X;
-                _position.Y = value.Y;
-                if (VisualPosition == null)
-                {
-                    VisualPosition = new WorldPosition(_position);
-                }
-            }
-        }
         public Model Model { get; set; }
         public WorldPosition VisualPosition { get; set; }
         private float? _lastMovementDirection = null;
@@ -58,6 +40,19 @@ namespace Slaysher.Game.Entities
         public ClientPlayer(Client client)
         {
             _client = client;
+        }
+
+        protected override void SetPosition(WorldPosition position) {
+            if (_position == null)
+            {
+                _position = new WorldPosition();
+            }
+            _position.X = position.X;
+            _position.Y = position.Y;
+            if (VisualPosition == null)
+            {
+                VisualPosition = new WorldPosition(_position);
+            }
         }
 
         public void Update(Matrix chasedObjectsWorld)

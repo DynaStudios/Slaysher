@@ -32,7 +32,6 @@ namespace Slaysher.Game.Scenes
         public Dictionary<int, Pattern> Pattern;
         public Dictionary<int, GameObject> GameObjects;
         public Dictionary<int, IEntity> Entities { get; protected set; }
-        private ClientPlayer _player;
         public ClientPlayer Player { get; set; }
 
         private Matrix _worldMatrix;

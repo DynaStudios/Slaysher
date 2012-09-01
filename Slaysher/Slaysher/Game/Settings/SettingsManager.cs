@@ -34,12 +34,28 @@ namespace Slaysher.Game.Settings
         {
             Debug.WriteLine("Settings Folder were found. Load Settings");
 
-            Stream stream = File.OpenRead(Path.Combine(_applicationPath, "game.xml"));
-            var serializer = new XmlSerializer(typeof (GameSettings));
-            GameSettings = (GameSettings) serializer.Deserialize(stream);
-            stream.Close();
+            GameSettings = null;
+            try
+            {
+                using (Stream stream = File.OpenRead(Path.Combine(_applicationPath, "game.xml")))
+                {
+                    if (stream.Length > 0)
+                    {
+                        var serializer = new XmlSerializer(typeof(GameSettings));
+                        GameSettings = (GameSettings)serializer.Deserialize(stream);
+                        Debug.WriteLine("Loaded all Settings");
+                    }
+                }
+            }
+            finally
+            {
+                if (GameSettings == null)
+                {
+                    GameSettings = new GameSettings();
+                    Debug.WriteLine("Loading Settings failed, created new empty GameSettings");
+                }
+            }
 
-            Debug.WriteLine("Loaded all Settings");
         }
 
         private void CreateUserSettings()

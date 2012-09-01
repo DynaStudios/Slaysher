@@ -5,6 +5,14 @@ using System.Reflection;
 
 namespace SlaysherServer
 {
+    public class MissingPluginException : Exception
+    {
+        public MissingPluginException(string message)
+            : base(message)
+        {
+        }
+    }
+
     public interface IServerPlugin
     {
         void Init(Server server);
@@ -12,14 +20,24 @@ namespace SlaysherServer
 
     public class PluginLoader
     {
+        public bool UseRelativePath { get; set; }
         public string SearchPath { get; set; }
         public string PluginExtension { get; set; }
 
         private List<IServerPlugin> plugins = new List<IServerPlugin>();
 
+        public PluginLoader()
+        {
+            UseRelativePath = true;
+        }
+
         public void LoadPlugins ()
         {
             FileInfo[] potentialPluginFiles = GetPotentialPluginFiles();
+            if (potentialPluginFiles == null)
+            {
+                return;
+            }
             foreach (FileInfo potentialPluginFile in potentialPluginFiles)
             {
                 TryLoadingPluginsFromFile(potentialPluginFile);
@@ -80,9 +98,27 @@ namespace SlaysherServer
             LoadPluginsFromTypes(assembly.GetTypes());
         }
 
+        private DirectoryInfo GetSearchPathAsDirectoryInfo()
+        {
+            string path;
+            if (SearchPath == null) {
+                path = GetExecutingDir();
+            } else if (UseRelativePath) {
+                path = Path.Combine(GetExecutingDir(), SearchPath);
+            } else {
+                path = SearchPath;
+            }
+
+            return new DirectoryInfo(path);
+        }
+
         private FileInfo[] GetPotentialPluginFiles()
         {
-            DirectoryInfo path = new DirectoryInfo(SearchPath ?? GetExecutingDir());
+            DirectoryInfo path = GetSearchPathAsDirectoryInfo();
+            if (!path.Exists)
+            {
+                return null;
+            }
             string pluginExtension = PluginExtension ?? "dll";
 
             return path.GetFiles(string.Format("*.{0}", pluginExtension));

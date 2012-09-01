@@ -55,7 +55,7 @@ namespace SlaysherServer
         //Server own Eventhandler
         public event EventHandler<TcpEventArgs> BeforeAccept;
 
-        public DAO DAO { get; private set; }
+        public DAO DAO { get; set; }
 
         public World World { get; set; }
 
@@ -68,7 +68,7 @@ namespace SlaysherServer
             PluginLoader pluginLoader = new PluginLoader
             {
                 SearchPath = "plugins",
-                PluginExtension = "dll"
+                PluginExtension = "ssp" // >S<laysher >S<erver >P<lugin
             };
             pluginLoader.LoadPlugins();
             pluginLoader.InitPlugins(this);
@@ -81,7 +81,10 @@ namespace SlaysherServer
                 _acceptEventArgs.Completed += AcceptCompleted;
             }
 
-            DAO = DAO ?? new DAO();
+            if (DAO == null)
+            {
+                throw new MissingPluginException("No Database-Plugin loaded!");
+            }
 
             //Init World
             World = World ?? new World(this);

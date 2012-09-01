@@ -151,11 +151,11 @@ namespace SlaysherNetworking.Packets
 
             return sb.ToString();
         }
-    }
 #else
-    public override string ToString()
-    {
-        return base.ToString();
-    }
+        public override string ToString()
+        {
+            return base.ToString();
+        }
 #endif
+    }
 }

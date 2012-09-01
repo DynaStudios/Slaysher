@@ -382,17 +382,17 @@ namespace Slaysher.Network
         public void HandleEntitySpawn(EntitySpawnPacket esp)
         {
             //FIXME: Entities must have more details
-            IEntity entety;
-            if (!GameScene.Entities.TryGetValue(esp.EntityId, out entety))
+            IEntity entity;
+            if (!GameScene.Entities.TryGetValue(esp.EntityId, out entity))
             {
-                entety = new ClientPlayer(this)
+                entity = new ClientPlayer(this)
                 {
                     Id = esp.EntityId,
                     Health = esp.Health,
                     Nickname = esp.Nickname,
                     Position = new WorldPosition(esp.X, esp.Y)
                 };
-                GameScene.Entities.Add(entety.Id, entety);
+                GameScene.Entities.Add(entity.Id, entity);
             }
             else
             {

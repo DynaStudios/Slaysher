@@ -48,7 +48,6 @@ namespace SlaysherServer.Game.Models
                 DisposeRecvSystem();
             else if (e.SocketError != SocketError.Success || e.BytesTransferred == 0)
             {
-                Client client;
                 _nextActivityCheck = DateTime.MinValue;
             }
             else

@@ -1,6 +1,7 @@
 using Npgsql;
 using System;
 
+using System.Data.Common;
 //using MySql.Data.MySqlClient;
 
 namespace SlaysherServer.Database
@@ -14,7 +15,7 @@ namespace SlaysherServer.Database
             + "Password=start123;"
 			+ "Database=slaysher;";
 
-        public NpgsqlConnection DBConnection { get; private set; }
+        public DbConnection DBConnection { get; private set; }
 
         public GameObjectDAO GameObjectDAO { get; private set; }
 
@@ -27,6 +28,18 @@ namespace SlaysherServer.Database
             DBConnection = new NpgsqlConnection(ConnectionString);
             DBConnection.Open();
 
+            InitSubDAOs();
+        }
+
+        public DAO(DbConnection connection)
+        {
+            DBConnection = connection;
+
+            InitSubDAOs();
+        }
+
+        private void InitSubDAOs()
+        {
             GameObjectDAO = new GameObjectDAO(this);
             PatternTypeDAO = new PatternTypeDAO(this);
             Player = new PlayerDAO(this);

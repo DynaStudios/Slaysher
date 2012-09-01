@@ -65,18 +65,29 @@ namespace SlaysherServer
             //Network Setup
             PacketMap.Initialize();
 
-            _listener = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+            PluginLoader pluginLoader = new PluginLoader
+            {
+                SearchPath = "plugins",
+                PluginExtension = "dll"
+            };
+            pluginLoader.LoadPlugins();
+            pluginLoader.InitPlugins(this);
 
-            _acceptEventArgs = new SocketAsyncEventArgs();
-            _acceptEventArgs.Completed += AcceptCompleted;
+            _listener = _listener ?? new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
 
-            DAO = new DAO();
+            if (_acceptEventArgs == null)
+            {
+                _acceptEventArgs = new SocketAsyncEventArgs();
+                _acceptEventArgs.Completed += AcceptCompleted;
+            }
+
+            DAO = DAO ?? new DAO();
 
             //Init World
-            World = new World(this);
+            World = World ?? new World(this);
 
             //Vars Init
-            Clients = new ConcurrentDictionary<int, Client>();
+            Clients = Clients ?? new ConcurrentDictionary<int, Client>();
         }
 
         //Public Methods

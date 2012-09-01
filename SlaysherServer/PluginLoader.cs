@@ -12,16 +12,10 @@ namespace SlaysherServer
 
     public class PluginLoader
     {
-        public Server server;
         public string SearchPath { get; set; }
         public string PluginExtension { get; set; }
 
         private List<IServerPlugin> plugins = new List<IServerPlugin>();
-
-        public PluginLoader (Server server)
-        {
-            this.server = server;
-        }
 
         public void LoadPlugins ()
         {
@@ -29,6 +23,14 @@ namespace SlaysherServer
             foreach (FileInfo potentialPluginFile in potentialPluginFiles)
             {
                 TryLoadingPluginsFromFile(potentialPluginFile);
+            }
+        }
+
+        public void InitPlugins(Server server)
+        {
+            foreach (IServerPlugin plugin in plugins)
+            {
+                plugin.Init(server);
             }
         }
 
@@ -50,11 +52,10 @@ namespace SlaysherServer
         {
             ConstructorInfo ctor = type.GetConstructor(new Type[0]);
             IServerPlugin plugin = ctor.Invoke(new object[0]) as IServerPlugin;
-            if (plugin == null)
+            if (plugin != null)
             {
-                return;
+                plugins.Add(plugin);
             }
-            plugin.Init(server);
         }
 
         private void LoadPluginsFromTypes(Type[] types)

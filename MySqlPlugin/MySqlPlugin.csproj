@@ -51,6 +51,10 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\SlayerNetworking\SlaysherNetworking.csproj">
+      <Project>{E9611687-61E6-4684-A05B-D9EDE1F9248F}</Project>
+      <Name>SlaysherNetworking</Name>
+    </ProjectReference>
     <ProjectReference Include="..\SlaysherServer\SlaysherServer.csproj">
       <Project>{C710E616-8F85-45B5-8302-A679E58D8546}</Project>
       <Name>SlaysherServer</Name>

@@ -61,7 +61,6 @@
     <Compile Include="Network\Handler\PacketHandlers.cs" />
     <Compile Include="Network\SocketAsyncEventArgsPool.cs" />
     <Compile Include="Game\Pattern.cs" />
-    <Compile Include="PluginLoader.cs" />
     <Compile Include="Server.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

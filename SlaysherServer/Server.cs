@@ -10,6 +10,7 @@ using System.Threading.Tasks;
 using SlaysherNetworking.Game.World;
 using SlaysherNetworking.Packets;
 using SlaysherNetworking.Packets.Utils;
+using SlaysherNetworking.Plugin;
 
 using SlaysherServer.Database;
 using SlaysherServer.Game;
@@ -65,7 +66,7 @@ namespace SlaysherServer
             //Network Setup
             PacketMap.Initialize();
 
-            PluginLoader pluginLoader = new PluginLoader
+            PluginLoader<Server> pluginLoader = new PluginLoader<Server>
             {
                 SearchPath = "plugins",
                 PluginExtension = "ssp" // >S<laysher >S<erver >P<lugin

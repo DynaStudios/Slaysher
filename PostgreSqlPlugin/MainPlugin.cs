@@ -1,11 +1,13 @@
 ﻿using Npgsql;
 
+using SlaysherNetworking.Plugin;
+
 using SlaysherServer;
 using SlaysherServer.Database;
 
 namespace PostgreSqlPlugin
 {
-    public class MainPlugin : IServerPlugin
+    public class MainPlugin : IPlugin<Server>
     {
         // TODO: login handling is missing! using static login information for now
         private const string ConnectionString =

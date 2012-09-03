@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
 
-namespace SlaysherServer
+namespace SlaysherNetworking.Plugin
 {
     public class MissingPluginException : Exception
     {
@@ -13,18 +13,18 @@ namespace SlaysherServer
         }
     }
 
-    public interface IServerPlugin
+    public interface IPlugin<T>
     {
-        void Init(Server server);
+        void Init(T extedable);
     }
 
-    public class PluginLoader
+    public class PluginLoader<T>
     {
         public bool UseRelativePath { get; set; }
         public string SearchPath { get; set; }
         public string PluginExtension { get; set; }
 
-        private List<IServerPlugin> plugins = new List<IServerPlugin>();
+        private List<IPlugin<T>> plugins = new List<IPlugin<T>>();
 
         public PluginLoader()
         {
@@ -44,17 +44,17 @@ namespace SlaysherServer
             }
         }
 
-        public void InitPlugins(Server server)
+        public void InitPlugins(T extendable)
         {
-            foreach (IServerPlugin plugin in plugins)
+            foreach (IPlugin<T> plugin in plugins)
             {
-                plugin.Init(server);
+                plugin.Init(extendable);
             }
         }
 
         private bool ImplementsIServerPlugin(Type type)
         {
-            Type iServerPlugin = typeof(IServerPlugin);
+            Type iServerPlugin = typeof(IPlugin<T>);
             Type[] interfaces = type.GetInterfaces();
             foreach (Type inter in interfaces)
             {
@@ -69,7 +69,7 @@ namespace SlaysherServer
         private void LoadPluginFromType(Type type)
         {
             ConstructorInfo ctor = type.GetConstructor(new Type[0]);
-            IServerPlugin plugin = ctor.Invoke(new object[0]) as IServerPlugin;
+            IPlugin<T> plugin = ctor.Invoke(new object[0]) as IPlugin<T>;
             if (plugin != null)
             {
                 plugins.Add(plugin);

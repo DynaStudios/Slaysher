@@ -1,14 +1,16 @@
-﻿using MySql.Data.MySqlClient;
-
-using System;
+﻿using System;
 using System.Collections.Generic;
+
+using MySql.Data.MySqlClient;
+
+using SlaysherNetworking.Plugin;
 
 using SlaysherServer;
 using SlaysherServer.Database;
 
 namespace MySqlPlugin
 {
-    public class MainPlugin : IServerPlugin
+    public class MainPlugin : IPlugin<Server>
     {
         private const string ConnectionString =
                 "server=direct.dyna-studios.com;"

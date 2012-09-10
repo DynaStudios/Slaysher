@@ -9,9 +9,10 @@ namespace SlaysherServer.Game.Entities
 {
     public class ServerPlayer : ServerEntity, IPlayer
     {
+        public int DbId { get; set; }
         public string Nickname { get; set; }
 
-        public MovePacket CreatePreparedMovePacket(TimeSpan totalTime)
+        public MovePacket CreatePreperedMovePacket(TimeSpan totalTime)
         {
             if (this.ExecutePreparedMove(totalTime))
             {

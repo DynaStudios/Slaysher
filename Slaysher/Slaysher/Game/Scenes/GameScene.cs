@@ -9,6 +9,7 @@ using Microsoft.Xna.Framework.Input;
 using Slaysher.Game.GUI;
 using Slaysher.Game.GUI.Screens;
 using Slaysher.Game.Entities;
+using Slaysher.Game.Settings.Options;
 using Slaysher.Game.World.Objects;
 using Slaysher.Graphics.Camera;
 using Slaysher.Network;
@@ -31,7 +32,6 @@ namespace Slaysher.Game.Scenes
         public Dictionary<int, Pattern> Pattern;
         public Dictionary<int, GameObject> GameObjects;
         public Dictionary<int, IEntity> Entities { get; protected set; }
-        private ClientPlayer _player;
         public ClientPlayer Player { get; set; }
 
         private Matrix _worldMatrix;
@@ -133,11 +133,7 @@ namespace Slaysher.Game.Scenes
 
             IPAddress address;
 
-#if DEBUG
-            NetworkUtils.Resolve("192.168.0.108", out address);
-#else
-            NetworkUtils.Resolve("slaysher.dyna-studios.com", out address);
-#endif
+            NetworkUtils.Resolve(Engine.Settings.GameSettings.ServerAdress, out address);
             IPEndPoint ip = new IPEndPoint(address, 25104);
             Task.Factory.StartNew(() => _client.Start(ip));
 

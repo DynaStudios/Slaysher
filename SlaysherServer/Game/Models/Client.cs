@@ -16,6 +16,8 @@ namespace SlaysherServer.Game.Models
 {
     public partial class Client
     {
+        public int DbId { get; private set; }
+
         private ConcurrentDictionary<Client, byte> _awareCloseClients = new ConcurrentDictionary<Client, byte>();
         public volatile bool Running = true;
 
@@ -55,11 +57,12 @@ namespace SlaysherServer.Game.Models
 
         private readonly Socket _socket;
 
-        public Client(int nextClientId, Server server, Socket socket)
+        public Client(int clientId, int dbId, Server server, Socket socket)
         {
             IsLoggingIn = false;
 
-            ClientId = nextClientId;
+            ClientId = clientId;
+            DbId = dbId;
             Server = server;
             _socket = socket;
 
@@ -176,7 +179,7 @@ namespace SlaysherServer.Game.Models
         {
             if (Player != null)
             {
-                MovePacket mp = Player.CreatePreparedMovePacket(totalTime);
+                MovePacket mp = Player.CreatePreperedMovePacket(totalTime);
                 if (mp != null)
                 {
                     //Nearby players

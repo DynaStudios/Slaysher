@@ -23,8 +23,13 @@ namespace Slaysher.Game.Entities
             get { return this.GetSpeed(); }
             set { this.SetSpeed(value); }
         }
-
-        public WorldPosition Position { get; set; }
+        
+        protected WorldPosition _position;
+        public WorldPosition Position
+        {
+            get { return GetPosition(); }
+            set { SetPosition(value); }
+        }
 
         // position where a movement has started
         // should be null at init
@@ -39,5 +44,15 @@ namespace Slaysher.Game.Entities
         public float? PreparedSpeed { get; set; }
 
         public abstract void Tick(TimeSpan timeSpan);
+
+        protected virtual WorldPosition GetPosition()
+        {
+            return _position;
+        }
+
+        protected virtual void SetPosition(WorldPosition position)
+        {
+            _position = position;
+        }
     }
 }

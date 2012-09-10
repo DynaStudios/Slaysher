@@ -7,6 +7,8 @@ using SlaysherNetworking.Game.Entities;
 using SlaysherNetworking.Packets;
 using SlaysherNetworking.Packets.Utils;
 
+using SlaysherServer.Database;
+
 namespace SlaysherServer.Game.Models
 {
     public partial class Client
@@ -48,7 +50,6 @@ namespace SlaysherServer.Game.Models
                 DisposeRecvSystem();
             else if (e.SocketError != SocketError.Success || e.BytesTransferred == 0)
             {
-                Client client;
                 _nextActivityCheck = DateTime.MinValue;
             }
             else
@@ -147,7 +148,9 @@ namespace SlaysherServer.Game.Models
 
         private void LoadPlayer()
         {
-            Player = Load();
+            Player = Server.DAO.Player.getForClient(DbId);
+            Player.Id = ClientId;
+
             IEnumerable<Client> clients = Server.GetNearbyPlayers(Player.Position);
             InformClients(clients);
         }

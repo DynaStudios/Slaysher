@@ -24,10 +24,7 @@ namespace Slaysher.Network
         private readonly ConcurrentQueue<Packet> _packetsToSend = new ConcurrentQueue<Packet>();
 
         public GameScene GameScene { get; set; }
-
-        //private PacketWriter _packetWriter;
-        private PacketReader _packetReader;
-
+        
         private bool _running;
         private readonly string _userName;
 
@@ -45,11 +42,8 @@ namespace Slaysher.Network
 
         private readonly object _queueLock = new object();
         private readonly Thread _receiveQueueReader;
-        private Timer _globalTimer;
 
         private readonly AutoResetEvent _recv = new AutoResetEvent(true);
-
-        private int _time;
 
         public bool WaitInitialPositionRequest = true;
         public object WaitInitialPositionRequestLook = new object();
@@ -388,17 +382,17 @@ namespace Slaysher.Network
         public void HandleEntitySpawn(EntitySpawnPacket esp)
         {
             //FIXME: Entities must have more details
-            IEntity entety;
-            if (!GameScene.Entities.TryGetValue(esp.EntityId, out entety))
+            IEntity entity;
+            if (!GameScene.Entities.TryGetValue(esp.EntityId, out entity))
             {
-                entety = new ClientPlayer(this)
+                entity = new ClientPlayer(this)
                 {
                     Id = esp.EntityId,
                     Health = esp.Health,
                     Nickname = esp.Nickname,
                     Position = new WorldPosition(esp.X, esp.Y)
                 };
-                GameScene.Entities.Add(entety.Id, entety);
+                GameScene.Entities.Add(entity.Id, entity);
             }
             else
             {

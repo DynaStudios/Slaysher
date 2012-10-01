@@ -111,9 +111,31 @@ namespace Slaysher.Game.Scenes
             Texture2D dirt = ScreenManager.Game.Content.Load<Texture2D>("Images/Game/Textures/dirt_512_j");
 
             float[][] perlinNoise = GeneratePerlinNoise(width, height, octaveCount);
+            perlinNoise = ClipNoise(perlinNoise, 0.3f);
             _perlinNoiseTexture = MapGradient(gradientStart, gradiendEnd, perlinNoise);
-            //_perlinNoiseTexture = TextureBlendedNoise(dirt, grass, perlinNoise);
+            //_perlinNoiseTexture = TextureBlendedNoise(grass, dirt, perlinNoise);
             Generating = false;
+        }
+
+        private float[][] ClipNoise(float[][] noise, float clip)
+        {
+            float antiClip = 1.0f - clip;
+            float dynamicRange = antiClip - clip;
+            float[][] clipedNoise = new float[noise.Length][];
+
+            for (int x = 0; x < noise.Length; ++x)
+            {
+                float[] row = noise[x];
+                clipedNoise[x] = new float[row.Length];
+                for (int y = 0; y < row.Length; ++y)
+                {
+                    float current = noise[x][y];
+                    clipedNoise[x][y] = current < clip ? 0.0f :
+                                      current > antiClip ? 1.0f :
+                                      (current - clip) * (1.0f / dynamicRange);
+                }
+            }
+            return clipedNoise;
         }
 
         public float[][] GenerateWhiteNoise(int width, int height)
@@ -238,7 +260,7 @@ namespace Slaysher.Game.Scenes
             Texture2D permTexture2d = new Texture2D(ScreenManager.GraphicsDevice, width, height, true,
                                                                                      SurfaceFormat.Color);
 
-            Color[] color = TextureBlended(grassTex, dirtTex, perlinNoise);
+            Color[] color = TextureBlended(dirtTex, grassTex, perlinNoise);
             permTexture2d.SetData(color);
 
             return permTexture2d;
@@ -308,10 +330,15 @@ namespace Slaysher.Game.Scenes
             return x0*(1 - alpha) + alpha*x1;
         }
 
+
         public static Color Interpolate(Color col0, Color col1, float alpha)
         {
             float beta = 1 - alpha;
-            return new Color((int)(col0.R * alpha + col1.R * beta), (int)(col0.G * alpha + col1.G * beta), (int)(col0.B * alpha + col1.B * beta));
+            return new Color(
+                (int)(col0.R * alpha + col1.R * beta),
+                (int)(col0.G * alpha + col1.G * beta),
+                (int)(col0.B * alpha + col1.B * beta)
+            );
         }
 
         public static T[][] GetEmptyArray<T>(int width, int height)

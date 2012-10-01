@@ -68,6 +68,11 @@ namespace SlaysherServer.Game.Models
                 SendCompleted(null, _sendSocketEvent);
         }
 
+        private void SendSync(Packet packet)
+        {
+            SendSync(packet.GetBuffer());
+        }
+
         private void SendSync(byte[] data)
         {
             if (!Running || !_socket.Connected)

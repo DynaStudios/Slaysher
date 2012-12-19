@@ -212,10 +212,11 @@ namespace SlaysherServer.Game.Models
         {
             if (client != this)
             {
-                EntityDespawnPacket dp = new EntityDespawnPacket { EntityId = client.ClientId };
+                EntityDespawnPacket dp = new EntityDespawnPacket {
+                    EntityId = client.ClientId
+                };
                 dp.Write();
-                byte[] data = dp.GetBuffer();
-                client.SendSync(data);
+                client.SendSync(dp);
             }
             byte dummy;
             _awareCloseClients.TryRemove(client, out dummy);

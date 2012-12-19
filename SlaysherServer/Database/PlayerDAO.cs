@@ -45,6 +45,7 @@ namespace SlaysherServer.Database
                     return new ServerPlayer
                     {
                         DbId        = (int)reader["id"],
+                        Id          = clientId,
                         Nickname    = (string)reader["nickname"],
                         Health      = (int)reader["hp"],
                         ModelId     = (int)reader["model"],
@@ -67,6 +68,7 @@ namespace SlaysherServer.Database
             if (GetForClientCommand != null)
             {
                 GetForClientCommand.Dispose();
+                GetForClientCommand = null;
             }
         }
     }
